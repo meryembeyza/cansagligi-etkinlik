@@ -1,0 +1,46 @@
+'use client';
+
+import Sidebar from '@/components/layout/Sidebar';
+import Header from '@/components/layout/Header';
+import { useRole } from '@/context/RoleContext';
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { isLoading, user } = useRole();
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ width: '40px', height: '40px', border: '4px solid var(--color-primary-light)', borderTop: '4px solid var(--color-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} className="spinner"></div>
+          <p style={{ color: 'var(--text-muted)' }}>Oturum kontrol ediliyor...</p>
+        </div>
+        <style>{`
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        `}</style>
+      </div>
+    );
+  }
+
+  if (!user) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+    return null;
+  }
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-main)' }}>
+      <Sidebar />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}

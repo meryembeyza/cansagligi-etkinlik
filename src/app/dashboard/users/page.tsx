@@ -1,0 +1,280 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useRole } from '@/context/RoleContext';
+import { CheckCircle, XCircle, Users, ChevronDown, ChevronRight, User as UserIcon } from 'lucide-react';
+
+export default function UsersAdminPage() {
+  const { currentRole } = useRole();
+  const [activeTab, setActiveTab] = useState<'pending' | 'active'>('pending');
+  
+  const [pendingUsers, setPendingUsers] = useState<any[]>([]);
+  const [activeUsers, setActiveUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Hiyerarşik ağaç için state (hangi bölgelerin açık olduğunu tutar)
+  const [expandedRegions, setExpandedRegions] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (currentRole === 'general_admin') {
+      fetchUsers();
+    }
+  }, [currentRole, activeTab]);
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const pUsers = data?.filter(u => !u.is_approved) || [];
+      const aUsers = data?.filter(u => u.is_approved) || [];
+      
+      setPendingUsers(pUsers);
+      setActiveUsers(aUsers);
+    } catch (err) {
+      console.error('Kullanıcılar çekilirken hata:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleApprove = async (userId: string, userName: string) => {
+    if (!confirm(`${userName} adlı kullanıcının hesabını onaylamak istiyor musunuz?`)) return;
+
+    try {
+      const { error } = await supabase.from('users').update({ is_approved: true }).eq('id', userId);
+      if (error) throw error;
+      alert(`${userName} başarıyla onaylandı.`);
+      fetchUsers();
+    } catch (err: any) {
+      alert('Onaylama sırasında hata oluştu: ' + err.message);
+    }
+  };
+
+  const handleReject = async (userId: string, userName: string) => {
+    if (!confirm(`${userName} adlı kullanıcının kaydını tamamen SİLMEK istiyor musunuz?`)) return;
+
+    try {
+      const { error } = await supabase.from('users').delete().eq('id', userId);
+      if (error) throw error;
+      alert(`${userName} kaydı silindi.`);
+      fetchUsers();
+    } catch (err: any) {
+      alert('Silme sırasında hata oluştu: ' + err.message);
+    }
+  };
+
+  const toggleRegion = (region: string) => {
+    setExpandedRegions(prev => ({ ...prev, [region]: !prev[region] }));
+  };
+
+  if (currentRole !== 'general_admin') {
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Yetkisiz Erişim</div>;
+  }
+
+  // Aktif kullanıcıları ağaç yapısına (Hiyerarşiye) dönüştür
+  // Yapı: Region -> { manager: User[], universities: { UnivName: UnitHead[] } }
+  const treeData: Record<string, { managers: any[], universities: Record<string, any[]> }> = {};
+
+  activeUsers.forEach(user => {
+    const region = user.region || 'Belirtilmeyen Bölge';
+    if (!treeData[region]) {
+      treeData[region] = { managers: [], universities: {} };
+    }
+
+    if (user.role === 'region_manager') {
+      treeData[region].managers.push(user);
+    } else if (user.role === 'unit_head') {
+      const univ = user.university || 'Belirtilmeyen Üniversite';
+      if (!treeData[region].universities[univ]) {
+        treeData[region].universities[univ] = [];
+      }
+      treeData[region].universities[univ].push(user);
+    }
+    // Diğer roller (general_admin, design_team vb.) bu ağaçta görünmeyebilir veya "Sistem Yöneticileri" bölgesine atılabilir
+  });
+
+  return (
+    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '4rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Users size={24} color="var(--color-primary)" /> Kullanıcı ve Ağaç Yönetimi
+        </h1>
+        <p style={{ color: 'var(--text-muted)' }}>Sistemdeki kullanıcıları onaylayın veya hiyerarşik yapıyı inceleyin.</p>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid #eaeaea', marginBottom: '2rem' }}>
+        <button 
+          onClick={() => setActiveTab('pending')}
+          style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'pending' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'pending' ? 'var(--color-primary)' : 'var(--text-muted)', fontWeight: activeTab === 'pending' ? 600 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          Bekleyen Onaylar {pendingUsers.length > 0 && <span className="badge badge-danger" style={{ borderRadius: '50%', padding: '0.1rem 0.4rem', fontSize: '0.65rem' }}>{pendingUsers.length}</span>}
+        </button>
+        <button 
+          onClick={() => setActiveTab('active')}
+          style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'active' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'active' ? 'var(--color-primary)' : 'var(--text-muted)', fontWeight: activeTab === 'active' ? 600 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          Aktif Kullanıcı Ağacı
+        </button>
+      </div>
+
+      <div className="card">
+        {isLoading ? (
+          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Yükleniyor...</div>
+        ) : activeTab === 'pending' ? (
+          // BEKLEYEN ONAYLAR TAB'i
+          pendingUsers.length === 0 ? (
+            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+              <p style={{ color: 'var(--text-muted)' }}>Bekleyen onay yoktur.</p>
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f9fafb', color: 'var(--text-muted)', textAlign: 'left' }}>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Kullanıcı</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Üniversite & Bölge</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Talep Ettiği Rol</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>İletişim & Öğr. No</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea', textAlign: 'right' }}>İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingUsers.map(user => (
+                    <tr key={user.id} style={{ borderBottom: '1px solid #eaeaea' }}>
+                      <td style={{ padding: '1rem' }}>
+                        <div style={{ fontWeight: 600 }}>{user.full_name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(user.created_at).toLocaleDateString('tr-TR')}</div>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <div>{user.university || '-'}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.region || '-'}</div>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <span className="badge badge-primary">{user.role}</span>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{user.unit_name}</div>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <div>{user.phone_number}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Öğr No: {user.student_id || '-'}</div>
+                      </td>
+                      <td style={{ padding: '1rem', textAlign: 'right', display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                        <button onClick={() => handleApprove(user.id, user.full_name)} className="btn" style={{ padding: '0.5rem', backgroundColor: 'var(--status-success)', color: 'white' }}>
+                          <CheckCircle size={16} /> Onayla
+                        </button>
+                        <button onClick={() => handleReject(user.id, user.full_name)} className="btn" style={{ padding: '0.5rem', backgroundColor: 'var(--status-danger)', color: 'white' }}>
+                          <XCircle size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        ) : (
+          // AKTİF KULLANICI AĞACI TAB'i
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {Object.keys(treeData).length === 0 ? (
+              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Sistemde aktif kullanıcı bulunmuyor.</div>
+            ) : (
+              Object.entries(treeData).sort(([a], [b]) => a.localeCompare(b)).map(([region, data]) => (
+                <div key={region} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                  
+                  {/* BÖLGE BAŞLIĞI */}
+                  <div 
+                    onClick={() => toggleRegion(region)}
+                    style={{ padding: '1rem', backgroundColor: expandedRegions[region] ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', transition: 'all 0.2s' }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: expandedRegions[region] ? 'var(--color-primary)' : 'var(--text-main)' }}>
+                      {expandedRegions[region] ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                      {region} Bölgesi
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', gap: '1rem' }}>
+                      <span>Sorumlu: {data.managers.length}</span>
+                      <span>Üniversite: {Object.keys(data.universities).length}</span>
+                    </div>
+                  </div>
+
+                  {/* BÖLGE İÇERİĞİ */}
+                  {expandedRegions[region] && (
+                    <div style={{ padding: '1.5rem', backgroundColor: '#fff', borderTop: '1px solid #eaeaea' }}>
+                      
+                      {/* BÖLGE SORUMLULARI */}
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Bölge Sorumluları</h4>
+                        {data.managers.length === 0 ? (
+                          <div style={{ fontSize: '0.875rem', color: 'var(--status-danger)', fontStyle: 'italic' }}>Atanmış bölge sorumlusu yok!</div>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            {data.managers.map(mgr => (
+                              <div key={mgr.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 'var(--radius-sm)' }}>
+                                <UserIcon size={18} color="#16a34a" />
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ fontWeight: 600, color: '#166534' }}>{mgr.full_name}</div>
+                                  <div style={{ fontSize: '0.75rem', color: '#15803d' }}>{mgr.phone_number} | {mgr.email}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ÜNİVERSİTELER VE BİRİM BAŞKANLARI */}
+                      <div>
+                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Bağlı Üniversiteler</h4>
+                        {Object.keys(data.universities).length === 0 ? (
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Bu bölgeye bağlı üniversite başkanı bulunmuyor.</div>
+                        ) : (
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+                            {Object.entries(data.universities).sort(([a], [b]) => a.localeCompare(b)).map(([univ, heads]) => (
+                              <div key={univ} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+                                <div style={{ padding: '0.5rem 1rem', backgroundColor: '#f3f4f6', fontWeight: 600, fontSize: '0.875rem', borderBottom: '1px solid #eaeaea' }}>
+                                  {univ}
+                                </div>
+                                <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                  {heads.map(head => (
+                                    <div key={head.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                                      {head.avatar_url ? (
+                                        <img src={head.avatar_url} alt="" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                                      ) : (
+                                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                          <UserIcon size={16} color="#9ca3af" />
+                                        </div>
+                                      )}
+                                      <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{head.full_name}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: 500 }}>{head.unit_name}</div>
+                                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                                          <div>Sınıf: {head.class_year || 'Belirtilmedi'} | Bölüm: {head.department || 'Belirtilmedi'}</div>
+                                          <div>No: {head.student_id || '-'}</div>
+                                          <div>{head.phone_number}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
