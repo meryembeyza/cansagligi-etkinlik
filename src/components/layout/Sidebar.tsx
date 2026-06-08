@@ -24,6 +24,7 @@ export default function Sidebar() {
       { name: 'Tüm Takvim', icon: Calendar, path: '/dashboard/calendar' },
       { name: 'Lojistik Yönetimi', icon: Briefcase, path: '/dashboard/logistics' },
       { name: 'Kullanıcılar', icon: Users, path: '/dashboard/users' },
+      { name: 'Bursiyer Takip (Admin)', icon: Users, path: '/dashboard/bursary-admin' },
       { name: 'Ayarlar', icon: Settings, path: '/dashboard/settings' },
     ],
     design_team: [
@@ -41,6 +42,7 @@ export default function Sidebar() {
       { name: 'Bursiyer Yönetimi', icon: Users, path: '/dashboard/bursary' },
       { name: 'Ramazan Takibi', icon: Calendar, path: '/dashboard/ramadan' },
       { name: 'Envanter Yönetimi', icon: Briefcase, path: '/dashboard/inventory' },
+      { name: 'Bursiyer Takip (Admin)', icon: Users, path: '/dashboard/bursary-admin' },
       { name: 'Raporlar & Analizler', icon: LayoutTemplate, path: '/dashboard/rep-reports' },
     ],
     rep_coordinator: [
@@ -64,6 +66,10 @@ export default function Sidebar() {
       { name: 'Yeni Etkinlik', icon: PenTool, path: '/dashboard/events/new' },
       { name: 'Envanter Talepleri', icon: Briefcase, path: '/dashboard/inventory' },
       { name: 'Gönüllü Takibi', icon: Users, path: '/dashboard/volunteers' },
+    ],
+    bursary_student: [
+      { name: 'Bursiyer Paneli', icon: Home, path: '/dashboard/bursary-panel' },
+      { name: 'Profilim', icon: User, path: '/dashboard/profile' },
     ]
   };
 

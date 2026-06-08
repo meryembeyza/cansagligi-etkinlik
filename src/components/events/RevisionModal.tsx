@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { X, Save, Loader2, Plus, Trash2, ChevronRight, ChevronLeft } from 'lucide-react';
+import ExpertiseMultiSelect from '@/components/ExpertiseMultiSelect';
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -92,7 +93,9 @@ export default function RevisionModal({ event, initialSpeakers, onClose, onSucce
         socialLinks: s.speakers?.social_links || [s.speakers?.linkedin_url].filter(Boolean) || [''],
         reason: s.select_reason || '',
         status: s.status || 'Bekliyor', // Keep status for existing speakers
-        is_cancelled: s.is_cancelled || false
+        is_cancelled: s.is_cancelled || false,
+        expertiseFields: s.speakers?.expertise_fields || [],
+        otherExpertise: s.speakers?.other_expertise || ''
       }));
       setSpeakers(mappedSpeakers);
     }
@@ -124,7 +127,7 @@ export default function RevisionModal({ event, initialSpeakers, onClose, onSucce
   const handleNext = () => setCurrentStep((prev) => (prev < 4 ? (prev + 1) as Step : prev));
   const handlePrev = () => setCurrentStep((prev) => (prev > 1 ? (prev - 1) as Step : prev));
 
-  const addSpeaker = () => setSpeakers([...speakers, { name: '', title: '', socialLinks: [''], about: '', reason: '' }]);
+  const addSpeaker = () => setSpeakers([...speakers, { name: '', title: '', socialLinks: [''], about: '', reason: '', expertiseFields: [], otherExpertise: '' }]);
   const updateSpeaker = (index: number, field: string, value: any) => {
     const newSpeakers = [...speakers];
     newSpeakers[index] = { ...newSpeakers[index], [field]: value };
@@ -241,7 +244,9 @@ export default function RevisionModal({ event, initialSpeakers, onClose, onSucce
               full_name: s.name,
               title: s.title || 'Belirtilmedi',
               about: s.about || null,
-              social_links: s.socialLinks || []
+              social_links: s.socialLinks || [],
+              expertise_fields: s.expertiseFields || [],
+              other_expertise: s.otherExpertise || null
             }).eq('id', s.id);
             
             await supabase.from('event_speakers').update({
@@ -256,7 +261,9 @@ export default function RevisionModal({ event, initialSpeakers, onClose, onSucce
               full_name: s.name,
               title: s.title || 'Belirtilmedi',
               about: s.about || null,
-              social_links: s.socialLinks || []
+              social_links: s.socialLinks || [],
+              expertise_fields: s.expertiseFields || [],
+              other_expertise: s.otherExpertise || null
             }]).select().single();
             
             if (insertedSpeaker) {
@@ -437,6 +444,14 @@ export default function RevisionModal({ event, initialSpeakers, onClose, onSucce
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: s.is_cancelled ? '1.5rem' : 0, pointerEvents: s.is_cancelled ? 'none' : 'auto' }}>
                         <div><label className="label">Ad Soyad</label><input type="text" className="input" value={s.name} onChange={(e) => updateSpeaker(index, 'name', e.target.value)} /></div>
                         <div><label className="label">Unvan</label><input type="text" className="input" value={s.title} onChange={(e) => updateSpeaker(index, 'title', e.target.value)} /></div>
+                        <div style={{ gridColumn: 'span 2' }}>
+                          <ExpertiseMultiSelect 
+                            selectedFields={s.expertiseFields || []}
+                            onChange={(fields) => updateSpeaker(index, 'expertiseFields', fields)}
+                            otherExpertise={s.otherExpertise || ''}
+                            onOtherChange={(val) => updateSpeaker(index, 'otherExpertise', val)}
+                          />
+                        </div>
                         <div style={{ gridColumn: 'span 2' }}><label className="label">Konuşmacı Hakkında</label><textarea className="input" rows={2} value={s.about || ''} onChange={(e) => updateSpeaker(index, 'about', e.target.value)}></textarea></div>
                         <div style={{ gridColumn: 'span 2' }}>
                           <label className="label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -272,7 +272,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   if (isLoading) return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><Loader2 className="animate-spin" size={32} color="var(--color-primary)" /></div>;
   if (!event) return <div style={{ padding: '4rem', textAlign: 'center' }}>Etkinlik bulunamadı.</div>;
 
-  const canApprove = currentRole === 'general_admin' || currentRole === 'region_manager';
+  const canApprove = currentRole === 'general_admin' || currentRole === 'region_manager' || currentRole === 'rep_region_manager';
   const isCreator = user?.id === event.created_by;
 
   let logistics: any = null;
@@ -282,6 +282,14 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          body * { visibility: hidden; }
+          #printable-event-details, #printable-event-details * { visibility: visible; }
+          #printable-event-details { position: absolute; left: 0; top: 0; width: 100%; }
+          .no-print { display: none !important; }
+        }
+      `}} />
       
       {showRevisionModal && (
         <RevisionModal 
@@ -337,11 +345,14 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         </div>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 600 }}>
           <ArrowLeft size={16} /> Geri Dön
         </Link>
         <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="btn btn-outline" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#4b5563', borderColor: '#d1d5db' }}>
+            <Download size={16} /> PDF İndir
+          </button>
           {isCreator && event.event_type !== 'Ramazan Etkinliği' && (event.status === 'Onay Bekliyor' || event.status === 'Yeniden Onay Bekliyor' || event.status === 'Reddedildi') && (
             <button className="btn btn-outline" onClick={() => setShowRevisionModal(true)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>
               <Edit size={16} /> Etkinliği Revize Et
@@ -363,7 +374,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         </div>
       </div>
 
-      <div className="card" ref={contentRef} style={{ padding: '3rem', backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
+      <div id="printable-event-details" className="card" ref={contentRef} style={{ padding: '3rem', backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
         
         {/* Header Section */}
         <div style={{ borderBottom: '2px solid #eaeaea', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
@@ -455,7 +466,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                       </div>
                     )}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span className={`badge ${s.status === 'Onaylandı' ? 'badge-success' : s.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {s.status || 'Bekliyor'}
                     </span>
@@ -496,7 +507,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                       <strong>Yönetici Notu:</strong> {logistics.shuttle.adminNote}
                     </div>
                   )}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
                     <span className={`badge ${logistics.shuttle?.status === 'Onaylandı' ? 'badge-success' : logistics.shuttle?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.shuttle?.status || 'Bekliyor'}
                     </span>
@@ -529,7 +540,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                             <strong>Yönetici Notu:</strong> {a.adminNote}
                           </div>
                         )}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px dashed #eaeaea' }}>
+                        <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px dashed #eaeaea' }}>
                           <span className={`badge ${a.status === 'Onaylandı' ? 'badge-success' : a.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                             {a.status || 'Bekliyor'}
                           </span>
@@ -558,7 +569,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
                     <span className={`badge ${logistics.basicLifeSupportDetailsObj?.status === 'Onaylandı' ? 'badge-success' : logistics.basicLifeSupportDetailsObj?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.basicLifeSupportDetailsObj?.status || 'Bekliyor'}
                     </span>
@@ -584,7 +595,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
                     <span className={`badge ${logistics.advancedLifeSupportDetailsObj?.status === 'Onaylandı' ? 'badge-success' : logistics.advancedLifeSupportDetailsObj?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.advancedLifeSupportDetailsObj?.status || 'Bekliyor'}
                     </span>
@@ -610,7 +621,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
                     <span className={`badge ${logistics.sutureTrainingDetailsObj?.status === 'Onaylandı' ? 'badge-success' : logistics.sutureTrainingDetailsObj?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.sutureTrainingDetailsObj?.status || 'Bekliyor'}
                     </span>
@@ -640,7 +651,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                           </div>
                         )}
                         
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px dashed #eaeaea' }}>
+                        <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px dashed #eaeaea' }}>
                           <span className={`badge ${req.status === 'Onaylandı' ? 'badge-success' : req.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                             {req.status || 'Bekliyor'}
                           </span>

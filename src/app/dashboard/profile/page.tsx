@@ -20,7 +20,8 @@ export default function ProfilePage() {
     university: '',
     department: '',
     classYear: '',
-    unitName: ''
+    unitName: '',
+    clubRole: ''
   });
 
   useEffect(() => {
@@ -46,7 +47,8 @@ export default function ProfilePage() {
         university: data.university || '',
         department: data.department || '',
         classYear: data.grade || '',
-        unitName: data.unit_name || ''
+        unitName: data.unit_name || '',
+        clubRole: data.club_role || ''
       });
       setAvatarUrl(data.avatar_url);
     } catch (err: any) {
@@ -66,7 +68,8 @@ export default function ProfilePage() {
           phone_number: formData.phone,
           department: formData.department,
           grade: formData.classYear,
-          unit_name: formData.unitName
+          unit_name: formData.unitName,
+          club_role: formData.clubRole
         })
         .eq('id', user?.id);
 
@@ -149,8 +152,18 @@ export default function ProfilePage() {
               <option value="Bilimsel ve Akademik Çalışmalar Birimi">Bilimsel ve Akademik Çalışmalar Birimi</option>
               <option value="İletişim ve Planlama Birimi">İletişim ve Planlama Birimi</option>
               <option value="Temsilcilikler Birimi">Temsilcilikler Birimi</option>
+              <option value="Bursiyer">Bursiyer (Birim Yok)</option>
             </select>
           </div>
+
+          {/* Sadece Bursiyerler İçin */}
+          {profile?.role === 'bursary_student' && (
+            <div style={{ gridColumn: 'span 2' }}>
+              <label className="label">Kulüp Görevi / Rolü</label>
+              <input type="text" className="input" placeholder="Örn: Organizasyon Ekibi Üyesi" value={formData.clubRole} onChange={e => setFormData({...formData, clubRole: e.target.value})} />
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Vakıf bünyesinde dahil olduğunuz bir kulüp veya görev varsa belirtiniz.</p>
+            </div>
+          )}
 
           {/* Yeni Eklenen Dinamik Alanlar */}
           <div>

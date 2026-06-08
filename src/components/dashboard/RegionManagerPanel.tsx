@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { useRole } from '@/context/RoleContext';
 import EventDiffViewer from '@/components/events/EventDiffViewer';
 import { Check, X, Edit3, Calendar, MapPin, Loader2, FileSearch } from 'lucide-react';
+import Link from 'next/link';
 
 export default function RegionManagerPanel() {
   const { userData } = useRole();
@@ -143,7 +144,9 @@ export default function RegionManagerPanel() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)' }}>{event.event_name}</h4>
+                    <Link href={`/dashboard/events/${event.id}`} style={{ textDecoration: 'none' }}>
+                      <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--color-primary)', cursor: 'pointer' }}>{event.event_name}</h4>
+                    </Link>
                     <span className={`badge ${event.status === 'Yeniden Onay Bekliyor' ? 'badge-warning' : 'badge-pending'}`}>
                       {event.status}
                     </span>
@@ -152,15 +155,20 @@ export default function RegionManagerPanel() {
                     <MapPin size={14} /> {event.university} - {event.unit_name}
                   </p>
                 </div>
-                {event.status === 'Yeniden Onay Bekliyor' && (
-                  <button 
-                    className="btn btn-outline" 
-                    onClick={() => setDiffEventId(event.id)}
-                    style={{ fontSize: '0.875rem', padding: '0.5rem 0.75rem' }}
-                  >
-                    <FileSearch size={16} style={{ marginRight: '0.5rem' }}/> Değişiklik Özeti
-                  </button>
-                )}
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {event.status === 'Yeniden Onay Bekliyor' && (
+                    <button 
+                      className="btn btn-outline" 
+                      onClick={() => setDiffEventId(event.id)}
+                      style={{ fontSize: '0.875rem', padding: '0.5rem 0.75rem' }}
+                    >
+                      <FileSearch size={16} style={{ marginRight: '0.5rem' }}/> Değişiklik Özeti
+                    </button>
+                  )}
+                  <Link href={`/dashboard/events/${event.id}`} className="btn btn-outline" style={{ fontSize: '0.875rem', padding: '0.5rem 0.75rem', borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>
+                    Detayları Gör
+                  </Link>
+                </div>
               </div>
 
               {/* Gönderen Kişi Bilgisi */}

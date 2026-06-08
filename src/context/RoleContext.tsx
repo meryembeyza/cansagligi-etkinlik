@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/lib/supabase';
 import { useRouter, usePathname } from 'next/navigation';
 
-export type UserRole = 'unit_head' | 'region_manager' | 'general_admin' | 'design_team' | 'resource_manager' | 'rep_head' | 'rep_region_manager' | 'rep_coordinator' | 'representative';
+export type UserRole = 'unit_head' | 'region_manager' | 'general_admin' | 'design_team' | 'resource_manager' | 'rep_head' | 'rep_region_manager' | 'rep_coordinator' | 'representative' | 'bursary_student';
 
 interface RoleContextType {
   currentRole: UserRole | null;
@@ -28,6 +28,10 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     const fetchSessionAndRole = async () => {
+      if (window.location.pathname === '/register') {
+        if (mounted) setIsLoading(false);
+        return;
+      }
       try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
@@ -110,6 +114,10 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     fetchSessionAndRole();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (window.location.pathname === '/register') {
+        if (mounted) setIsLoading(false);
+        return;
+      }
       try {
         if (session?.user) {
           const { data, error } = await supabase

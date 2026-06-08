@@ -3,13 +3,22 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRole } from '@/context/RoleContext';
-import { Search, MapPin, Calendar, Link as LinkIcon, Users, Mail, Phone, Loader2 } from 'lucide-react';
+import { Search, MapPin, Calendar, Link as LinkIcon, Users, Mail, Phone, Loader2, Filter, ChevronDown, Check } from 'lucide-react';
+import universitiesData from '@/data/universities.json';
+import expertiseData from '@/data/expertiseFields.json';
 
 export default function SpeakersArchivePage() {
   const { currentRole } = useRole();
   const [speakersList, setSpeakersList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedExpertise, setSelectedExpertise] = useState('');
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [showExpertiseDropdown, setShowExpertiseDropdown] = useState(false);
+
+  // Flatten expertise options for easy listing
+  const allExpertiseOptions = Object.values(expertiseData).flat();
 
   useEffect(() => {
     fetchSpeakersFromEvents();
@@ -42,13 +51,25 @@ export default function SpeakersArchivePage() {
         eventName: item.events.event_name,
         eventDate: item.events.event_date,
         university: item.events.university,
-        region: item.events.region
+        region: item.events.region,
+        city: (universitiesData as any)[item.events.university] || 'Belirtilmedi',
+        expertiseFields: item.speakers.expertise_fields || [],
+        otherExpertise: item.speakers.other_expertise || ''
       })) || [];
 
       // Sort by event date descending
       formattedSpeakers.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
       
       setSpeakersList(formattedSpeakers);
+
+      // Extract unique cities from the fetched speakers
+      const cities = new Set<string>();
+      formattedSpeakers.forEach(s => {
+        if (s.city && s.city !== 'Belirtilmedi') {
+          cities.add(s.city);
+        }
+      });
+      setAvailableCities(Array.from(cities).sort());
     } catch (err) {
       console.error('Konuşmacılar çekilirken hata:', err);
     } finally {
@@ -57,10 +78,21 @@ export default function SpeakersArchivePage() {
   };
 
   const filteredSpeakers = speakersList.filter(sp => {
+    // Search Query Match
     const term = searchQuery.toLowerCase();
-    return (sp.name?.toLowerCase().includes(term) || 
-            sp.title?.toLowerCase().includes(term) || 
-            sp.university?.toLowerCase().includes(term));
+    const matchesSearch = (sp.name?.toLowerCase().includes(term) || 
+                           sp.title?.toLowerCase().includes(term) || 
+                           sp.university?.toLowerCase().includes(term));
+
+    // City Match
+    const matchesCity = selectedCity ? sp.city === selectedCity : true;
+
+    // Expertise Match
+    const matchesExpertise = selectedExpertise 
+      ? sp.expertiseFields.includes(selectedExpertise) || (selectedExpertise === 'Diğer' && sp.expertiseFields.includes('Diğer'))
+      : true;
+
+    return matchesSearch && matchesCity && matchesExpertise;
   });
 
   if (currentRole === 'design_team' || currentRole === 'resource_manager') {
@@ -77,15 +109,110 @@ export default function SpeakersArchivePage() {
       </div>
 
       <div className="card" style={{ marginBottom: '2rem', backgroundColor: '#f9fafb' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'white', padding: '0.75rem 1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)' }}>
-          <Search size={20} color="var(--text-muted)" />
-          <input 
-            type="text" 
-            placeholder="Konuşmacı adı, unvan veya üniversite ara..." 
-            style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }}
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '1rem', alignItems: 'center' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'white', padding: '0.75rem 1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', flex: 1 }}>
+            <Search size={20} color="var(--text-muted)" />
+            <input 
+              type="text" 
+              placeholder="Konuşmacı adı, unvan veya üniversite ara..." 
+              style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }}
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Filter size={18} color="var(--text-muted)" />
+            <select 
+              className="input" 
+              style={{ padding: '0.75rem', width: '200px', backgroundColor: 'white' }}
+              value={selectedCity}
+              onChange={e => setSelectedCity(e.target.value)}
+            >
+              <option value="">Tüm Şehirler</option>
+              {availableCities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ position: 'relative' }}>
+            <div 
+              onClick={() => setShowExpertiseDropdown(!showExpertiseDropdown)}
+              style={{ 
+                backgroundColor: 'white', 
+                border: '1px solid #eaeaea', 
+                borderRadius: 'var(--radius-md)', 
+                padding: '0.75rem 1rem',
+                width: '240px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              <span style={{ color: selectedExpertise ? 'var(--text-main)' : 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {selectedExpertise || 'Tüm Uzmanlık Alanları'}
+              </span>
+              <ChevronDown size={16} color="var(--text-muted)" />
+            </div>
+
+            {showExpertiseDropdown && (
+              <div style={{ 
+                position: 'absolute', 
+                top: '100%', 
+                right: 0, 
+                marginTop: '0.25rem',
+                backgroundColor: 'white', 
+                border: '1px solid #eaeaea', 
+                borderRadius: 'var(--radius-md)', 
+                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+                zIndex: 50,
+                width: '280px',
+                maxHeight: '400px',
+                overflowY: 'auto',
+                padding: '0.5rem'
+              }}>
+                <div 
+                  onClick={() => { setSelectedExpertise(''); setShowExpertiseDropdown(false); }}
+                  style={{ padding: '0.5rem 0.75rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.875rem', fontWeight: !selectedExpertise ? 700 : 400, color: !selectedExpertise ? 'var(--color-primary)' : 'var(--text-main)' }}
+                >
+                  Tüm Uzmanlık Alanları
+                </div>
+                
+                {Object.entries(expertiseData).map(([category, subs]) => (
+                  <div key={category} style={{ marginTop: '0.5rem' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0.25rem 0.75rem', backgroundColor: '#f9fafb' }}>
+                      {category}
+                    </div>
+                    {subs.map(sub => (
+                      <div 
+                        key={sub}
+                        onClick={() => { setSelectedExpertise(sub); setShowExpertiseDropdown(false); }}
+                        style={{ 
+                          padding: '0.5rem 0.75rem', 
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          fontSize: '0.875rem',
+                          backgroundColor: selectedExpertise === sub ? 'var(--color-primary-light)' : 'transparent',
+                          color: selectedExpertise === sub ? 'var(--color-primary)' : 'var(--text-main)',
+                          borderRadius: '4px'
+                        }}
+                      >
+                        {sub}
+                        {selectedExpertise === sub && <Check size={16} />}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
 
@@ -120,6 +247,19 @@ export default function SpeakersArchivePage() {
                   <div>
                     <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Hakkında</div>
                     <p style={{ fontSize: '0.875rem', lineHeight: 1.5, margin: 0, color: 'var(--text-main)' }}>{sp.about}</p>
+                  </div>
+                )}
+
+                {sp.expertiseFields && sp.expertiseFields.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Uzmanlık Alanları</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                      {sp.expertiseFields.map((field: string, i: number) => (
+                        <span key={i} style={{ backgroundColor: '#f3f4f6', color: '#4b5563', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>
+                          {field === 'Diğer' && sp.otherExpertise ? `Diğer (${sp.otherExpertise})` : field}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
 

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useRole } from '@/context/RoleContext';
 import ImageUpload from '@/components/ImageUpload';
+import ExpertiseMultiSelect from '@/components/ExpertiseMultiSelect';
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -149,13 +150,15 @@ export default function NewEventPage() {
       const validSpeakers = speakers.filter(s => s.name);
       if (validSpeakers.length > 0) {
         const speakerTask = (async () => {
-          const speakerInserts = validSpeakers.map(s => ({
-            full_name: s.name,
-            title: s.title || 'Belirtilmedi',
-            linkedin_url: s.socialLinks?.[0] || null, // Sadece geriye dönük uyumluluk için ilk linki kaydediyoruz
-            about: s.about || null,
-            social_links: s.socialLinks || [] // Eğer veritabanında bu alan açılırsa buraya kaydedilecek
-          }));
+            const speakerInserts = validSpeakers.map(s => ({
+              full_name: s.name,
+              title: s.title || 'Belirtilmedi',
+              linkedin_url: s.socialLinks?.[0] || null, // Sadece geriye dönük uyumluluk için ilk linki kaydediyoruz
+              about: s.about || null,
+              social_links: s.socialLinks || [], // Eğer veritabanında bu alan açılırsa buraya kaydedilecek
+              expertise_fields: s.expertiseFields || [],
+              other_expertise: s.otherExpertise || null
+            }));
           
           const { data: insertedSpeakers, error: speakerErr } = await supabase.from('speakers').insert(speakerInserts).select();
           
@@ -256,7 +259,7 @@ export default function NewEventPage() {
   };
 
   const addSpeaker = () => {
-    setSpeakers([...speakers, { name: '', title: '', socialLinks: [''], about: '', reason: '' }]);
+    setSpeakers([...speakers, { name: '', title: '', socialLinks: [''], about: '', reason: '', expertiseFields: [], otherExpertise: '' }]);
   };
 
   const updateSpeaker = (index: number, field: string, value: any) => {
@@ -710,6 +713,14 @@ export default function NewEventPage() {
                       <div>
                         <label className="label">Unvan</label>
                         <input type="text" className="input" placeholder="Örn: Profesör" value={s.title} onChange={(e) => updateSpeaker(index, 'title', e.target.value)} />
+                      </div>
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <ExpertiseMultiSelect 
+                          selectedFields={s.expertiseFields || []}
+                          onChange={(fields) => updateSpeaker(index, 'expertiseFields', fields)}
+                          otherExpertise={s.otherExpertise || ''}
+                          onOtherChange={(val) => updateSpeaker(index, 'otherExpertise', val)}
+                        />
                       </div>
                       <div style={{ gridColumn: 'span 2' }}>
                         <label className="label">Konuşmacı Hakkında (Kısa Özgeçmiş)</label>

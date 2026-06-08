@@ -1,0 +1,10 @@
+{
+  "Klinik Bilimler": ["Tıp", "Diş Hekimliği", "Veterinerlik"],
+  "Eczacılık & Kimya Bilimleri": ["Eczacılık", "Moleküler Biyoloji ve Genetik", "Kimya"],
+  "Sağlık Hizmetleri": ["Hemşirelik", "Ebelik", "Odyoloji", "Dil Konuşma Terapisi"],
+  "Rehabilitasyon & Terapi": ["Fizyoterapi ve Rehabilitasyon", "Çocuk Gelişimi", "Ergoterapi"],
+  "Mühendislik & Teknoloji": ["Biyomedikal Mühendisliği", "Biyomühendislik", "Tıp Mühendisliği"],
+  "Beslenme & Yaşam Bilimleri": ["Beslenme ve Diyetetik", "Gerontoloji"],
+  "Sosyal & Yönetim Bilimleri": ["Psikoloji", "PDR", "Sağlık Yönetimi", "Sosyal Hizmet"],
+  "Diğer": ["Diğer"]
+}

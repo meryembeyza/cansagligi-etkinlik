@@ -233,6 +233,7 @@ export default function RegisterPage() {
                     <option value="Bilimsel ve Akademik Çalışmalar Birimi">Bilimsel ve Akademik Çalışmalar Birimi</option>
                     <option value="İletişim ve Planlama Birimi">İletişim ve Planlama Birimi</option>
                     <option value="Temsilcilikler Birimi">Temsilcilikler Birimi</option>
+                    <option value="Bursiyer">Bursiyer (Birim Yok)</option>
                   </select>
                 )}
               </div>
@@ -248,7 +249,8 @@ export default function RegisterPage() {
                   <option value="rep_head">Temsilcilikler Birimi Başkanı</option>
                   <option value="rep_region_manager">Temsilcilikler Birimi Bölge Sorumlusu</option>
                   <option value="rep_coordinator">Temsilcilikler Birimi Koordinatörü</option>
-                  <option value="representative">Temsilci</option>
+                  <option value="representative">Okul Temsilcisi</option>
+                  <option value="bursary_student">Bursiyer Öğrenci</option>
                 </select>
               </div>
             </div>
