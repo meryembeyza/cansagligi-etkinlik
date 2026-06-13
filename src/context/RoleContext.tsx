@@ -66,9 +66,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
                 setUserData(null);
                 setCurrentRole(null);
               }
-              if (window.location.pathname !== '/login') {
-                router.push('/login?error=not_approved');
-              }
+              window.location.href = '/login?error=not_approved';
             }
           } else {
             // Veritabanında kayıt yok (silinmiş veya şema sıfırlanmış)
@@ -79,9 +77,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
               setUserData(null);
               setCurrentRole(null);
             }
-            if (window.location.pathname !== '/login') {
-              window.location.href = '/login?error=not_found';
-            }
+            window.location.href = '/login?error=not_found';
           }
         } else {
           // Oturum yok
@@ -147,9 +143,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
                 setUserData(null);
                 setCurrentRole(null);
               }
-              if (window.location.pathname !== '/login') {
-                router.push('/login?error=not_approved');
-              }
+              window.location.href = '/login?error=not_approved';
             }
           } else {
             console.error("onAuthStateChange Role fetch error - No user found");
@@ -159,9 +153,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
               setUserData(null);
               setCurrentRole(null);
             }
-            if (window.location.pathname !== '/login') {
-              window.location.href = '/login?error=not_found';
-            }
+            window.location.href = '/login?error=not_found';
           }
         } else {
           if (mounted) {
@@ -189,7 +181,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
           return false;
         });
       }
-    }, 3500);
+    }, 15000);
 
     return () => {
       mounted = false;

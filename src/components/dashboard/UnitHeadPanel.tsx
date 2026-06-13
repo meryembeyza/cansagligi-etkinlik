@@ -115,37 +115,38 @@ export default function UnitHeadPanel() {
     setIsSubmitting(true);
 
     try {
-      // Promise with timeout to prevent hanging
-      const insertPromise = supabase
-        .from('post_event_reports')
-        .insert([
-          {
-            event_id: reportingEvent.id,
-            actual_participants: Number(actualParticipants),
-            feedback: summaryNotes,
-            drive_link: driveLink,
-            social_link: socialLink || null,
-          },
-        ])
-        .select()
-        .single();
+      const submitTask = async () => {
+        // 1. Insert post-event report
+        const { error: reportError } = await supabase
+          .from('post_event_reports')
+          .insert([
+            {
+              event_id: reportingEvent.id,
+              actual_participants: Number(actualParticipants),
+              feedback: summaryNotes,
+              drive_link: driveLink,
+              social_link: socialLink || null,
+            },
+          ]);
 
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('İşlem zaman aşımına uğradı (10 saniye). İnternet bağlantınızı kontrol edin.')), 10000)
-      );
+        if (reportError) throw reportError;
 
-      const { data: reportData, error: reportError } = await Promise.race([insertPromise, timeoutPromise]) as any;
+        // 2. Update Event Status to 'Gerçekleşti'
+        const { error: updateError } = await supabase
+          .from('events')
+          .update({ status: 'Gerçekleşti' })
+          .eq('id', reportingEvent.id);
 
-      if (reportError) throw reportError;
-      console.log('Report inserted:', reportData);
+        if (updateError) throw updateError;
+        return true;
+      };
 
-      // 2. Update Event Status to 'Gerçekleşti'
-      const { error: updateError } = await supabase
-        .from('events')
-        .update({ status: 'Gerçekleşti' })
-        .eq('id', reportingEvent.id);
+      const timeoutTask = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('İşlem zaman aşımına uğradı (15 saniye). Lütfen internet bağlantınızı kontrol edip tekrar deneyin.')), 15000);
+      });
 
-      if (updateError) throw updateError;
+      // Race the submission against a 15-second timeout
+      await Promise.race([submitTask(), timeoutTask]);
 
       alert('Rapor başarıyla kaydedildi! Etkinlik "Gerçekleşti" olarak işaretlendi.');
       // Reset form & modal

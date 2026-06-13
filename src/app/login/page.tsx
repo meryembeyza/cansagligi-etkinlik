@@ -54,34 +54,9 @@ export default function LoginPage() {
       if (authError) throw authError;
 
       if (data.session) {
-        // Otomatik rol bazlı yönlendirme için kullanıcı bilgisini çekelim
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('role, is_approved')
-          .eq('id', data.session.user.id)
-          .maybeSingle();
-          
-        if (userError) {
-          await supabase.auth.signOut();
-          setError(`Veritabanı hatası: ${userError.message} (${userError.code})`);
-          return;
-        }
-
-        if (!userData) {
-          // Kullanıcı profili eksik olsa da oturum açılmasına izin ver
-          // userData boş olduğunda varsayılan bir nesne oluştur
-          // Bu sayede profil doldurulmamış olsa da giriş yapılabilir
-          // İleride profil sayfasında eksik alanları doldurabilirler
-        }
-
-        if (userData && !userData.is_approved) {
-          await supabase.auth.signOut();
-          setError('Hesabınız alınmıştır ancak henüz yöneticiniz tarafından onaylanmamıştır.');
-          return;
-        }
-        
-        // Yönlendirme (window.location.href yerine router.push)
-        router.push('/dashboard');
+        // Oturum doğrulandıktan sonra RoleContext'in onAuthStateChange dinleyicisi 
+        // kullanıcı verilerini çekip state'e yazdıktan sonra bizi dashboard'a yönlendirecek.
+        // Buradan manuel yönlendirme yapmak Race Condition'a sebep olduğu için kaldırıldı.
       }
     } catch (err: any) {
       setError(err.message || 'Giriş yapılamadı. E-posta ve şifrenizi kontrol edin.');

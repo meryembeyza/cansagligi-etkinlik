@@ -295,6 +295,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         <RevisionModal 
           event={event} 
           initialSpeakers={speakers}
+          isManager={canApprove}
           onClose={() => setShowRevisionModal(false)} 
           onSuccess={(updatedEvent) => {
             setEvent(updatedEvent);
@@ -353,9 +354,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <button className="btn btn-outline" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#4b5563', borderColor: '#d1d5db' }}>
             <Download size={16} /> PDF İndir
           </button>
-          {isCreator && event.event_type !== 'Ramazan Etkinliği' && (event.status === 'Onay Bekliyor' || event.status === 'Yeniden Onay Bekliyor' || event.status === 'Reddedildi') && (
+          {((isCreator && (event.status === 'Onay Bekliyor' || event.status === 'Yeniden Onay Bekliyor' || event.status === 'Reddedildi')) || canApprove) && event.event_type !== 'Ramazan Etkinliği' && event.status !== 'İptal Edildi' && (
             <button className="btn btn-outline" onClick={() => setShowRevisionModal(true)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>
-              <Edit size={16} /> Etkinliği Revize Et
+              <Edit size={16} /> Etkinliği Revize Et / Düzenle
             </button>
           )}
           {isCreator && event.event_type === 'Ramazan Etkinliği' && event.status !== 'İptal Edildi' && (

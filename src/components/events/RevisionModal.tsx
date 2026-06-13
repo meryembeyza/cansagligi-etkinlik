@@ -10,11 +10,12 @@ type Step = 1 | 2 | 3 | 4;
 interface RevisionModalProps {
   event: any;
   initialSpeakers: any[];
+  isManager?: boolean;
   onClose: () => void;
   onSuccess: (updatedEvent: any) => void;
 }
 
-export default function RevisionModal({ event, initialSpeakers, onClose, onSuccess }: RevisionModalProps) {
+export default function RevisionModal({ event, initialSpeakers, isManager, onClose, onSuccess }: RevisionModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDraftLoaded, setIsDraftLoaded] = useState(false);
@@ -222,7 +223,7 @@ export default function RevisionModal({ event, initialSpeakers, onClose, onSucce
         target_audience: formData.targetAudience ? formData.targetAudience.split(',').map((s: string) => s.trim()) : [],
         prereg_required: formData.preregRequired,
         budget_request: JSON.stringify(formData.logistics),
-        status: 'Yeniden Onay Bekliyor',
+        status: isManager ? event.status : 'Yeniden Onay Bekliyor',
         updated_at: new Date().toISOString()
       };
 
