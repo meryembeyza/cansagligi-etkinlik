@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { useRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
-import { Users, Filter, Plus, Phone, MessageSquare, Trash2, Edit2, Download, Search, Check, AlertCircle, Eye } from 'lucide-react';
+import { Users, Filter, MessageSquare, Trash2, Edit2, Download, Search, CheckCircle, XCircle, AlertCircle, Eye, Clock } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import Link from 'next/link';
 
@@ -33,7 +33,9 @@ const REGIONS = [
 
 export default function RepresentativesPage() {
   const { currentRole, userData, user, isLoading: authLoading } = useRole();
+  const [activeTab, setActiveTab] = useState<'active' | 'pending'>('active');
   const [reps, setReps] = useState<Representative[]>([]);
+  const [pendingReps, setPendingReps] = useState<any[]>([]);
   const [filteredReps, setFilteredReps] = useState<Representative[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -71,23 +73,40 @@ export default function RepresentativesPage() {
   const fetchReps = async () => {
     try {
       setIsLoading(true);
-      let query = supabase
+
+      // Fetch active (approved) reps
+      let activeQuery = supabase
         .from('users')
         .select(`
           id, full_name, email, phone_number, university, department, grade, region,
           representative_profiles(status, start_date, end_date, last_contact_date, notes)
         `)
-        .eq('role', 'representative');
+        .eq('role', 'representative')
+        .eq('is_approved', true);
 
-      // Region Manager restriction
       if (isRegionManager && userRegion) {
-        query = query.eq('region', userRegion);
+        activeQuery = activeQuery.eq('region', userRegion);
       }
 
-      const { data, error } = await query;
-      if (error) throw error;
+      const { data: activeData, error: activeErr } = await activeQuery;
+      if (activeErr) throw activeErr;
+      setReps(activeData as any || []);
 
-      setReps(data as any || []);
+      // Fetch pending (unapproved) reps
+      let pendingQuery = supabase
+        .from('users')
+        .select('id, full_name, email, phone_number, university, department, grade, region, created_at')
+        .eq('role', 'representative')
+        .eq('is_approved', false);
+
+      if (isRegionManager && userRegion) {
+        pendingQuery = pendingQuery.eq('region', userRegion);
+      }
+
+      const { data: pendingData, error: pendingErr } = await pendingQuery;
+      if (pendingErr) throw pendingErr;
+      setPendingReps(pendingData || []);
+
     } catch (err) {
       console.error("Failed to fetch representatives:", err);
     } finally {
@@ -120,6 +139,60 @@ export default function RepresentativesPage() {
 
     setFilteredReps(result);
   }, [reps, selectedRegion, selectedStatus, searchQuery]);
+
+  // Approve a pending representative
+  const handleApprove = async (repId: string, repName: string) => {
+    if (!confirm(`${repName} adlı temsilciyi onaylamak istiyor musunuz?`)) return;
+    try {
+      const { error: approveErr } = await supabase
+        .from('users')
+        .update({ is_approved: true })
+        .eq('id', repId);
+      if (approveErr) throw approveErr;
+
+      // Create representative_profile as 'Aktif'
+      await supabase
+        .from('representative_profiles')
+        .upsert([{ user_id: repId, status: 'Aktif', start_date: new Date().toISOString().split('T')[0] }]);
+
+      alert(`${repName} başarıyla onaylandı!`);
+      fetchReps();
+    } catch (err: any) {
+      alert('Onaylama sırasında hata: ' + err.message);
+    }
+  };
+
+  // Reject (soft — do NOT delete, just keep unapproved, mark as rejected)
+  const handleReject = async (repId: string, repName: string) => {
+    if (!confirm(`${repName} adlı temsilciyi reddetmek istiyor musunuz? Hesap silinmeyecek, onay bekleyenler listesinde kalıp "Reddedildi" olarak işaretlenecektir.`)) return;
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ club_duty: `[Reddedildi: ${new Date().toLocaleDateString('tr-TR')}]` })
+        .eq('id', repId);
+      if (error) throw error;
+      alert(`${repName} reddedildi ve işaretlendi.`);
+      fetchReps();
+    } catch (err: any) {
+      alert('İşlem sırasında hata: ' + err.message);
+    }
+  };
+
+  // Permanently delete a pending (unapproved) representative
+  const handleDeletePending = async (repId: string, repName: string) => {
+    if (!confirm(`⚠️ ${repName} adlı temsilcinin kaydını kalıcı olarak SILMEK istediğinizden emin misiniz? Bu işlem geri alınamaz!`)) return;
+    try {
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', repId);
+      if (error) throw error;
+      alert(`${repName} adlı temsilci kalıcı olarak silindi.`);
+      fetchReps();
+    } catch (err: any) {
+      alert('Silme işlemi sırasında hata: ' + err.message);
+    }
+  };
 
   if (authLoading) {
     return <div style={{ padding: '3rem', textAlign: 'center' }}>Yükleniyor...</div>;
@@ -330,7 +403,7 @@ export default function RepresentativesPage() {
             <Users size={20} color="var(--color-primary)" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Toplam Temsilci</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Aktif Temsilci</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{reps.length}</div>
           </div>
         </div>
@@ -340,8 +413,18 @@ export default function RepresentativesPage() {
             <Users size={20} color="var(--status-success)" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Aktif Temsilciler</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Aktif Üyeler</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--status-success)' }}>{activeCount}</div>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '4px solid #f59e0b' }}>
+          <div style={{ padding: '0.5rem', backgroundColor: '#fef3c7', borderRadius: 'var(--radius-md)' }}>
+            <Clock size={20} color="#d97706" />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Onay Bekleyen</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d97706' }}>{pendingReps.length}</div>
           </div>
         </div>
 
@@ -356,8 +439,115 @@ export default function RepresentativesPage() {
         </div>
       </div>
 
-      {/* Main view Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem' }}>
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid #eaeaea' }}>
+        <button
+          onClick={() => setActiveTab('active')}
+          style={{ padding: '0.75rem 1.5rem', background: 'none', border: 'none', borderBottom: activeTab === 'active' ? '2px solid var(--color-primary)' : '2px solid transparent', marginBottom: '-2px', color: activeTab === 'active' ? 'var(--color-primary)' : 'var(--text-muted)', fontWeight: activeTab === 'active' ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.925rem' }}
+        >
+          <Users size={16} /> Aktif Temsilciler ({reps.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('pending')}
+          style={{ padding: '0.75rem 1.5rem', background: 'none', border: 'none', borderBottom: activeTab === 'pending' ? '2px solid #d97706' : '2px solid transparent', marginBottom: '-2px', color: activeTab === 'pending' ? '#d97706' : 'var(--text-muted)', fontWeight: activeTab === 'pending' ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.925rem' }}
+        >
+          <Clock size={16} /> Onay Bekleyenler
+          {pendingReps.length > 0 && (
+            <span style={{ backgroundColor: '#d97706', color: 'white', borderRadius: '999px', padding: '0.1rem 0.45rem', fontSize: '0.7rem', fontWeight: 700 }}>
+              {pendingReps.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* PENDING TAB */}
+      {activeTab === 'pending' && (
+        <div className="card" style={{ padding: '2rem' }}>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem', color: '#92400e' }}>🕐 Onay Bekleyen Temsilci Kayıtları</h2>
+          {isLoading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Yükleniyor...</div>
+          ) : pendingReps.length === 0 ? (
+            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+              <CheckCircle size={40} color="var(--status-success)" style={{ marginBottom: '1rem' }} />
+              <p style={{ color: 'var(--text-muted)' }}>Onay bekleyen temsilci kaydı bulunmuyor. 🎉</p>
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#fef3c7', textAlign: 'left' }}>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Ad Soyad</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Üniversite</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Bölge</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>İletişim</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Kayıt Tarihi</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a', textAlign: 'right' }}>İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingReps.map(rep => (
+                    <tr key={rep.id} style={{ borderBottom: '1px solid #fef3c7' }}>
+                      <td style={{ padding: '1rem' }}>
+                        <div style={{ fontWeight: 600 }}>{rep.full_name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{rep.email}</div>
+                        {rep.club_duty?.startsWith('[Reddedildi') && (
+                          <span style={{ fontSize: '0.7rem', color: 'var(--status-danger)', fontWeight: 600 }}>{rep.club_duty}</span>
+                        )}
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <div>{rep.university || '-'}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{rep.department} {rep.grade ? `(${rep.grade})` : ''}</div>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>{rep.region || '-'}</span>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <div>{rep.phone_number}</div>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          {new Date(rep.created_at).toLocaleDateString('tr-TR')}
+                        </div>
+                      </td>
+                      <td style={{ padding: '1rem', textAlign: 'right' }}>
+                        <div style={{ display: 'inline-flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                          <button
+                            onClick={() => handleApprove(rep.id, rep.full_name)}
+                            className="btn"
+                            style={{ padding: '0.4rem 0.8rem', backgroundColor: 'var(--status-success)', color: 'white', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem' }}
+                          >
+                            <CheckCircle size={14} /> Onayla
+                          </button>
+                          <button
+                            onClick={() => handleReject(rep.id, rep.full_name)}
+                            className="btn btn-outline"
+                            style={{ padding: '0.4rem 0.8rem', color: '#d97706', borderColor: '#d97706', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem' }}
+                          >
+                            <XCircle size={14} /> Reddet
+                          </button>
+                          {(currentRole === 'rep_head' || currentRole === 'rep_coordinator' || currentRole === 'general_admin') && (
+                            <button
+                              onClick={() => handleDeletePending(rep.id, rep.full_name)}
+                              className="btn btn-outline"
+                              title="Kaydı kalıcı olarak sil"
+                              style={{ padding: '0.4rem 0.8rem', color: 'var(--status-danger)', borderColor: 'var(--status-danger)', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem' }}
+                            >
+                              <Trash2 size={14} /> Sil
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ACTIVE TAB - Main view Grid */}
+      {activeTab === 'active' && <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem' }}>
         
         {/* Left Side: Filtering */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -541,7 +731,7 @@ export default function RepresentativesPage() {
 
         </div>
 
-      </div>
+      </div>}
 
       {/* Communication & Log Modal */}
       {isCommModalOpen && activeRep && (

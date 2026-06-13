@@ -23,6 +23,7 @@ export default function NewEventPage() {
     unitName: '',
     eventName: '',
     eventType: '',
+    otherEventType: '',
     targetAudience: '',
     eventPurpose: '',
     location: '',
@@ -109,7 +110,9 @@ export default function NewEventPage() {
       const { data: profile, error: profileErr } = await supabase.from('users').select('unit_name, university, region').eq('id', user.id).single();
       if (profileErr) throw new Error('Kullanıcı profili alınamadı.');
 
-      if (!formData.eventName || !formData.eventType) {
+      const finalEventType = formData.eventType === 'Diğer' ? formData.otherEventType : formData.eventType;
+
+      if (!formData.eventName || !finalEventType) {
         throw new Error('Lütfen Adım 1\'deki Etkinlik Adı ve Türü alanlarını doldurun.');
       }
 
@@ -127,7 +130,7 @@ export default function NewEventPage() {
           university: safeUniversity,
           region: safeRegion,
           event_name: formData.eventName,
-          event_type: formData.eventType,
+          event_type: finalEventType,
           event_purpose: formData.eventPurpose,
           location: formData.location,
           event_date: eventDateValue,
@@ -408,11 +411,24 @@ export default function NewEventPage() {
                   <label className="label">Etkinlik Türü *</label>
                   <select className="input" value={formData.eventType} onChange={(e) => setFormData({...formData, eventType: e.target.value})}>
                     <option value="">Seçiniz...</option>
-                    <option value="Panel">Panel</option>
-                    <option value="Konferans">Konferans</option>
-                    <option value="Atölye">Atölye</option>
-                    <option value="Gezi">Gezi</option>
+                    <option value="Atölye / Uygulamalı Eğitim">Atölye / Uygulamalı Eğitim</option>
+                    <option value="Konferans / Panel / Söyleşi">Konferans / Panel / Söyleşi</option>
+                    <option value="Teknik Gezi">Teknik Gezi</option>
+                    <option value="Saha Çalışması">Saha Çalışması</option>
+                    <option value="Diğer">Diğer</option>
                   </select>
+                  {formData.eventType === 'Diğer' && (
+                    <div style={{ marginTop: '0.75rem' }}>
+                      <input 
+                        type="text" 
+                        className="input" 
+                        placeholder="Lütfen etkinlik türünü belirtin" 
+                        value={formData.otherEventType} 
+                        onChange={(e) => setFormData({...formData, otherEventType: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
