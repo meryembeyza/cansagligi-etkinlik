@@ -10,6 +10,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetMessage, setResetMessage] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -65,12 +69,33 @@ export default function LoginPage() {
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail) {
+      setResetMessage('Lütfen e-posta adresinizi girin.');
+      return;
+    }
+    setResetLoading(true);
+    setResetMessage('');
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: window.location.origin + '/reset-password',
+      });
+      if (resetError) throw resetError;
+      setResetMessage('Şifre sıfırlama linki e-posta adresinize gönderildi.');
+    } catch (err: any) {
+      setResetMessage('Bir hata oluştu: ' + (err.message || 'Lütfen tekrar deneyin.'));
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* Sol Panel - Görsel ve Motto */}
       <div className={styles.leftPanel}>
         <div className={styles.logoContainer}>
-          <img src="/logo.png" alt="Cansağlığı Vakfı" style={{ height: '50px' }} />
+          <img src="/logo.png" alt="Cansağlığı Vakfı" className={styles.logo} />
         </div>
         <h1 className={styles.motto}>Hastalığa tutulmuş dünyaya şifa olmak için...</h1>
       </div>
@@ -113,7 +138,35 @@ export default function LoginPage() {
             </div>
 
             <div className={styles.forgotPassword}>
-              <a href="#" className={styles.forgotPasswordLink} onClick={(e) => { e.preventDefault(); alert("Şifre sıfırlama özelliği yakında eklenecektir."); }}>Şifremi unuttum</a>
+              <a href="#" className={styles.forgotPasswordLink} onClick={(e) => { e.preventDefault(); setShowResetModal(!showResetModal); }}>Şifremi unuttum</a>
+              
+              {showResetModal && (
+                <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', width: '100%', textAlign: 'left' }}>
+                  <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem', color: '#475569' }}>Şifrenizi sıfırlamak için e-posta adresinizi girin:</p>
+                  <input 
+                    type="email" 
+                    className={styles.input} 
+                    placeholder="E-posta adresiniz" 
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    style={{ marginBottom: '0.75rem' }}
+                  />
+                  <button 
+                    type="button" 
+                    onClick={handleResetPassword} 
+                    disabled={resetLoading} 
+                    className={styles.submitBtn} 
+                    style={{ padding: '0.5rem', fontSize: '0.875rem', backgroundColor: '#da1c15', width: '100%' }}
+                  >
+                    {resetLoading ? 'Gönderiliyor...' : 'Sıfırlama Linki Gönder'}
+                  </button>
+                  {resetMessage && (
+                    <div style={{ marginTop: '0.75rem', fontSize: '0.875rem', color: resetMessage.includes('hata') || resetMessage.includes('Lütfen') ? '#dc2626' : '#16a34a' }}>
+                      {resetMessage}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <button type="submit" disabled={isLoading} className={styles.submitBtn}>

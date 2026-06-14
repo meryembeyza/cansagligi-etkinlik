@@ -1,11 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { useRole } from '@/context/RoleContext';
 import { Home, Calendar, Users, PenTool, LayoutTemplate, Briefcase, Settings, LogOut, User } from 'lucide-react';
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolean, setIsOpen?: (val: boolean) => void }) {
   const { currentRole, logout } = useRole();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (setIsOpen) setIsOpen(false);
+  }, [pathname, setIsOpen]);
 
   const menuItems = {
     unit_head: [
@@ -76,8 +83,15 @@ export default function Sidebar() {
   const currentMenu = currentRole ? (menuItems[currentRole] || []) : [];
 
   return (
-    <aside style={{ width: '250px', backgroundColor: 'var(--bg-card)', borderRight: '1px solid #eaeaea', display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0 }}>
-      <div style={{ padding: '1.5rem', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <>
+      {isOpen && (
+        <div 
+          className="sidebar-overlay"
+          onClick={() => setIsOpen && setIsOpen(false)}
+        />
+      )}
+      <aside className={`sidebar-container ${isOpen ? 'open' : ''}`}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <img src="/logo.png" alt="Cansağlığı Vakfı Logo" style={{ height: '45px', objectFit: 'contain' }} />
       </div>
       
@@ -88,9 +102,28 @@ export default function Sidebar() {
         
         {currentMenu.map((item, index) => {
           const Icon = item.icon;
+          const isActive = pathname === item.path || (item.path !== '/dashboard' && pathname.startsWith(item.path));
           return (
-            <Link key={index} href={item.path} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', color: 'var(--text-main)', transition: 'background-color 0.2s', fontWeight: 500 }}>
-              <Icon size={18} color="var(--text-muted)" />
+            <Link
+              key={index}
+              href={item.path}
+              style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '0.75rem 1rem',
+                  paddingLeft: isActive ? 'calc(1rem - 3px)' : '1rem',
+                  borderLeft: isActive ? '3px solid #da1c15' : '3px solid transparent',
+                  borderRadius: 'var(--radius-md)',
+                  color: isActive ? '#da1c15' : 'var(--text-main)',
+                  backgroundColor: isActive ? '#fcdbd9' : 'transparent',
+                  transition: 'background-color 150ms',
+                  fontWeight: isActive ? 600 : 500,
+                  textDecoration: 'none',
+                }}
+              className={isActive ? '' : 'sidebar-link-hover'}
+            >
+              <Icon size={18} color={isActive ? '#da1c15' : 'var(--text-muted)'} />
               {item.name}
             </Link>
           );
@@ -107,6 +140,50 @@ export default function Sidebar() {
           Çıkış Yap
         </button>
       </div>
+      <style dangerouslySetInnerHTML={{__html: `
+        .sidebar-container {
+          width: 250px;
+          min-width: 250px;
+          background-color: var(--bg-card);
+          border-right: 1px solid #eaeaea;
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          position: sticky;
+          top: 0;
+          z-index: 50;
+        }
+        .sidebar-overlay {
+          display: none;
+        }
+        .sidebar-link-hover:hover {
+          background-color: #f3f4f6 !important;
+        }
+        @media (max-width: 768px) {
+          .sidebar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            transform: translateX(-250px);
+            transition: transform 300ms ease;
+          }
+          .sidebar-container.open {
+            transform: translateX(0);
+          }
+          .sidebar-overlay {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 40;
+          }
+        }
+      `}} />
     </aside>
+    </>
   );
 }

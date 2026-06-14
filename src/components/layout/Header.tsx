@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, CheckCircle2 } from 'lucide-react';
+import { Bell, CheckCircle2, Menu } from 'lucide-react';
 import { useRole, UserRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
 
-export default function Header() {
+export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const { currentRole, user, logout } = useRole();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -53,7 +53,14 @@ export default function Header() {
 
   return (
     <header style={{ height: '70px', backgroundColor: 'var(--bg-card)', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem' }}>
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <button 
+          className="mobile-menu-btn" 
+          onClick={onMenuClick} 
+          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'none', color: 'var(--text-main)', padding: '0.25rem' }}
+        >
+          <Menu size={24} />
+        </button>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Hoş Geldiniz</h2>
       </div>
 
@@ -138,6 +145,11 @@ export default function Header() {
         </div>
         <style dangerouslySetInnerHTML={{__html: `
           .hover-bg-gray:hover { background-color: #f3f4f6; }
+          @media (max-width: 768px) {
+            .mobile-menu-btn { display: flex !important; align-items: center; justify-content: center; }
+            header { padding: 0 1rem !important; }
+          }
+          .mobile-menu-btn:hover { color: #da1c15 !important; }
         `}} />
 
       </div>
