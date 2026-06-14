@@ -7,6 +7,7 @@ import { Loader2, ArrowLeft, Download, Check, X, MapPin, Calendar, Users, AlertT
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import RevisionModal from '@/components/events/RevisionModal';
+import PublishToBursaryModal from '@/components/dashboard/events/PublishToBursaryModal';
 
 export default function EventDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -23,6 +24,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   const [showAdminNoteModal, setShowAdminNoteModal] = useState(false);
   const [pendingStatus, setPendingStatus] = useState('');
   const [adminNote, setAdminNote] = useState('');
+  
+  const [showPublishModal, setShowPublishModal] = useState(false);
   
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -305,6 +308,19 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         />
       )}
 
+      {showPublishModal && (
+        <PublishToBursaryModal 
+          event={event} 
+          onClose={() => setShowPublishModal(false)}
+          onSuccess={() => {
+            setShowPublishModal(false);
+            setTimeout(() => {
+              alert('Harika! Etkinlik başarıyla Bursiyer Paneline eklendi ve yayına alındı.');
+            }, 100);
+          }}
+        />
+      )}
+
       {/* Admin Note Modal */}
       {showAdminNoteModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
@@ -372,6 +388,12 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <button className="btn btn-outline" onClick={handleDownloadPDF} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Download size={16} /> PDF İndir
           </button>
+          
+          {event.status === 'Onaylandı' && (
+             <button className="btn btn-primary" onClick={() => setShowPublishModal(true)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#da1c15', borderColor: '#da1c15' }}>
+               <Users size={16} /> Bursiyer Paneline Ekle
+             </button>
+          )}
         </div>
       </div>
 

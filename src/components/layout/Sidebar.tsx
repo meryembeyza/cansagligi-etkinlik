@@ -76,6 +76,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
     ],
     bursary_student: [
       { name: 'Bursiyer Paneli', icon: Home, path: '/dashboard/bursary-panel' },
+      { name: 'Etkinlikler', icon: Calendar, path: '/dashboard/bursary-panel/events' },
       { name: 'Profilim', icon: User, path: '/dashboard/profile' },
     ]
   };

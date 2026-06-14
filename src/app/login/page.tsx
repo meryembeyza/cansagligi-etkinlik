@@ -58,9 +58,9 @@ export default function LoginPage() {
       if (authError) throw authError;
 
       if (data.session) {
-        // Oturum doğrulandıktan sonra RoleContext'in onAuthStateChange dinleyicisi 
-        // kullanıcı verilerini çekip state'e yazdıktan sonra bizi dashboard'a yönlendirecek.
-        // Buradan manuel yönlendirme yapmak Race Condition'a sebep olduğu için kaldırıldı.
+        // Oturum doğrulandıktan sonra RoleContext'in onAuthStateChange dinleyicisi yönlendirme yapmalı,
+        // ancak bazı durumlarda tetiklenmediği için manuel olarak dashboard'a yönlendiriyoruz.
+        router.push('/dashboard');
       }
     } catch (err: any) {
       setError(err.message || 'Giriş yapılamadı. E-posta ve şifrenizi kontrol edin.');
