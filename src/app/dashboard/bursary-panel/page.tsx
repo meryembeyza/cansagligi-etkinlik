@@ -194,12 +194,12 @@ export default function BursaryPanelPage() {
                 </div>
                 
                 {ev.description && (
-                  <div style={{ backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem' }}>
+                  <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem' }}>
                     <strong>Açıklama:</strong> {ev.description}
                   </div>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
                   <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                     {att?.has_attended ? (
                       <span style={{ color: 'var(--status-success)', fontWeight: 600 }}>Yoklamanız alındı. Teşekkürler!</span>
@@ -233,7 +233,7 @@ export default function BursaryPanelPage() {
       {/* RSVP Modal */}
       {activeEvent && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Katılım Durumu (RSVP)</h2>
@@ -248,7 +248,7 @@ export default function BursaryPanelPage() {
               <button 
                 onClick={() => setRsvpMode('attending')}
                 style={{ 
-                  padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'attending' ? '2px solid var(--status-success)' : '1px solid #eaeaea', 
+                  padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'attending' ? '2px solid var(--status-success)' : '1px solid var(--border-color)', 
                   backgroundColor: rsvpMode === 'attending' ? '#ecfdf5' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'attending' ? 'var(--status-success)' : 'inherit'
                 }}
               >
@@ -257,7 +257,7 @@ export default function BursaryPanelPage() {
               <button 
                 onClick={() => setRsvpMode('not_attending')}
                 style={{ 
-                  padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'not_attending' ? '2px solid var(--status-danger)' : '1px solid #eaeaea', 
+                  padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'not_attending' ? '2px solid var(--status-danger)' : '1px solid var(--border-color)', 
                   backgroundColor: rsvpMode === 'not_attending' ? '#fef2f2' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'not_attending' ? 'var(--status-danger)' : 'inherit'
                 }}
               >

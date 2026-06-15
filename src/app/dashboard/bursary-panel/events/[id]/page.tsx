@@ -79,9 +79,9 @@ export default function BursaryEventDetailPage() {
         <ArrowLeft size={16} /> Etkinliklere Dön
       </button>
 
-      <div style={{ backgroundColor: '#fff', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid #eaeaea', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--border-color)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
         {/* Hero / Banner Area */}
-        <div style={{ position: 'relative', width: '100%', height: '300px', backgroundColor: '#111' }}>
+        <div style={{ position: 'relative', width: '100%', height: '300px', backgroundColor: 'var(--text-main)' }}>
           {event.poster_url ? (
             <img 
               src={event.poster_url} 
@@ -193,7 +193,7 @@ export default function BursaryEventDetailPage() {
                   {isPastDeadline ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
                       <button disabled style={{
-                        width: '100%', padding: '0.875rem', backgroundColor: '#e5e7eb', color: '#9ca3af',
+                        width: '100%', padding: '0.875rem', backgroundColor: 'var(--border-color)', color: '#9ca3af',
                         border: 'none', borderRadius: 'var(--radius-md)', fontSize: '1rem', fontWeight: 600,
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'not-allowed'
                       }}>
@@ -246,7 +246,7 @@ export default function BursaryEventDetailPage() {
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem' }}>Konuşmacılar</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {event.speakers.map((speaker: any, idx: number) => (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid #f3f4f6' }}>
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid #f3f4f6' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#da1c15', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 'bold', flexShrink: 0 }}>
                           {speaker.name.charAt(0).toUpperCase()}
                         </div>

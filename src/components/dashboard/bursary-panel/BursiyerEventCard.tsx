@@ -41,10 +41,10 @@ export default function BursiyerEventCard({ event }: BursiyerEventCardProps) {
     <div className="bursiyer-event-card" style={{
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: '#fff',
+      backgroundColor: 'var(--bg-card)',
       borderRadius: 'var(--radius-lg)',
       overflow: 'hidden',
-      border: '1px solid #eaeaea',
+      border: '1px solid var(--border-color)',
       transition: 'box-shadow 0.2s ease, transform 0.2s ease',
       cursor: 'pointer',
       minWidth: '320px',
@@ -119,7 +119,7 @@ export default function BursiyerEventCard({ event }: BursiyerEventCardProps) {
             <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Konuşmacılar</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {event.speakers.slice(0, 3).map((speaker, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', backgroundColor: '#f9fafb', padding: '0.25rem 0.5rem', borderRadius: '0.375rem', border: '1px solid #f3f4f6' }}>
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', backgroundColor: 'var(--bg-main)', padding: '0.25rem 0.5rem', borderRadius: '0.375rem', border: '1px solid #f3f4f6' }}>
                   <div style={{ width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#da1c15', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 'bold' }}>
                     {speaker.name.charAt(0).toUpperCase()}
                   </div>
@@ -161,7 +161,7 @@ export default function BursiyerEventCard({ event }: BursiyerEventCardProps) {
               width: '100%', padding: '0.625rem', 
               backgroundColor: event.requires_registration ? (isPastDeadline ? '#f3f4f6' : '#da1c15') : 'transparent', 
               color: event.requires_registration ? (isPastDeadline ? '#9ca3af' : '#fff') : 'var(--text-main)',
-              border: event.requires_registration ? 'none' : '1px solid #eaeaea', 
+              border: event.requires_registration ? 'none' : '1px solid var(--border-color)', 
               borderRadius: 'var(--radius-md)', fontSize: '0.875rem', fontWeight: 600,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer', textDecoration: 'none'
             }}

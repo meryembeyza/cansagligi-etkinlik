@@ -187,12 +187,12 @@ export default function UnitHeadPanel() {
       
       {/* İstatistik / Uyarı Kartları */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-        <div className="card" style={{ backgroundColor: reportNeededEvents.length > 0 ? '#fff1f2' : '#fff', border: reportNeededEvents.length > 0 ? '1px solid #fda4af' : '1px solid #eaeaea' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: reportNeededEvents.length > 0 ? '#be123c' : 'var(--text-main)' }}>Rapor Bekleyen Etkinlikler</h3>
+        <div className="card" style={{ backgroundColor: reportNeededEvents.length > 0 ? 'var(--bg-danger-light)' : 'var(--bg-card)', border: reportNeededEvents.length > 0 ? '1px solid var(--border-danger)' : '1px solid var(--border-color)' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: reportNeededEvents.length > 0 ? 'var(--status-danger)' : 'var(--text-main)' }}>Rapor Bekleyen Etkinlikler</h3>
           {reportNeededEvents.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {reportNeededEvents.map(e => (
-                <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '0.75rem', borderRadius: '4px', border: '1px solid #fecdd3' }}>
+                <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-card)', padding: '0.75rem', borderRadius: '4px', border: '1px solid var(--border-danger)' }}>
                   <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{e.event_name}</div>
                   <button className="btn btn-primary" style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem' }} onClick={() => setReportingEvent(e)}>
                     Rapor Gir
@@ -205,14 +205,14 @@ export default function UnitHeadPanel() {
           )}
         </div>
 
-        <div className="card" style={{ backgroundColor: revisionNeededEvents.length > 0 ? '#fffbeb' : '#fff', border: revisionNeededEvents.length > 0 ? '1px solid #fde68a' : '1px solid #eaeaea' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: revisionNeededEvents.length > 0 ? '#92400e' : 'var(--text-main)' }}>Revizyon İstenenler</h3>
+        <div className="card" style={{ backgroundColor: revisionNeededEvents.length > 0 ? 'var(--bg-warning-light)' : 'var(--bg-card)', border: revisionNeededEvents.length > 0 ? '1px solid var(--border-warning)' : '1px solid var(--border-color)' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: revisionNeededEvents.length > 0 ? 'var(--status-highlight)' : 'var(--text-main)' }}>Revizyon İstenenler</h3>
           {revisionNeededEvents.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {revisionNeededEvents.map(e => (
-                <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '0.75rem', borderRadius: '4px', border: '1px solid #fde68a' }}>
+                <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-card)', padding: '0.75rem', borderRadius: '4px', border: '1px solid var(--border-warning)' }}>
                   <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{e.event_name}</div>
-                  <Link href={`/dashboard/events/${e.id}`} className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', borderColor: '#f59e0b', color: '#92400e', textDecoration: 'none' }}>
+                  <Link href={`/dashboard/events/${e.id}`} className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', borderColor: 'var(--status-highlight)', color: 'var(--status-highlight)', textDecoration: 'none' }}>
                     İncele
                   </Link>
                 </div>
@@ -235,23 +235,23 @@ export default function UnitHeadPanel() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
             {events.map(event => (
-              <div key={event.id} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', padding: '2rem 1.25rem 1.25rem 1.25rem', backgroundColor: '#fff', position: 'relative', overflow: 'hidden' }}>
+              <div key={event.id} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '2rem 1.25rem 1.25rem 1.25rem', backgroundColor: 'var(--bg-card)', position: 'relative', overflow: 'hidden' }}>
                   {/* Dinamik Durum Bandı */}
                   <div style={{
                     position: 'absolute', top: 0, left: 0, right: 0, 
                     padding: '0.25rem 0.5rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase',
                     backgroundColor: 
-                      event.status === 'Yeniden Onay Bekliyor' ? '#fde68a' :
-                      new Date(event.event_date) < new Date() && (!event.post_event_reports || event.post_event_reports.length === 0) ? '#fecaca' :
-                      event.status === 'Onaylandı' ? '#bbf7d0' :
-                      event.status.includes('Onay Bekliyor') ? '#e5e7eb' :
-                      event.status === 'Gerçekleşti' ? '#bfdbfe' : '#fecaca',
+                      event.status === 'Yeniden Onay Bekliyor' ? 'var(--bg-warning-light)' :
+                      new Date(event.event_date) < new Date() && (!event.post_event_reports || event.post_event_reports.length === 0) ? 'var(--bg-danger-light)' :
+                      event.status === 'Onaylandı' ? 'var(--bg-success-light)' :
+                      event.status.includes('Onay Bekliyor') ? 'var(--border-color)' :
+                      event.status === 'Gerçekleşti' ? 'var(--bg-info-light)' : 'var(--bg-danger-light)',
                     color: 
-                      event.status === 'Yeniden Onay Bekliyor' ? '#92400e' :
-                      new Date(event.event_date) < new Date() && (!event.post_event_reports || event.post_event_reports.length === 0) ? '#991b1b' :
-                      event.status === 'Onaylandı' ? '#166534' :
-                      event.status.includes('Onay Bekliyor') ? '#4b5563' :
-                      event.status === 'Gerçekleşti' ? '#1e3a8a' : '#991b1b'
+                      event.status === 'Yeniden Onay Bekliyor' ? 'var(--status-highlight)' :
+                      new Date(event.event_date) < new Date() && (!event.post_event_reports || event.post_event_reports.length === 0) ? 'var(--status-danger)' :
+                      event.status === 'Onaylandı' ? 'var(--status-success)' :
+                      event.status.includes('Onay Bekliyor') ? 'var(--text-muted)' :
+                      event.status === 'Gerçekleşti' ? 'var(--status-success)' : 'var(--status-danger)'
                   }}>
                     {new Date(event.event_date) < new Date() && (!event.post_event_reports || event.post_event_reports.length === 0) && event.status !== 'İptal Edildi' 
                       ? 'Rapor Bekleniyor' 
@@ -308,7 +308,7 @@ export default function UnitHeadPanel() {
       {/* Etkinlik Raporu Modalı */}
       {reportingEvent && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>Etkinlik Raporu</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem' }}>{reportingEvent.event_name} için gerçekleşme raporunu dolduruyorsunuz.</p>
             
@@ -384,12 +384,12 @@ export default function UnitHeadPanel() {
       {/* Afiş Talebi Modalı */}
       {posterEvent && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '550px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '550px', maxHeight: '90vh', overflowY: 'auto' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>Afiş Talebi Oluştur</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem' }}>&quot;{posterEvent.event_name}&quot; etkinliği için afiş tasarım talebi oluşturuyorsunuz.</p>
             
             <form onSubmit={handleCreatePosterRequest} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div style={{ backgroundColor: '#f9fafb', padding: '1.5rem', borderRadius: 'var(--radius-md)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.875rem' }}>
+              <div style={{ backgroundColor: 'var(--bg-main)', padding: '1.5rem', borderRadius: 'var(--radius-md)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.875rem' }}>
                 <div style={{ gridColumn: 'span 2' }}>
                   <label className="label">Afişte Yer Alacak Etkinlik Adı</label>
                   <input type="text" name="p_eventName" className="input" required defaultValue={posterEvent.event_name} />

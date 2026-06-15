@@ -629,7 +629,7 @@ export default function NewEventPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                   <button 
                     type="button"
                     onClick={submitEvent} 
@@ -644,7 +644,7 @@ export default function NewEventPage() {
             ) : (
               /* TRADITIONAL MULTI-STEP WIZARD */
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Temel Etkinlik Bilgileri</h2>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Temel Etkinlik Bilgileri</h2>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                   <div>
@@ -681,7 +681,7 @@ export default function NewEventPage() {
         {/* STEP 2: Program & Yer */}
         {currentStep === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Tarih, Yer ve Kapasite</h2>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Tarih, Yer ve Kapasite</h2>
             
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
               <div>
@@ -715,7 +715,7 @@ export default function NewEventPage() {
         {/* STEP 3: Konuşmacılar */}
         {currentStep === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Konuşmacı Yönetimi</h2>
               <button onClick={addSpeaker} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
                 <Plus size={14} /> Yeni Konuşmacı Ekle
@@ -723,14 +723,14 @@ export default function NewEventPage() {
             </div>
 
             {speakers.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '3rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db' }}>
+              <div style={{ textAlign: 'center', padding: '3rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db' }}>
                 <p style={{ color: 'var(--text-muted)' }}>Bu etkinlik için henüz konuşmacı eklemediniz.</p>
                 <button onClick={addSpeaker} className="btn btn-primary" style={{ marginTop: '1rem' }}>Konuşmacı Ekle</button>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {speakers.map((s, index) => (
-                  <div key={index} style={{ padding: '1.5rem', backgroundColor: '#f9fafb', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', position: 'relative' }}>
+                  <div key={index} style={{ padding: '1.5rem', backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', position: 'relative' }}>
                     <button onClick={() => removeSpeaker(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}>
                       <Trash2 size={18} />
                     </button>
@@ -790,7 +790,7 @@ export default function NewEventPage() {
         {/* STEP 4: Lojistik & Onay */}
         {currentStep === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Lojistik ve Kaynak Talepleri</h2>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Lojistik ve Kaynak Talepleri</h2>
             
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
               Etkinliğiniz için ihtiyaç duyduğunuz özel talepleri detaylı bir şekilde giriniz.
@@ -808,7 +808,7 @@ export default function NewEventPage() {
                 </div>
                 
                 {formData.logistics.hasShuttle && (
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', backgroundColor: 'var(--bg-card)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div><label className="label">Tarih</label><input type="date" className="input" value={formData.logistics.shuttle.date} onChange={e => updateShuttle('date', e.target.value)} /></div>
                       <div><label className="label">Araç Talebi (Adet/Kişi)</label><input type="text" className="input" placeholder="Örn: 1 ADET 10-12 KİŞİLİK ARAÇ TALEBİMİZ BULUNMAKTADIR" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
@@ -835,9 +835,9 @@ export default function NewEventPage() {
                 </div>
                 
                 {formData.logistics.hasAroma && (
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     {formData.logistics.aroma.map((a, index) => (
-                      <div key={index} style={{ padding: '1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
+                      <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <h4 style={{ marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)' }}>{index + 1}. Formülasyon</h4>
                         {formData.logistics.aroma.length > 1 && (
                            <button onClick={() => removeAroma(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
@@ -866,7 +866,7 @@ export default function NewEventPage() {
                 </div>
                 
                 {formData.logistics.hasBasicLifeSupport && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     <label className="label">Malzeme Detayları / Notlar</label>
                     <textarea className="input" rows={2} placeholder="Talep edilen temel yaşam desteği malzemeleri ve detayları..." value={formData.logistics.basicLifeSupportDetails} onChange={e => updateLogistics('basicLifeSupportDetails', e.target.value)}></textarea>
                   </div>
@@ -884,7 +884,7 @@ export default function NewEventPage() {
                 </div>
                 
                 {formData.logistics.hasAdvancedLifeSupport && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     <label className="label">Malzeme Detayları / Notlar</label>
                     <textarea className="input" rows={2} placeholder="Talep edilen ileri yaşam desteği malzemeleri ve detayları..." value={formData.logistics.advancedLifeSupportDetails} onChange={e => updateLogistics('advancedLifeSupportDetails', e.target.value)}></textarea>
                   </div>
@@ -902,7 +902,7 @@ export default function NewEventPage() {
                 </div>
                 
                 {formData.logistics.hasSutureTraining && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     <label className="label">Malzeme Detayları / Notlar</label>
                     <textarea className="input" rows={2} placeholder="Talep edilen sütur eğitimi malzemeleri ve detayları..." value={formData.logistics.sutureTrainingDetails} onChange={e => updateLogistics('sutureTrainingDetails', e.target.value)}></textarea>
                   </div>
@@ -917,15 +917,15 @@ export default function NewEventPage() {
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     Diğer Özel Talepleriniz
                   </span>
-                  <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: '#fff' }}>
+                  <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: 'var(--bg-card)' }}>
                     <Plus size={14} /> Yeni Talep Ekle
                   </button>
                 </div>
                 
                 {(formData.logistics.customRequests || []).length > 0 && (
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     {(formData.logistics.customRequests || []).map((req: any, index: number) => (
-                      <div key={index} style={{ padding: '1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
+                      <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <button type="button" onClick={() => removeCustomRequest(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
                           <div><label className="label">Talep Adı / Başlığı</label><input type="text" className="input" placeholder="Örn: Özel Ses Sistemi" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>

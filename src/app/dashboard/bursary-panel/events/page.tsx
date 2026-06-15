@@ -76,13 +76,13 @@ export default function BursiyerEventsPage() {
       {/* Horizontal Filter Bar */}
       <div style={{ 
         position: 'sticky', top: '1rem', zIndex: 100, 
-        backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', 
+        backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', 
         padding: '1rem', marginBottom: '2rem',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        border: '1px solid #eaeaea',
+        border: '1px solid var(--border-color)',
         display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-main)', fontWeight: 600, paddingRight: '1rem', borderRight: '1px solid #eaeaea' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-main)', fontWeight: 600, paddingRight: '1rem', borderRight: '1px solid var(--border-color)' }}>
           <Filter size={18} /> Filtreler
         </div>
         
@@ -102,7 +102,7 @@ export default function BursiyerEventsPage() {
         </div>
 
         {/* Participant Type Filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid #eaeaea', paddingLeft: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid var(--border-color)', paddingLeft: '1rem' }}>
           <Users size={16} color="var(--text-muted)" />
           <div style={{ display: 'flex', backgroundColor: '#f3f4f6', borderRadius: 'var(--radius-md)', padding: '0.25rem' }}>
             {['Tümü', 'Herkese Açık', 'Üniversiteye Özel'].map(type => (
@@ -125,7 +125,7 @@ export default function BursiyerEventsPage() {
         </div>
 
         {/* Status Filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid #eaeaea', paddingLeft: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid var(--border-color)', paddingLeft: '1rem' }}>
           <Calendar size={16} color="var(--text-muted)" />
           <div style={{ display: 'flex', backgroundColor: '#f3f4f6', borderRadius: 'var(--radius-md)', padding: '0.25rem' }}>
             {['Tümü', 'Açık', 'Kapandı'].map(type => (
@@ -152,7 +152,7 @@ export default function BursiyerEventsPage() {
       {isLoading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} style={{ backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', border: '1px solid #eaeaea', overflow: 'hidden', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+            <div key={i} style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', overflow: 'hidden', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
               <div style={{ width: '100%', paddingTop: '56.25%', backgroundColor: '#f3f4f6', position: 'relative', overflow: 'hidden' }}>
                 <div className="skeleton-shimmer" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}></div>
               </div>
@@ -180,7 +180,7 @@ export default function BursiyerEventsPage() {
           `}} />
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem 2rem', backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', border: '1px dashed #cbd5e1' }}>
+        <div style={{ textAlign: 'center', padding: '4rem 2rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed #cbd5e1' }}>
           <div style={{ width: '120px', height: '120px', margin: '0 auto 1.5rem auto', backgroundColor: '#fcdbd9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Calendar size={48} color="#da1c15" />
           </div>

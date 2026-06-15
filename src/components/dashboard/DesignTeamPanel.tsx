@@ -119,7 +119,7 @@ export default function DesignTeamPanel() {
       <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Aktif Afiş Talepleri</h3>
       
       {requests.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Şu an bekleyen veya devam eden bir afiş talebi bulunmuyor.</p>
         </div>
@@ -135,7 +135,7 @@ export default function DesignTeamPanel() {
           </thead>
           <tbody>
             {requests.map((req) => (
-              <tr key={req.id} style={{ borderBottom: '1px solid #eaeaea' }}>
+              <tr key={req.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                 <td style={{ padding: '1rem 0.75rem' }}>
                   <div style={{ fontWeight: 600, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button 
@@ -204,15 +204,15 @@ export default function DesignTeamPanel() {
 
       {selectedRequest && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '550px', borderRadius: 'var(--radius-lg)', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', width: '100%', maxWidth: '550px', borderRadius: 'var(--radius-lg)', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
               Afiş Talebi Detayları
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>
               <div>
                 <strong style={{ color: 'var(--text-muted)' }}>Etkinlik Adı:</strong> 
-                <div style={{ padding: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600 }}>
+                <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600 }}>
                   {selectedRequest.events?.event_name}
                 </div>
               </div>
@@ -220,13 +220,13 @@ export default function DesignTeamPanel() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <strong style={{ color: 'var(--text-muted)' }}>Tarih:</strong>
-                  <div style={{ padding: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
+                  <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                     {selectedRequest.events ? new Date(selectedRequest.events.event_date).toLocaleDateString('tr-TR') : '-'}
                   </div>
                 </div>
                 <div>
                   <strong style={{ color: 'var(--text-muted)' }}>Saat:</strong>
-                  <div style={{ padding: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
+                  <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                     {selectedRequest.events ? new Date(selectedRequest.events.event_date).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-'}
                   </div>
                 </div>
@@ -234,14 +234,14 @@ export default function DesignTeamPanel() {
 
               <div>
                 <strong style={{ color: 'var(--text-muted)' }}>Yer:</strong>
-                <div style={{ padding: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
+                <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                   {selectedRequest.events?.location || '-'}
                 </div>
               </div>
 
               <div>
                 <strong style={{ color: 'var(--text-muted)' }}>Konuşmacı(lar):</strong>
-                <div style={{ padding: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
+                <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                   {selectedRequest.events?.event_speakers && selectedRequest.events.event_speakers.length > 0
                     ? selectedRequest.events.event_speakers.map((s: any) => s.speakers?.full_name).join(', ')
                     : 'Belirtilmedi'}
@@ -250,7 +250,7 @@ export default function DesignTeamPanel() {
 
               <div>
                 <strong style={{ color: 'var(--text-muted)' }}>Üniversite:</strong>
-                <div style={{ padding: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
+                <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                   {selectedRequest.events?.university || '-'}
                 </div>
               </div>
@@ -264,7 +264,7 @@ export default function DesignTeamPanel() {
 
               <div>
                 <strong style={{ color: 'var(--text-muted)' }}>Dikkat Edilmesi Gerekenler:</strong>
-                <div style={{ padding: '0.75rem', backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', marginTop: '0.25rem', whiteSpace: 'pre-wrap', fontWeight: 500 }}>
+                <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-warning-light)', border: '1px solid #fde68a', borderRadius: '4px', marginTop: '0.25rem', whiteSpace: 'pre-wrap', fontWeight: 500 }}>
                   {selectedRequest.special_instructions || 'Belirtilmemiş.'}
                 </div>
               </div>

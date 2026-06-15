@@ -324,7 +324,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       {/* Admin Note Modal */}
       {showAdminNoteModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="card" style={{ backgroundColor: 'white', width: '100%', maxWidth: '500px', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
+          <div className="card" style={{ backgroundColor: 'var(--bg-card)', width: '100%', maxWidth: '500px', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: pendingStatus === 'Onaylandı' ? 'var(--status-success)' : 'var(--status-danger)' }}>
               Etkinliği {pendingStatus === 'Onaylandı' ? 'Onaylıyorsunuz' : 'Reddediyorsunuz'}
             </h3>
@@ -367,7 +367,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <ArrowLeft size={16} /> Geri Dön
         </Link>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn btn-outline" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#4b5563', borderColor: '#d1d5db' }}>
+          <button className="btn btn-outline" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', borderColor: '#d1d5db' }}>
             <Download size={16} /> PDF İndir
           </button>
           {((isCreator && (event.status === 'Onay Bekliyor' || event.status === 'Yeniden Onay Bekliyor' || event.status === 'Reddedildi')) || canApprove) && event.event_type !== 'Ramazan Etkinliği' && event.status !== 'İptal Edildi' && (
@@ -397,7 +397,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         </div>
       </div>
 
-      <div id="printable-event-details" className="card" ref={contentRef} style={{ padding: '3rem', backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
+      <div id="printable-event-details" className="card" ref={contentRef} style={{ padding: '3rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
         
         {/* Header Section */}
         <div style={{ borderBottom: '2px solid #eaeaea', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
@@ -438,11 +438,11 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         {/* Content Section */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Etkinlik Amacı</h3>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Etkinlik Amacı</h3>
             <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>{event.event_purpose || 'Belirtilmedi'}</p>
           </div>
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Hedef Kitle & Katılım</h3>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Hedef Kitle & Katılım</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}>
                 <Users size={16} />
@@ -458,10 +458,10 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         {/* Speakers Section */}
         {speakers.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Konuşmacılar</h3>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Konuşmacılar</h3>
             <div style={{ display: 'grid', gap: '1rem' }}>
               {speakers.map((s, idx) => (
-                <div key={idx} style={{ padding: '1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={idx} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <h4 style={{ margin: '0 0 0.25rem 0', fontWeight: 600 }}>{s.speakers?.full_name}</h4>
                     <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{s.speakers?.title}</div>
@@ -509,7 +509,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         {/* Logistics Section */}
         {logistics && event.event_type !== 'Ramazan Etkinliği' && (
           <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Lojistik ve Kaynak Talepleri</h3>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Lojistik ve Kaynak Talepleri</h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               
@@ -530,7 +530,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                       <strong>Yönetici Notu:</strong> {logistics.shuttle.adminNote}
                     </div>
                   )}
-                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
                     <span className={`badge ${logistics.shuttle?.status === 'Onaylandı' ? 'badge-success' : logistics.shuttle?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.shuttle?.status || 'Bekliyor'}
                     </span>
@@ -550,7 +550,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: '#334155' }}>🌿 Aromaterapi Yağ Talebi</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
                     {(logistics.aroma || []).map((a: any, i: number) => (
-                      <div key={i} style={{ padding: '1rem', backgroundColor: '#fff', borderRadius: 'var(--radius-sm)', border: '1px solid #eaeaea', fontSize: '0.875rem' }}>
+                      <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
                         <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{i + 1}. Formülasyon</div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.5rem' }}>
                           <div><span style={{ color: 'var(--text-muted)' }}>Yağlar:</span> {a.oils || '-'}</div>
@@ -592,7 +592,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   
-                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
                     <span className={`badge ${logistics.basicLifeSupportDetailsObj?.status === 'Onaylandı' ? 'badge-success' : logistics.basicLifeSupportDetailsObj?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.basicLifeSupportDetailsObj?.status || 'Bekliyor'}
                     </span>
@@ -618,7 +618,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   
-                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
                     <span className={`badge ${logistics.advancedLifeSupportDetailsObj?.status === 'Onaylandı' ? 'badge-success' : logistics.advancedLifeSupportDetailsObj?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.advancedLifeSupportDetailsObj?.status || 'Bekliyor'}
                     </span>
@@ -644,7 +644,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   
-                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+                  <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
                     <span className={`badge ${logistics.sutureTrainingDetailsObj?.status === 'Onaylandı' ? 'badge-success' : logistics.sutureTrainingDetailsObj?.status === 'Reddedildi' ? 'badge-danger' : 'badge-pending'}`}>
                       {logistics.sutureTrainingDetailsObj?.status || 'Bekliyor'}
                     </span>
@@ -664,7 +664,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: '#334155' }}>⭐ Özel Talepler</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
                     {(logistics.customRequests || []).map((req: any, i: number) => (
-                      <div key={i} style={{ padding: '1rem', backgroundColor: '#fff', borderRadius: 'var(--radius-sm)', border: '1px solid #eaeaea', fontSize: '0.875rem' }}>
+                      <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
                         <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{req.name || 'İsimsiz Talep'}</div>
                         <div style={{ color: 'var(--text-muted)' }}>{req.note || '-'}</div>
                         
@@ -693,7 +693,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
               {/* Extra Notes */}
               {logistics.extraNotes && (
-                <div style={{ backgroundColor: '#fffbeb', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #fde68a' }}>
+                <div style={{ backgroundColor: 'var(--bg-warning-light)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #fde68a' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#92400e' }}>📝 Ekstra İletilen Notlar</h4>
                   <p style={{ fontSize: '0.875rem', margin: 0, color: '#b45309' }}>{logistics.extraNotes}</p>
                 </div>
@@ -715,7 +715,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   <div style={{ position: 'absolute', width: '10px', height: '10px', backgroundColor: 'var(--color-primary)', borderRadius: '50%', left: '-1.35rem', top: '0.35rem' }}></div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{new Date(rev.created_at).toLocaleString('tr-TR')}</div>
                   <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Revize eden: {rev.users?.full_name || 'Birim Sorumlusu'}</div>
-                  <div style={{ fontSize: '0.875rem', marginTop: '0.25rem', padding: '0.5rem', backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-sm)' }}>
+                  <div style={{ fontSize: '0.875rem', marginTop: '0.25rem', padding: '0.5rem', backgroundColor: 'var(--bg-card)', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-sm)' }}>
                     <strong>Not:</strong> {rev.revision_notes || 'Not girilmedi.'}
                   </div>
                 </div>
@@ -736,7 +736,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <div style={{ display: 'flex', gap: '1rem' }}>
             <button 
               className="btn btn-outline" 
-              style={{ color: 'var(--status-danger)', borderColor: 'var(--status-danger)', backgroundColor: 'white' }}
+              style={{ color: 'var(--status-danger)', borderColor: 'var(--status-danger)', backgroundColor: 'var(--bg-card)' }}
               onClick={() => { setPendingStatus('Reddedildi'); setShowAdminNoteModal(true); }}
               disabled={processing || event.status === 'Reddedildi'}
             >

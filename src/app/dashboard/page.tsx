@@ -45,7 +45,7 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #eaeaea', paddingBottom: '1rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
         <button 
           className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
           onClick={() => setViewMode('list')}
@@ -109,7 +109,7 @@ export default function DashboardPage() {
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.75rem', color: '#111827' }}>
                 Öğrenci Paneline Hoş Geldiniz
               </h2>
-              <p style={{ color: '#4b5563', marginBottom: '2.5rem', maxWidth: '550px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', maxWidth: '550px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
                 Cansağlığı Vakfı Etkinlik Yönetim Sistemi üzerinden sizin için tanımlanan zorunlu etkinlikleri takip edebilir, RSVP bildirimlerinizi yapabilir ve etkinlik günü yoklamanızı verebilirsiniz.
               </p>
               <Link href="/dashboard/bursary-panel" className="btn btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '1rem', fontWeight: 600, borderRadius: '8px' }}>

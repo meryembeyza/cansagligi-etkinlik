@@ -219,7 +219,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
     <React.Fragment>
   {/* Filter toggle button placed outside calendar container */}
   <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '1rem' }}>
-    <button onClick={() => setIsFilterOpen(!isFilterOpen)} style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #eaeaea', borderRadius: '0.5rem', padding: '0.5rem 1rem', cursor: 'pointer', transition: 'background 150ms' }}>
+    <button onClick={() => setIsFilterOpen(!isFilterOpen)} style={{ display: 'flex', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '0.5rem', padding: '0.5rem 1rem', cursor: 'pointer', transition: 'background 150ms' }}>
       <Filter size={16} style={{ marginRight: '0.5rem' }} />
       {isFilterOpen ? 'Filtreleri Gizle' : 'Filtreleri Göster'}
       {activeFilterCount > 0 && (
@@ -231,15 +231,15 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
       <style dangerouslySetInnerHTML={{__html: `
         .calendar-container {
           display: flex;
-          background: #fff;
+          background: var(--bg-card);
           border-radius: var(--radius-lg);
-          border: 1px solid #eaeaea;
+          border: 1px solid var(--border-color);
           overflow: hidden;
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         .calendar-sidebar {
           width: ${isFilterOpen ? '280px' : '0px'};
-          border-right: ${isFilterOpen ? '1px solid #eaeaea' : 'none'};
+          border-right: ${isFilterOpen ? '1px solid var(--border-color)' : 'none'};
           padding: ${isFilterOpen ? '2rem 1.5rem' : '0'};
           background: #fcfcfc;
           transition: all 0.3s ease;
@@ -270,7 +270,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
         }
         .calendar-nav button {
           background: none;
-          border: 1px solid #eaeaea;
+          border: 1px solid var(--border-color);
           border-radius: 50%;
           width: 36px;
           height: 36px;
@@ -295,7 +295,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
           font-size: 0.875rem;
           font-weight: 600;
           color: var(--text-muted);
-          border-bottom: 1px solid #eaeaea;
+          border-bottom: 1px solid var(--border-color);
         }
         .day-number {
           width: 28px;
@@ -364,7 +364,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
           z-index: 1000;
         }
         .event-popup {
-          background: #fff;
+          background: var(--bg-card);
           border-radius: var(--radius-lg);
           padding: 2rem;
           width: 100%;
@@ -441,7 +441,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
           </div>
           {/* Collapse button when panel is closed */}
           {!isFilterOpen && (
-            <button onClick={() => setIsFilterOpen(true)} style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', background: '#fff', border: '1px solid #eaeaea', borderRadius: '0 0.5rem 0.5rem 0', padding: '0.25rem', cursor: 'pointer' }}>
+            <button onClick={() => setIsFilterOpen(true)} style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '0 0.5rem 0.5rem 0', padding: '0.25rem', cursor: 'pointer' }}>
               <ChevronLeft size={16} />
             </button>
           )}
@@ -491,7 +491,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
               <MapPin size={16} /> {selectedEvent.university} ({selectedEvent.region})
             </p>
 
-            <div style={{ backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
+            <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
               <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>Tarih:</div>
               <div>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'full', timeStyle: 'short' })}</div>
               

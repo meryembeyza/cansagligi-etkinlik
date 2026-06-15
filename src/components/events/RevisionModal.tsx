@@ -314,10 +314,10 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div className="card" style={{ backgroundColor: 'white', width: '100%', maxWidth: '900px', height: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: 'var(--radius-lg)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+      <div className="card" style={{ backgroundColor: 'var(--bg-card)', width: '100%', maxWidth: '900px', height: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: 'var(--radius-lg)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
         
         {/* Header */}
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc' }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Etkinliği Revize Et</h2>
             <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{event.event_name}</div>
@@ -328,12 +328,12 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         </div>
 
         {/* Revision Note (Always visible at top) */}
-        <div style={{ padding: '1rem 1.5rem', backgroundColor: '#fffbeb', borderBottom: '1px solid #fde68a' }}>
+        <div style={{ padding: '1rem 1.5rem', backgroundColor: 'var(--bg-warning-light)', borderBottom: '1px solid #fde68a' }}>
           <label className="label" style={{ color: '#92400e', fontWeight: 600 }}>Revizyon Notu (Zorunlu) *</label>
           <input 
             required
             className="input" 
-            style={{ borderColor: '#fcd34d', backgroundColor: '#fff' }}
+            style={{ borderColor: '#fcd34d', backgroundColor: 'var(--bg-card)' }}
             placeholder="Neleri değiştirdiniz? Kısaca özetleyin..."
             value={revisionNotes}
             onChange={e => setRevisionNotes(e.target.value)}
@@ -341,7 +341,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         </div>
 
         {/* Progress Bar */}
-        <div style={{ padding: '1rem 1.5rem', display: 'flex', gap: '0.5rem', borderBottom: '1px solid #eaeaea', backgroundColor: '#fff' }}>
+        <div style={{ padding: '1rem 1.5rem', display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
           {[
             { step: 1, title: 'Temel Bilgiler' },
             { step: 2, title: 'Program & Yer' },
@@ -358,7 +358,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         </div>
         
         {/* Scrollable Form Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', backgroundColor: '#fff' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
           
           {/* STEP 1: Temel Bilgiler */}
           {currentStep === 1 && (
@@ -417,7 +417,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
           {/* STEP 3: Konuşmacılar */}
           {currentStep === 3 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Konuşmacıları Düzenle</h3>
                 <button type="button" onClick={addSpeaker} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
                   <Plus size={14} /> Yeni Ekle
@@ -425,7 +425,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               </div>
 
               {speakers.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db', color: 'var(--text-muted)' }}>Konuşmacı yok.</div>
+                <div style={{ textAlign: 'center', padding: '2rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db', color: 'var(--text-muted)' }}>Konuşmacı yok.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {speakers.map((s, index) => (
@@ -489,7 +489,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                   <input type="checkbox" checked={formData.logistics.hasShuttle} readOnly style={{ width: '18px', height: '18px' }} /> Araç / Servis Talebi
                 </div>
                 {formData.logistics.hasShuttle && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div><label className="label">Tarih</label><input type="date" className="input" value={formData.logistics.shuttle.date} onChange={e => updateShuttle('date', e.target.value)} /></div>
                     <div><label className="label">Araç Talebi</label><input type="text" className="input" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
                     <div><label className="label">Kalkış Noktası</label><input type="text" className="input" value={formData.logistics.shuttle.departurePoint} onChange={e => updateShuttle('departurePoint', e.target.value)} /></div>
@@ -509,9 +509,9 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                   <input type="checkbox" checked={formData.logistics.hasAroma} readOnly style={{ width: '18px', height: '18px' }} /> Aromaterapi Yağ Talebi
                 </div>
                 {formData.logistics.hasAroma && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     {formData.logistics.aroma.map((a, index) => (
-                      <div key={index} style={{ padding: '1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
+                      <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         {formData.logistics.aroma.length > 1 && <button type="button" onClick={() => removeAroma(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                           <div><label className="label">Yağ Çeşitleri</label><input type="text" className="input" value={a.oils} onChange={e => updateAroma(index, 'oils', e.target.value)} /></div>
@@ -532,7 +532,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                   <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🫁 Temel Yaşam Desteği Malzemeleri
                 </div>
                 {formData.logistics.hasBasicLifeSupport && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     <label className="label">Malzeme Detayları</label>
                     <textarea className="input" rows={2} value={formData.logistics.basicLifeSupportDetails} onChange={e => updateLogistics('basicLifeSupportDetails', e.target.value)}></textarea>
                   </div>
@@ -545,7 +545,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                   <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🩺 İleri Yaşam Desteği Malzemeleri
                 </div>
                 {formData.logistics.hasAdvancedLifeSupport && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     <label className="label">Malzeme Detayları</label>
                     <textarea className="input" rows={2} value={formData.logistics.advancedLifeSupportDetails} onChange={e => updateLogistics('advancedLifeSupportDetails', e.target.value)}></textarea>
                   </div>
@@ -558,7 +558,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                   <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} /> 🪡 Sütur Eğitimi Malzemeleri
                 </div>
                 {formData.logistics.hasSutureTraining && (
-                  <div style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     <label className="label">Malzeme Detayları</label>
                     <textarea className="input" rows={2} value={formData.logistics.sutureTrainingDetails} onChange={e => updateLogistics('sutureTrainingDetails', e.target.value)}></textarea>
                   </div>
@@ -569,12 +569,12 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               <div style={{ border: `1px solid ${(formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}>
                   <span>Özel Talepler</span>
-                  <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: '#fff' }}><Plus size={14} /> Yeni Talep</button>
+                  <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: 'var(--bg-card)' }}><Plus size={14} /> Yeni Talep</button>
                 </div>
                 {(formData.logistics.customRequests || []).length > 0 && (
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: '#fff' }}>
+                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     {(formData.logistics.customRequests || []).map((req: any, index: number) => (
-                      <div key={index} style={{ padding: '1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
+                      <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <button type="button" onClick={() => removeCustomRequest(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
                           <div><label className="label">Talep Adı</label><input type="text" className="input" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
@@ -597,7 +597,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         </div>
 
         {/* Footer Actions */}
-        <div style={{ padding: '1.5rem', borderTop: '1px solid #eaeaea', backgroundColor: '#f8fafc', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', backgroundColor: '#f8fafc', display: 'flex', justifyContent: 'space-between' }}>
           <button type="button" onClick={handlePrev} disabled={currentStep === 1} className="btn btn-outline" style={{ opacity: currentStep === 1 ? 0.5 : 1 }}>
             <ChevronLeft size={16} /> Önceki Adım
           </button>

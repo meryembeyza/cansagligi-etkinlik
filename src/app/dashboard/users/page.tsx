@@ -110,7 +110,7 @@ export default function UsersAdminPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid #eaeaea', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--border-color)', marginBottom: '2rem' }}>
         <button 
           onClick={() => setActiveTab('pending')}
           style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'pending' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'pending' ? 'var(--color-primary)' : 'var(--text-muted)', fontWeight: activeTab === 'pending' ? 600 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
@@ -131,24 +131,24 @@ export default function UsersAdminPage() {
         ) : activeTab === 'pending' ? (
           // BEKLEYEN ONAYLAR TAB'i
           pendingUsers.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
               <p style={{ color: 'var(--text-muted)' }}>Bekleyen onay yoktur.</p>
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f9fafb', color: 'var(--text-muted)', textAlign: 'left' }}>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Kullanıcı</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Üniversite & Bölge</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Talep Ettiği Rol</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>İletişim & Öğr. No</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea', textAlign: 'right' }}>İşlemler</th>
+                  <tr style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-muted)', textAlign: 'left' }}>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Kullanıcı</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Üniversite & Bölge</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Talep Ettiği Rol</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>İletişim & Öğr. No</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', textAlign: 'right' }}>İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pendingUsers.map(user => (
-                    <tr key={user.id} style={{ borderBottom: '1px solid #eaeaea' }}>
+                    <tr key={user.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '1rem' }}>
                         <div style={{ fontWeight: 600 }}>{user.full_name}</div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(user.created_at).toLocaleDateString('tr-TR')}</div>
@@ -186,7 +186,7 @@ export default function UsersAdminPage() {
               <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Sistemde aktif kullanıcı bulunmuyor.</div>
             ) : (
               Object.entries(treeData).sort(([a], [b]) => a.localeCompare(b)).map(([region, data]) => (
-                <div key={region} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                <div key={region} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                   
                   {/* BÖLGE BAŞLIĞI */}
                   <div 
@@ -205,7 +205,7 @@ export default function UsersAdminPage() {
 
                   {/* BÖLGE İÇERİĞİ */}
                   {expandedRegions[region] && (
-                    <div style={{ padding: '1.5rem', backgroundColor: '#fff', borderTop: '1px solid #eaeaea' }}>
+                    <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-color)' }}>
                       
                       {/* BÖLGE SORUMLULARI */}
                       <div style={{ marginBottom: '1.5rem' }}>
@@ -235,8 +235,8 @@ export default function UsersAdminPage() {
                         ) : (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
                             {Object.entries(data.universities).sort(([a], [b]) => a.localeCompare(b)).map(([univ, heads]) => (
-                              <div key={univ} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-                                <div style={{ padding: '0.5rem 1rem', backgroundColor: '#f3f4f6', fontWeight: 600, fontSize: '0.875rem', borderBottom: '1px solid #eaeaea' }}>
+                              <div key={univ} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+                                <div style={{ padding: '0.5rem 1rem', backgroundColor: '#f3f4f6', fontWeight: 600, fontSize: '0.875rem', borderBottom: '1px solid var(--border-color)' }}>
                                   {univ}
                                 </div>
                                 <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -245,7 +245,7 @@ export default function UsersAdminPage() {
                                       {head.avatar_url ? (
                                         <img src={head.avatar_url} alt="" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
                                       ) : (
-                                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                           <UserIcon size={16} color="#9ca3af" />
                                         </div>
                                       )}

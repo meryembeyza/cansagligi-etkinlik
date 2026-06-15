@@ -85,9 +85,9 @@ export default function EventDiffViewer({ eventId, currentEvent, onClose }: Even
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div style={{ backgroundColor: 'white', borderRadius: '8px', width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         
-        <div style={{ padding: '1.25rem', borderBottom: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb' }}>
+        <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-main)' }}>
           <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>Değişiklik Özeti</h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
             <X size={20} color="var(--text-muted)" />
@@ -100,7 +100,7 @@ export default function EventDiffViewer({ eventId, currentEvent, onClose }: Even
               Bu etkinlik için henüz bir revizyon kaydı bulunamadı. (İlk onay süreci)
             </div>
           ) : (
-             <div style={{ padding: '0.75rem', backgroundColor: '#fffbeb', color: '#b45309', borderRadius: '4px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #fde68a' }}>
+             <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-warning-light)', color: '#b45309', borderRadius: '4px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #fde68a' }}>
                Sarı ile vurgulanan alanlar bir önceki sürüme göre değiştirilmiştir. Çizili olanlar eski veriyi gösterir.
              </div>
           )}

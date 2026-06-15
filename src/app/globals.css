@@ -22,6 +22,15 @@
   --status-danger: #E74C3C;  /* Kırmızı (Reddedildi, Revizyon) */
   --status-highlight: #FFF3CD; /* Sarı vurgu (Revizyon) */
   
+  --bg-success-light: #d1fae5;
+  --border-success: #34d399;
+  --bg-danger-light: #ffe4e6;
+  --border-danger: #fda4af;
+  --bg-warning-light: #fef3c7;
+  --border-warning: #fcd34d;
+  --bg-info-light: #dbeafe;
+  --border-info: #93c5fd;
+  
   /* Layout */
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -51,6 +60,21 @@
 
   /* Primary color adjustments for dark mode readability if needed */
   --color-primary-light: #4a1311;
+
+  /* Status Colors for Dark Mode */
+  --status-pending: #f59e0b;
+  --status-success: #10b981;
+  --status-danger: #ef4444;
+  --status-highlight: #78350f;
+  
+  --bg-success-light: #064e3b;
+  --border-success: #059669;
+  --bg-danger-light: #4c0519;
+  --border-danger: #e11d48;
+  --bg-warning-light: #451a03;
+  --border-warning: #d97706;
+  --bg-info-light: #1e3a8a;
+  --border-info: #2563eb;
 }
 
 * {

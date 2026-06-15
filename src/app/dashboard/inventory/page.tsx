@@ -519,7 +519,7 @@ export default function V4InventoryPage() {
       {/* Add Request Modal */}
       {isAddModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>➕ Yeni Envanter Talebi Oluştur</h2>
@@ -544,7 +544,7 @@ export default function V4InventoryPage() {
 
               {/* V4 Material selection grid */}
               <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.25rem' }}>İstenen Malzemeler (Adet)</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>İstenen Malzemeler (Adet)</h3>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                   <div>
@@ -603,7 +603,7 @@ export default function V4InventoryPage() {
       {/* Review Modal */}
       {isReviewModalOpen && activeRequest && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>İnceleme: {activeRequest.requester_user?.full_name}</h2>
@@ -612,7 +612,7 @@ export default function V4InventoryPage() {
 
             <form onSubmit={handleSaveReview} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               
-              <div style={{ backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.85rem' }}>
+              <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.85rem' }}>
                 <strong>Talep Edilen Malzemeler:</strong>
                 <ul style={{ paddingLeft: '1.25rem', marginTop: '0.25rem' }}>
                   {activeRequest.bez_canta > 0 && <li>Bez Çanta: {activeRequest.bez_canta} Adet</li>}
@@ -645,7 +645,7 @@ export default function V4InventoryPage() {
       {/* Usage Report Modal */}
       {isReportModalOpen && activeRequest && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>📊 Envanter Kullanım Raporu</h2>
@@ -672,11 +672,11 @@ export default function V4InventoryPage() {
 
               {/* Usage tables */}
               <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.25rem' }}>Malzeme Dağıtım/Kullanım Detayları</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>Malzeme Dağıtım/Kullanım Detayları</h3>
                 
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid #eaeaea', color: 'var(--text-muted)' }}>
+                    <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
                       <th>Malzeme</th>
                       <th>Teslim Alınan</th>
                       <th>Kullanılan (Dağıtılan)</th>

@@ -92,7 +92,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
         />
       )}
       <aside className={`sidebar-container ${isOpen ? 'open' : ''}`}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <img src="/logo.png" alt="Cansağlığı Vakfı Logo" style={{ height: '45px', objectFit: 'contain' }} />
       </div>
       
@@ -114,24 +114,24 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
                   gap: '0.75rem',
                   padding: '0.75rem 1rem',
                   paddingLeft: isActive ? 'calc(1rem - 3px)' : '1rem',
-                  borderLeft: isActive ? '3px solid #da1c15' : '3px solid transparent',
+                  borderLeft: isActive ? '3px solid var(--color-primary)' : '3px solid transparent',
                   borderRadius: 'var(--radius-md)',
-                  color: isActive ? '#da1c15' : 'var(--text-main)',
-                  backgroundColor: isActive ? '#fcdbd9' : 'transparent',
+                  color: isActive ? 'var(--color-primary)' : 'var(--text-main)',
+                  backgroundColor: isActive ? 'var(--color-primary-light)' : 'transparent',
                   transition: 'background-color 150ms',
                   fontWeight: isActive ? 600 : 500,
                   textDecoration: 'none',
                 }}
               className={isActive ? '' : 'sidebar-link-hover'}
             >
-              <Icon size={18} color={isActive ? '#da1c15' : 'var(--text-muted)'} />
+              <Icon size={18} color={isActive ? 'var(--color-primary)' : 'var(--text-muted)'} />
               {item.name}
             </Link>
           );
         })}
       </nav>
 
-      <div style={{ padding: '1rem', borderTop: '1px solid #eaeaea', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <Link href="/dashboard/profile" className="btn btn-outline" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', backgroundColor: 'transparent', padding: '0.5rem 1rem' }}>
           <User size={18} />
           Profilim

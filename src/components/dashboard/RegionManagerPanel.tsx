@@ -131,7 +131,7 @@ export default function RegionManagerPanel() {
       </div>
 
       {events.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
             {isOwnRegion ? 'Bölgenizde şu an onay bekleyen bir etkinlik bulunmuyor.' : 'Bu bölgede henüz onaylanmış bir etkinlik bulunmuyor.'}
@@ -140,7 +140,7 @@ export default function RegionManagerPanel() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {events.map((event) => (
-            <div key={event.id} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: event.status === 'Yeniden Onay Bekliyor' ? '#fffbeb' : '#fff' }}>
+            <div key={event.id} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: event.status === 'Yeniden Onay Bekliyor' ? 'var(--bg-warning-light)' : 'var(--bg-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -186,7 +186,7 @@ export default function RegionManagerPanel() {
                 </div>
               )}
 
-              <div style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ padding: '1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Etkinlik Türü / Amacı</div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{event.event_type}</div>
@@ -217,7 +217,7 @@ export default function RegionManagerPanel() {
               )}
 
               {isOwnRegion && (
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                   {rejectReason[event.id] === undefined ? (
                     <>
                       <button 

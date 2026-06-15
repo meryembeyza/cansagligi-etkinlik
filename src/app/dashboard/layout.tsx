@@ -15,7 +15,7 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-main)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: '40px', height: '40px', border: '4px solid var(--color-primary-light)', borderTop: '4px solid var(--color-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} className="spinner"></div>
           <p style={{ color: 'var(--text-muted)' }}>Oturum kontrol ediliyor...</p>

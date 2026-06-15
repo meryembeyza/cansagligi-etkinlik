@@ -108,10 +108,10 @@ export default function SpeakersArchivePage() {
         <p style={{ color: 'var(--text-muted)' }}>Önceki etkinliklerde onaylanmış tüm konuşmacıların profil bilgilerini inceleyin.</p>
       </div>
 
-      <div className="card" style={{ marginBottom: '2rem', backgroundColor: '#f9fafb' }}>
+      <div className="card" style={{ marginBottom: '2rem', backgroundColor: 'var(--bg-main)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '1rem', alignItems: 'center' }}>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'white', padding: '0.75rem 1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--bg-card)', padding: '0.75rem 1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', flex: 1 }}>
             <Search size={20} color="var(--text-muted)" />
             <input 
               type="text" 
@@ -126,7 +126,7 @@ export default function SpeakersArchivePage() {
             <Filter size={18} color="var(--text-muted)" />
             <select 
               className="input" 
-              style={{ padding: '0.75rem', width: '200px', backgroundColor: 'white' }}
+              style={{ padding: '0.75rem', width: '200px', backgroundColor: 'var(--bg-card)' }}
               value={selectedCity}
               onChange={e => setSelectedCity(e.target.value)}
             >
@@ -141,8 +141,8 @@ export default function SpeakersArchivePage() {
             <div 
               onClick={() => setShowExpertiseDropdown(!showExpertiseDropdown)}
               style={{ 
-                backgroundColor: 'white', 
-                border: '1px solid #eaeaea', 
+                backgroundColor: 'var(--bg-card)', 
+                border: '1px solid var(--border-color)', 
                 borderRadius: 'var(--radius-md)', 
                 padding: '0.75rem 1rem',
                 width: '240px',
@@ -165,8 +165,8 @@ export default function SpeakersArchivePage() {
                 top: '100%', 
                 right: 0, 
                 marginTop: '0.25rem',
-                backgroundColor: 'white', 
-                border: '1px solid #eaeaea', 
+                backgroundColor: 'var(--bg-card)', 
+                border: '1px solid var(--border-color)', 
                 borderRadius: 'var(--radius-md)', 
                 boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
                 zIndex: 50,
@@ -184,7 +184,7 @@ export default function SpeakersArchivePage() {
                 
                 {Object.entries(expertiseData).map(([category, subs]) => (
                   <div key={category} style={{ marginTop: '0.5rem' }}>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0.25rem 0.75rem', backgroundColor: '#f9fafb' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0.25rem 0.75rem', backgroundColor: 'var(--bg-main)' }}>
                       {category}
                     </div>
                     {subs.map(sub => (
@@ -221,16 +221,16 @@ export default function SpeakersArchivePage() {
           <Loader2 className="animate-spin" size={32} color="var(--color-primary)" />
         </div>
       ) : filteredSpeakers.length === 0 ? (
-        <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)', color: 'var(--text-muted)' }}>
+        <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', color: 'var(--text-muted)' }}>
           Kriterlere uygun onaylanmış konuşmacı bulunamadı.
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
           {filteredSpeakers.map((sp, idx) => (
-            <div key={`${sp.id}-${sp.eventId}-${idx}`} style={{ backgroundColor: 'white', border: '1px solid #eaeaea', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <div key={`${sp.id}-${sp.eventId}-${idx}`} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
               
               {/* Header */}
-              <div style={{ padding: '1.5rem', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', fontSize: '1.5rem', fontWeight: 700, flexShrink: 0 }}>
                   {sp.name ? sp.name.charAt(0).toUpperCase() : 'S'}
                 </div>
@@ -255,7 +255,7 @@ export default function SpeakersArchivePage() {
                     <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Uzmanlık Alanları</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                       {sp.expertiseFields.map((field: string, i: number) => (
-                        <span key={i} style={{ backgroundColor: '#f3f4f6', color: '#4b5563', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>
+                        <span key={i} style={{ backgroundColor: '#f3f4f6', color: 'var(--text-muted)', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>
                           {field === 'Diğer' && sp.otherExpertise ? `Diğer (${sp.otherExpertise})` : field}
                         </span>
                       ))}
@@ -276,7 +276,7 @@ export default function SpeakersArchivePage() {
                   )}
                 </div>
 
-                <div style={{ backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-md)', marginTop: '0.5rem' }}>
+                <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', marginTop: '0.5rem' }}>
                   <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Katıldığı Etkinlik</div>
                   <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{sp.eventName}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>

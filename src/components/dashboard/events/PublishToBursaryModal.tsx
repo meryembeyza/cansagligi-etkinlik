@@ -176,7 +176,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
     return (
       <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', color: '#fff' }}>
+        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--text-main)', color: '#fff' }}>
           <div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Bursiyer Panelinde Böyle Görünecek</h2>
             <p style={{ fontSize: '0.875rem', color: '#aaa' }}>Bu önizleme bursiyer gözünden mobil formattaki görünümdür.</p>
@@ -204,7 +204,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
         <div style={{ flexGrow: 1, overflowY: 'auto', display: 'flex', justifyContent: 'center', padding: '2rem 1rem' }}>
           <div style={{ 
             maxWidth: '400px', width: '100%', height: 'max-content',
-            backgroundColor: '#f9fafb', borderRadius: '1.5rem', padding: '0.5rem',
+            backgroundColor: 'var(--bg-main)', borderRadius: '1.5rem', padding: '0.5rem',
             border: '8px solid #333', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
           }}>
             <BursiyerEventCard event={previewEvent as any} />
@@ -216,9 +216,9 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem' }}>
-      <div style={{ backgroundColor: '#fff', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '800px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '800px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
         
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fcdbd9', color: '#da1c15' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fcdbd9', color: '#da1c15' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Bursiyer Paneline Ekle</h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#da1c15' }}><X size={24} /></button>
         </div>
@@ -286,7 +286,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
             </div>
           </div>
 
-          <div style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)', border: '1px solid #eaeaea' }}>
+          <div style={{ padding: '1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <label className="label" style={{ margin: 0 }}>Konuşmacılar</label>
               <button onClick={addSpeaker} type="button" style={{ background: 'none', border: 'none', color: '#da1c15', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -315,14 +315,14 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
                 </label>
               </div>
               {posterPreview && (
-                <div style={{ width: '160px', height: '90px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', border: '1px solid #eaeaea', position: 'relative' }}>
+                <div style={{ width: '160px', height: '90px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
                    <img src={posterPreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               )}
             </div>
           </div>
 
-          <div style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)', border: '1px solid #eaeaea' }}>
+          <div style={{ padding: '1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: 600, color: 'var(--text-main)', marginBottom: formData.requires_registration ? '1rem' : 0 }}>
               <input type="checkbox" style={{ width: '18px', height: '18px' }} checked={formData.requires_registration} onChange={e => setFormData({...formData, requires_registration: e.target.checked})} />
               Başvuru gerekli mi?
@@ -350,7 +350,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
             )}
           </div>
 
-          <div style={{ padding: '1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}>
              <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '1rem' }}>İletişim Kişisi (Opsiyonel)</h3>
              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                 <input type="text" className="input" placeholder="Ad Soyad" value={formData.contact_person.name} onChange={e => setFormData({...formData, contact_person: {...formData.contact_person, name: e.target.value}})} />
@@ -361,7 +361,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
         </div>
 
-        <div style={{ padding: '1.5rem', borderTop: '1px solid #eaeaea', display: 'flex', justifyContent: 'flex-end', gap: '1rem', backgroundColor: '#f9fafb' }}>
+        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', gap: '1rem', backgroundColor: 'var(--bg-main)' }}>
           <button className="btn btn-outline" onClick={onClose}>İptal</button>
           <button className="btn btn-primary" onClick={validateAndShowPreview} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Eye size={18} /> Önizle ve Yayınla

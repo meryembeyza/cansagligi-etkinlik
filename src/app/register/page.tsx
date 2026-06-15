@@ -174,8 +174,8 @@ const tealPrimary = '#0e9b8f';
 
   if (success) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb', padding: '1rem' }}>
-        <div className="card" style={{ maxWidth: '520px', width: '100%', padding: '3.5rem 2.5rem', textAlign: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-main)', padding: '1rem' }}>
+        <div className="card" style={{ maxWidth: '520px', width: '100%', padding: '3.5rem 2.5rem', textAlign: 'center', backgroundColor: 'var(--bg-card)', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
           
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
             <svg className="animated-check" viewBox="0 0 52 52" style={{ width: '72px', height: '72px' }}>
@@ -187,7 +187,7 @@ const tealPrimary = '#0e9b8f';
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem', color: '#1f2937' }}>
             Başvurunuz Alındı, {formData.fullName.split(' ')[0]}!
           </h2>
-          <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fef3c7', borderRadius: '8px', padding: '1rem', marginBottom: '2rem' }}>
+          <div style={{ backgroundColor: 'var(--bg-warning-light)', border: '1px solid #fef3c7', borderRadius: '8px', padding: '1rem', marginBottom: '2rem' }}>
             <p style={{ color: '#92400e', margin: 0, fontSize: '0.95rem', lineHeight: '1.6', fontWeight: 500 }}>
               Kayıt işleminiz tamamlandı ancak sisteme henüz <strong>direkt olarak giriş yapamazsınız.</strong> Güvenlik ve yetkilendirme prosedürleri gereği sisteme giriş yapabilmeniz için öncelikle <strong>Genel ve Bölge Sorumlularının onayından geçmeniz gerekmektedir.</strong>
             </p>
@@ -287,7 +287,7 @@ const tealPrimary = '#0e9b8f';
 
         {/* Progress Bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '50%', left: '0', right: '0', height: '2px', backgroundColor: '#e5e7eb', zIndex: 0, transform: 'translateY(-50%)' }} />
+          <div style={{ position: 'absolute', top: '50%', left: '0', right: '0', height: '2px', backgroundColor: 'var(--border-color)', zIndex: 0, transform: 'translateY(-50%)' }} />
           <div style={{ position: 'absolute', top: '50%', left: '0', height: '2px', backgroundColor: redPrimary, zIndex: 0, transform: 'translateY(-50%)', width: `${((step - 1) / (steps.length - 1)) * 100}%`, transition: 'width 0.3s ease' }} />
           
           {steps.map((s) => (

@@ -278,7 +278,7 @@ export default function ResourceCalendar() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
       {/* Takvim Üst Kontrol Paneli */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', border: '1px solid #eaeaea' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-card)', padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', border: '1px solid var(--border-color)' }}>
         <div>
           <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {currentRole === 'resource_manager' ? `${userData?.unit_name} Kaynakları` : 'Vakıf Kaynakları'}
@@ -320,7 +320,7 @@ export default function ResourceCalendar() {
                   <th style={{ 
                     position: 'sticky', 
                     left: 0, 
-                    backgroundColor: '#fff', 
+                    backgroundColor: 'var(--bg-card)', 
                     zIndex: 20, 
                     minWidth: '220px', 
                     padding: '1rem', 
@@ -366,7 +366,7 @@ export default function ResourceCalendar() {
                       <td style={{ 
                         position: 'sticky', 
                         left: 0, 
-                        backgroundColor: '#fff', 
+                        backgroundColor: 'var(--bg-card)', 
                         zIndex: 10, 
                         padding: '1.25rem 1rem', 
                         borderBottom: '1px solid #f1f5f9',
@@ -500,7 +500,7 @@ export default function ResourceCalendar() {
         }} onClick={() => setSelectedRes(null)}>
           
           <div style={{ 
-            backgroundColor: '#fff', 
+            backgroundColor: 'var(--bg-card)', 
             borderRadius: '20px', 
             width: '100%', 
             maxWidth: '550px', 
@@ -586,7 +586,7 @@ export default function ResourceCalendar() {
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <Info size={14} color="#64748b" /> TALEP DETAYLARI
                   </div>
-                  <div style={{ fontSize: '0.875rem', color: '#475569', lineHeight: '1.5', whiteSpace: 'pre-wrap', backgroundColor: '#fff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '0.875rem', color: '#475569', lineHeight: '1.5', whiteSpace: 'pre-wrap', backgroundColor: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                     {selectedRes.details}
                   </div>
                 </div>

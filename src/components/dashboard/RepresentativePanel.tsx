@@ -157,7 +157,7 @@ export default function RepresentativePanel() {
       </div>
 
       {/* Sub-navigation Tabs */}
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #eaeaea', paddingBottom: '1rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
         <button 
           className={`btn ${panelViewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
           onClick={() => setPanelViewMode('list')}
@@ -262,7 +262,7 @@ export default function RepresentativePanel() {
           </div>
 
           {/* Calendar Status Legend */}
-          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', fontSize: '0.85rem', flexWrap: 'wrap', backgroundColor: '#f9fafb', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', fontSize: '0.85rem', flexWrap: 'wrap', backgroundColor: 'var(--bg-main)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <span style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981' }} />
               <strong>Onaylı / Gerçekleşti</strong>
@@ -286,7 +286,7 @@ export default function RepresentativePanel() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', minHeight: '380px' }}>
             {/* Empty days offset */}
             {Array.from({ length: startOffset }).map((_, idx) => (
-              <div key={`offset-${idx}`} style={{ backgroundColor: '#f9fafb', borderRadius: '4px', border: '1px solid #f3f4f6', opacity: 0.4 }} />
+              <div key={`offset-${idx}`} style={{ backgroundColor: 'var(--bg-main)', borderRadius: '4px', border: '1px solid #f3f4f6', opacity: 0.4 }} />
             ))}
 
             {/* Monthly calendar days */}
@@ -301,9 +301,9 @@ export default function RepresentativePanel() {
                 <div 
                   key={`day-${dayNum}`} 
                   style={{ 
-                    backgroundColor: '#fff', 
+                    backgroundColor: 'var(--bg-card)', 
                     borderRadius: '4px', 
-                    border: '1px solid #e5e7eb', 
+                    border: '1px solid var(--border-color)', 
                     padding: '0.35rem', 
                     display: 'flex', 
                     flexDirection: 'column', 
@@ -351,7 +351,7 @@ export default function RepresentativePanel() {
       {selectedEventDetails && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
           <div className="card" style={{ maxWidth: '500px', width: '90%', padding: '2rem', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary)', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
               Etkinlik Detay Kartı
             </h3>
             
@@ -407,7 +407,7 @@ export default function RepresentativePanel() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '2rem', borderTop: '1px solid #eaeaea', paddingTop: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
               <Link 
                 href={`/dashboard/events/${selectedEventDetails.id}`} 
                 className="btn btn-primary" 

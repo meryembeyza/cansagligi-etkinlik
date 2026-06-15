@@ -232,7 +232,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
       </div>
 
       {/* Navigation tabs */}
-      <div style={{ display: 'flex', borderBottom: '1px solid #eaeaea', gap: '1rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', gap: '1rem', flexWrap: 'wrap' }}>
         {[
           { id: 'profile', label: 'Temsilci Kartı', icon: <User size={16} /> },
           { id: 'events', label: `Etkinlik Geçmişi (${events.length})`, icon: <Calendar size={16} /> },
@@ -270,7 +270,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
         {activeTab === 'profile' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.25rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Kişisel & İletişim Bilgileri</h3>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Kişisel & İletişim Bilgileri</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div><span style={{ color: 'var(--text-muted)', width: '120px', display: 'inline-block' }}>E-posta:</span> <strong>{profile.email}</strong></div>
                 <div><span style={{ color: 'var(--text-muted)', width: '120px', display: 'inline-block' }}>Telefon:</span> <strong>{profile.phone_number}</strong></div>
@@ -278,7 +278,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
               </div>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.25rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Eğitim ve Görev Bilgileri</h3>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Eğitim ve Görev Bilgileri</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div><span style={{ color: 'var(--text-muted)', width: '120px', display: 'inline-block' }}>Üniversite:</span> <strong>{profile.university}</strong></div>
                 <div><span style={{ color: 'var(--text-muted)', width: '120px', display: 'inline-block' }}>Fakülte/Bölüm:</span> <strong>{profile.department}</strong></div>
@@ -308,7 +308,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
                 </thead>
                 <tbody>
                   {events.map(ev => (
-                    <tr key={ev.id} style={{ borderBottom: '1px solid #eaeaea' }}>
+                    <tr key={ev.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '1rem 0.75rem', fontWeight: 600 }}>{ev.event_name}</td>
                       <td style={{ padding: '1rem 0.75rem' }}>{new Date(ev.event_date).toLocaleDateString('tr-TR')}</td>
                       <td style={{ padding: '1rem 0.75rem' }}>{ev.unit_name}</td>
@@ -347,7 +347,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
                 </thead>
                 <tbody>
                   {inventoryRequests.map(inv => (
-                    <tr key={inv.id} style={{ borderBottom: '1px solid #eaeaea' }}>
+                    <tr key={inv.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '1rem 0.75rem' }}>{new Date(inv.talep_tarihi).toLocaleDateString('tr-TR')}</td>
                       <td style={{ padding: '1rem 0.75rem' }}>{new Date(inv.gerekli_tarih).toLocaleDateString('tr-TR')}</td>
                       <td style={{ padding: '1rem 0.75rem', fontWeight: 600 }}>
@@ -376,7 +376,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {recommendations.map(rec => (
-                  <div key={rec.id} className="card" style={{ padding: '1.5rem', border: '1px solid #eaeaea', position: 'relative' }}>
+                  <div key={rec.id} className="card" style={{ padding: '1.5rem', border: '1px solid var(--border-color)', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
                       <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
                         {rec.candidate_name.charAt(0)}
@@ -387,12 +387,12 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
                       </div>
                     </div>
                     
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem', borderTop: '1px solid #eaeaea', paddingTop: '0.75rem', marginBottom: '0.75rem' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem', marginBottom: '0.75rem' }}>
                       <div>📞 Tel: {rec.candidate_phone}</div>
                       <div>✉️ E-posta: {rec.candidate_email}</div>
                     </div>
 
-                    <div style={{ fontSize: '0.85rem', backgroundColor: '#f9fafb', padding: '0.75rem', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-primary)' }}>
+                    <div style={{ fontSize: '0.85rem', backgroundColor: 'var(--bg-main)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-primary)' }}>
                       <strong>Gerekçe:</strong> {rec.reason}
                     </div>
                   </div>
@@ -407,7 +407,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
       {/* Recommendation Form Modal */}
       {isRecModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '550px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '550px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>🔮 Yeni Dönem Temsilci Adayı Öner</h2>

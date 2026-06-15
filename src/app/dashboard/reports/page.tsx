@@ -227,7 +227,7 @@ export default function ReportsExportPage() {
       ) : (
         <>
           <div className="card" style={{ marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid #eaeaea', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
               <Filter size={20} color="var(--color-primary)" />
               <h3 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Filtreler</h3>
             </div>
@@ -265,7 +265,7 @@ export default function ReportsExportPage() {
               </div>
             </div>
 
-            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
               <button onClick={handleExport} disabled={isExporting} className="btn btn-primary" style={{ padding: '0.75rem 2rem' }}>
                 <Download size={18} />
                 {isExporting ? 'Hazırlanıyor...' : 'Excel Olarak İndir'}

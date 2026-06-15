@@ -47,7 +47,7 @@ export default function ExpertiseMultiSelect({ selectedFields, onChange, otherEx
             padding: '0.5rem 2.5rem 0.5rem 0.75rem', 
             border: '1px solid #d1d5db', 
             borderRadius: 'var(--radius-md)',
-            backgroundColor: 'white',
+            backgroundColor: 'var(--bg-card)',
             cursor: 'pointer',
             display: 'flex',
             flexWrap: 'wrap',
@@ -91,8 +91,8 @@ export default function ExpertiseMultiSelect({ selectedFields, onChange, otherEx
             left: 0, 
             right: 0, 
             marginTop: '0.25rem',
-            backgroundColor: 'white', 
-            border: '1px solid #eaeaea', 
+            backgroundColor: 'var(--bg-card)', 
+            border: '1px solid var(--border-color)', 
             borderRadius: 'var(--radius-md)', 
             boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
             zIndex: 50,
@@ -102,7 +102,7 @@ export default function ExpertiseMultiSelect({ selectedFields, onChange, otherEx
           }}>
             {Object.entries(expertiseData).map(([category, subs]) => (
               <div key={category} style={{ marginBottom: '0.5rem' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0.25rem 0.5rem', backgroundColor: '#f9fafb' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0.25rem 0.5rem', backgroundColor: 'var(--bg-main)' }}>
                   {category}
                 </div>
                 {subs.map(sub => {

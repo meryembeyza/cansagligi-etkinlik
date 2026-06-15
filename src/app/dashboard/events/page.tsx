@@ -42,7 +42,7 @@ export default function EventsPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'Taslak': return <span className="badge" style={{ backgroundColor: '#f3f4f6', color: '#4b5563' }}>Taslak</span>;
+      case 'Taslak': return <span className="badge" style={{ backgroundColor: '#f3f4f6', color: 'var(--text-muted)' }}>Taslak</span>;
       case 'Onay Bekliyor': return <span className="badge badge-warning">Onay Bekliyor</span>;
       case 'Onaylandı': return <span className="badge badge-success">Onaylandı</span>;
       case 'Reddedildi': return <span className="badge badge-danger">Reddedildi</span>;
@@ -101,7 +101,7 @@ export default function EventsPage() {
                 </div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   {event.expected_participants ? `${event.expected_participants} Katılımcı` : 'Katılımcı sayısı belirtilmedi'}
                 </span>

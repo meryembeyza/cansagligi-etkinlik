@@ -92,7 +92,7 @@ export default function SettingsPage() {
           
           {activeTab === 'notifications' && (
             <div className="card" style={{ animation: 'fadeIn 0.3s ease' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Bildirim Tercihleri</h3>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Bildirim Tercihleri</h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -127,7 +127,7 @@ export default function SettingsPage() {
           {activeTab === 'security' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'fadeIn 0.3s ease' }}>
               <div className="card">
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>Şifre Değiştir</h3>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Şifre Değiştir</h3>
                 <form onSubmit={handlePasswordChange} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
                   <div>
                     <label className="label">Mevcut Şifreniz</label>

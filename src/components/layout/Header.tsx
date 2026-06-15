@@ -54,7 +54,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   ];
 
   return (
-    <header style={{ height: '70px', backgroundColor: 'var(--bg-card)', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem' }}>
+    <header style={{ height: '70px', backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button 
           className="mobile-menu-btn" 
@@ -83,8 +83,8 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
           </button>
 
           {isNotifOpen && (
-            <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem', width: '320px', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', border: '1px solid #eaeaea', zIndex: 50 }}>
-              <div style={{ padding: '1rem', borderBottom: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem', width: '320px', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-color)', zIndex: 50 }}>
+              <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: 600 }}>Bildirimler</h3>
                 {unreadCount > 0 && (
                   <button onClick={markAllAsRead} style={{ fontSize: '0.75rem', color: 'var(--color-primary)', cursor: 'pointer', background: 'none', border: 'none' }}>Tümünü Okundu İşaretle</button>
@@ -97,7 +97,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
                   </div>
                 ) : (
                   notifications.map(notif => (
-                    <div key={notif.id} style={{ padding: '1rem', borderBottom: '1px solid #eaeaea', backgroundColor: notif.is_read ? 'transparent' : '#f0fdf4', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                    <div key={notif.id} style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', backgroundColor: notif.is_read ? 'transparent' : '#f0fdf4', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                       {!notif.is_read && <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--status-success)', borderRadius: '50%', marginTop: '6px', flexShrink: 0 }}></div>}
                       <div style={{ flex: 1 }}>
                         <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', margin: '0 0 0.25rem 0', lineHeight: 1.4 }}>{notif.message}</p>
@@ -133,11 +133,11 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
           </div>
 
           {isProfileOpen && (
-            <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem', width: '200px', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', border: '1px solid #eaeaea', zIndex: 50, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <a href="/dashboard/profile" style={{ padding: '0.75rem 1rem', color: 'var(--text-main)', textDecoration: 'none', borderBottom: '1px solid #eaeaea', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="hover-bg-gray">
+            <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '0.5rem', width: '200px', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-color)', zIndex: 50, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <a href="/dashboard/profile" style={{ padding: '0.75rem 1rem', color: 'var(--text-main)', textDecoration: 'none', borderBottom: '1px solid var(--border-color)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="hover-bg-gray">
                 Profilim
               </a>
-              <a href="/dashboard/settings" style={{ padding: '0.75rem 1rem', color: 'var(--text-main)', textDecoration: 'none', borderBottom: '1px solid #eaeaea', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="hover-bg-gray">
+              <a href="/dashboard/settings" style={{ padding: '0.75rem 1rem', color: 'var(--text-main)', textDecoration: 'none', borderBottom: '1px solid var(--border-color)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="hover-bg-gray">
                 Ayarlar
               </a>
               <button onClick={logout} style={{ padding: '0.75rem 1rem', color: 'var(--status-danger)', textDecoration: 'none', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }} className="hover-bg-gray">

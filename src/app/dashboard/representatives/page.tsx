@@ -752,7 +752,7 @@ export default function RepresentativesPage() {
       {/* Communication & Log Modal */}
       {isCommModalOpen && activeRep && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>📞 İletişim: {activeRep.full_name}</h2>
@@ -760,7 +760,7 @@ export default function RepresentativesPage() {
             </div>
 
             {/* Direct Communication Channels */}
-            <div style={{ backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', gap: '0.75rem', justifyContent: 'space-around' }}>
+            <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', display: 'flex', gap: '0.75rem', justifyContent: 'space-around' }}>
               <a 
                 href={`https://wa.me/${activeRep.phone_number.replace(/[^0-9]/g, '')}`} 
                 target="_blank" 
@@ -780,7 +780,7 @@ export default function RepresentativesPage() {
             </div>
 
             {/* Form to log communication */}
-            <form onSubmit={handleLogCommunication} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+            <form onSubmit={handleLogCommunication} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>İletişim Kaydı Ekle</h3>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -813,19 +813,19 @@ export default function RepresentativesPage() {
             </form>
 
             {/* Communication History list */}
-            <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Geçmiş Görüşmeler ({commHistory.length})</h3>
               {commHistory.length === 0 ? (
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', textAlign: 'center' }}>Bu temsilciyle henüz geçmiş bir iletişim kaydı bulunmuyor.</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '200px', overflowY: 'auto' }}>
                   {commHistory.map((item, idx) => (
-                    <div key={idx} style={{ backgroundColor: '#f9fafb', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.85rem' }}>
+                    <div key={idx} style={{ backgroundColor: 'var(--bg-main)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.85rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
                         <strong style={{ textTransform: 'uppercase', color: 'var(--color-primary)' }}>{item.channel}</strong>
                         <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{new Date(item.created_at).toLocaleString('tr-TR')}</span>
                       </div>
-                      <div style={{ color: '#4b5563' }}>{item.message}</div>
+                      <div style={{ color: 'var(--text-muted)' }}>{item.message}</div>
                     </div>
                   ))}
                 </div>
@@ -839,7 +839,7 @@ export default function RepresentativesPage() {
       {/* Edit / Detail Modal */}
       {isEditModalOpen && activeRep && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>📝 Temsilci Bilgilerini Güncelle</h2>

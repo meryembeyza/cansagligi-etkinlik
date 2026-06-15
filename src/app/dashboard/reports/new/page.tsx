@@ -42,7 +42,7 @@ export default function PostEventReportPage() {
         <p style={{ color: 'var(--text-muted)' }}>Gerçekleşen etkinliğinizle ilgili bilgileri doldurun. Rapor doldurulmayan etkinlikler eksik kabul edilir.</p>
       </div>
 
-      <div className="card" style={{ backgroundColor: '#fffbeb', border: '1px solid #fef3c7', marginBottom: '2rem' }}>
+      <div className="card" style={{ backgroundColor: 'var(--bg-warning-light)', border: '1px solid #fef3c7', marginBottom: '2rem' }}>
         <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#92400e', marginBottom: '0.25rem' }}>İlgili Etkinlik: Yapay Zeka Zirvesi</h3>
         <p style={{ fontSize: '0.875rem', color: '#b45309' }}>Tarih: 12 Mayıs 2026 | Beklenen Katılımcı: 150</p>
       </div>
@@ -70,7 +70,7 @@ export default function PostEventReportPage() {
           <textarea required className="input" rows={4} placeholder="Etkinliğin olumlu ve olumsuz yanları nelerdi? Neler daha iyi olabilirdi?" value={formData.feedback} onChange={(e) => setFormData({...formData, feedback: e.target.value})}></textarea>
         </div>
 
-        <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1rem' }}>Lojistik Durum Değerlendirmesi</h3>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Kullandığınız 2x Projeksiyon Cihazı hakkında:</p>
           
@@ -93,7 +93,7 @@ export default function PostEventReportPage() {
           )}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid #eaeaea', paddingTop: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
           <Link href="/dashboard" className="btn btn-outline">İptal</Link>
           <button type="submit" className="btn btn-primary">Raporu Gönder</button>
         </div>

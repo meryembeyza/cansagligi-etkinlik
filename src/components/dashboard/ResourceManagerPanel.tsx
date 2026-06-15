@@ -105,14 +105,14 @@ export default function ResourceManagerPanel() {
       <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Bekleyen Rezervasyon Talepleri</h3>
       
       {reservations.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Şu an onay bekleyen herhangi bir kaynak/lojistik talebi bulunmuyor.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {reservations.map((res) => (
-            <div key={res.id} style={{ border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: '#fff' }}>
+            <div key={res.id} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -136,7 +136,7 @@ export default function ResourceManagerPanel() {
               </div>
               
               {res.notes && (
-                <div style={{ backgroundColor: '#f9fafb', padding: '1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', fontSize: '0.875rem', display: 'flex', gap: '0.5rem' }}>
+                <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', fontSize: '0.875rem', display: 'flex', gap: '0.5rem' }}>
                   <AlertCircle size={16} color="var(--text-muted)" style={{ flexShrink: 0, marginTop: '2px' }} />
                   <div>
                     <strong>Ek Not:</strong> {res.notes}
@@ -145,7 +145,7 @@ export default function ResourceManagerPanel() {
               )}
 
               {rejectingId === res.id ? (
-                <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div>
                     <label className="label">Reddetme Nedeni (Zorunlu)</label>
                     <input 
@@ -182,7 +182,7 @@ export default function ResourceManagerPanel() {
                   </div>
                 </div>
               ) : (
-                <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end', alignItems: 'center' }}>
+                <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                   <Link href={`/dashboard/events/${res.events?.id}`} className="btn btn-outline" style={{ marginRight: 'auto', border: 'none', color: 'var(--color-primary)' }}>
                     Etkinlik Detayını İncele &rarr;
                   </Link>

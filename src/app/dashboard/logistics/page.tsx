@@ -177,7 +177,7 @@ export default function LogisticsPage() {
       </div>
 
       <div className="card">
-        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', borderBottom: '1px solid #eaeaea', paddingBottom: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', flexWrap: 'wrap' }}>
           {['All', 'Servis', 'Aromaterapi', 'Temel Yaşam Desteği', 'İleri Yaşam Desteği', 'Sütur Eğitimi', 'Özel Talep'].map(t => (
             <button 
               key={t}
@@ -193,7 +193,7 @@ export default function LogisticsPage() {
         {isLoading ? (
           <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>Lojistik verileri derleniyor...</div>
         ) : filteredData.length === 0 ? (
-          <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
             <Package size={48} color="#d1d5db" style={{ margin: '0 auto 1rem' }} />
             <p style={{ color: 'var(--text-muted)' }}>Şu anda görüntülenmesi gereken bir lojistik talebi bulunmuyor.</p>
           </div>
@@ -201,17 +201,17 @@ export default function LogisticsPage() {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
               <thead>
-                <tr style={{ backgroundColor: '#f9fafb', color: 'var(--text-muted)', textAlign: 'left' }}>
-                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Talep Tipi</th>
-                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Üniversite & Etkinlik</th>
-                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea', width: '40%' }}>Talep Detayları</th>
-                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea' }}>Etkinlik Durumu</th>
-                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #eaeaea', textAlign: 'right' }}>İşlem</th>
+                <tr style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-muted)', textAlign: 'left' }}>
+                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Talep Tipi</th>
+                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Üniversite & Etkinlik</th>
+                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', width: '40%' }}>Talep Detayları</th>
+                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Etkinlik Durumu</th>
+                  <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', textAlign: 'right' }}>İşlem</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.map((item, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid #eaeaea' }}>
+                  <tr key={idx} style={{ borderBottom: '1px solid var(--border-color)' }}>
                     <td style={{ padding: '1rem' }}>
                       <span className={`badge ${getBadgeColor(item.type)}`} style={{ fontWeight: 600 }}>{item.type}</span>
                     </td>

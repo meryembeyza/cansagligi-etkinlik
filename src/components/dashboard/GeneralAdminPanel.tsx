@@ -154,8 +154,8 @@ export default function GeneralAdminPanel() {
       )}
 
       {/* Filtreler ve Arama */}
-      <div className="card" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', backgroundColor: '#f9fafb' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 250px', backgroundColor: 'white', padding: '0.5rem 1rem', border: '1px solid #eaeaea', borderRadius: 'var(--radius-md)' }}>
+      <div className="card" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', backgroundColor: 'var(--bg-main)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 250px', backgroundColor: 'var(--bg-card)', padding: '0.5rem 1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}>
           <Search size={18} color="var(--text-muted)" />
           <input 
             type="text" 
@@ -208,7 +208,7 @@ export default function GeneralAdminPanel() {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #eaeaea', backgroundColor: '#f9fafb' }}>
+                <tr style={{ borderBottom: '2px solid #eaeaea', backgroundColor: 'var(--bg-main)' }}>
                   <th style={{ padding: '1rem' }}>Etkinlik Adı</th>
                   <th style={{ padding: '1rem' }}>Üniversite / Bölge</th>
                   <th style={{ padding: '1rem' }}>Tarih</th>
@@ -218,7 +218,7 @@ export default function GeneralAdminPanel() {
               </thead>
               <tbody>
                 {events.map((event) => (
-                  <tr key={event.id} style={{ borderBottom: '1px solid #eaeaea', transition: 'background-color 0.2s' }}>
+                  <tr key={event.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background-color 0.2s' }}>
                     <td style={{ padding: '1rem' }}>
                       <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{event.event_name}</div>
                       <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{event.event_type}</div>

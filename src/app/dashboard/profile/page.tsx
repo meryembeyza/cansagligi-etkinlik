@@ -110,7 +110,7 @@ export default function ProfilePage() {
       <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         
         {/* Avatar Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid #eaeaea' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
           <ImageUpload
             bucket="avatars"
             value={avatarUrl}
@@ -139,7 +139,7 @@ export default function ProfilePage() {
           {/* Sistemden Gelen (Salt Okunur) Alanlar */}
           <div>
             <label className="label">Üniversite</label>
-            <input type="text" className="input" value={formData.university} disabled style={{ backgroundColor: '#f9fafb', color: '#6b7280' }} />
+            <input type="text" className="input" value={formData.university} disabled style={{ backgroundColor: 'var(--bg-main)', color: '#6b7280' }} />
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Üniversite veya bölge değişiklikleri için merkeze başvurun.</span>
           </div>
 
@@ -186,7 +186,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '1rem', borderTop: '1px solid #eaeaea' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
           <button onClick={handleSave} disabled={isSaving} className="btn btn-primary" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
             <Save size={18} /> {isSaving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
           </button>
