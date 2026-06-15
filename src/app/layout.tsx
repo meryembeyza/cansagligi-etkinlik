@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 import { RoleProvider } from '@/context/RoleContext';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 
 export default function RootLayout({
   children,
@@ -16,11 +17,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr">
+    <html lang="tr" suppressHydrationWarning>
       <body>
-        <RoleProvider>
-          {children}
-        </RoleProvider>
+        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+          <RoleProvider>
+            {children}
+          </RoleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

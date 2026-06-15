@@ -3,10 +3,12 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import EmptyState from '@/components/ui/EmptyState';
+import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
-import { Calendar, Filter, Download, Search, AlertCircle, BookOpen, Clock, Heart } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import { Calendar, Search, Filter, Moon, MapPin, Edit2, Users, School, Download, AlertCircle, BookOpen, Clock, Heart } from 'lucide-react';
+import ExcelJS from 'exceljs';
 
 interface RamadanEvent {
   id: string;
@@ -131,8 +133,7 @@ export default function RamadanPage() {
     setFilteredEvents(result);
   }, [events, selectedRegion, selectedMonth, selectedStatus, searchQuery]);
 
-  // Export to Excel
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     const data = filteredEvents.map(e => ({
       'Etkinlik Adı': e.event_name,
       'Üniversite': e.university,
@@ -143,10 +144,22 @@ export default function RamadanPage() {
       'Durum': e.status
     }));
 
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Ramazan Etkinlikleri");
-    XLSX.writeFile(wb, `Cansagligi_Ramazan_Etkinlikleri_${selectedRegion || 'Tum_Bolgeler'}.xlsx`);
+    const workbook = new ExcelJS.Workbook();
+    const ws = workbook.addWorksheet('Ramazan Etkinlikleri');
+    if (data.length > 0) {
+      ws.columns = Object.keys(data[0]).map(key => ({ header: key, key: key, width: 20 }));
+      ws.addRows(data);
+    }
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Cansagligi_Ramazan_Etkinlikleri_${selectedRegion || 'Tum_Bolgeler'}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // Stats calculation
@@ -273,11 +286,13 @@ export default function RamadanPage() {
         </h3>
 
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>Yükleniyor...</div>
+          <LoadingState message="Ramazan etkinlikleri yükleniyor..." />
         ) : filteredEvents.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-            Seçili kriterlere göre Ramazan etkinliği bulunamadı.
-          </div>
+          <EmptyState 
+            icon={Calendar} 
+            title="Etkinlik Bulunamadı" 
+            description="Seçili kriterlere göre Ramazan etkinliği bulunamadı." 
+          />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>

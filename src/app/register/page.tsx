@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
 
   // Form State
@@ -54,37 +55,36 @@ export default function RegisterPage() {
 
   const validateStep = (currentStep: number) => {
     setError(null);
+    const newErrors: Record<string, string> = {};
+    let isValid = true;
+
     if (currentStep === 1) {
-      if (!formData.university.trim() || !formData.region || !formData.role) {
-        setError('Lütfen zorunlu kurumsal alanları doldurunuz.');
-        return false;
-      }
-      if (!isRepRole && !formData.unitName) {
-        setError('Lütfen bağlı olduğunuz birimi seçiniz.');
-        return false;
-      }
+      if (!formData.role) newErrors.role = 'Lütfen bir görev seçiniz.';
+      if (!isRepRole && !formData.unitName) newErrors.unitName = 'Lütfen bağlı olduğunuz birimi seçiniz.';
+      if (!formData.university.trim()) newErrors.university = 'Lütfen üniversite adını giriniz.';
+      if (!formData.region) newErrors.region = 'Lütfen bölgenizi seçiniz.';
     } else if (currentStep === 2) {
-      if (!formData.fullName.trim()) {
-        setError('Lütfen ad soyad giriniz.');
-        return false;
-      }
+      if (!formData.fullName.trim()) newErrors.fullName = 'Lütfen ad soyad giriniz.';
       if (formData.role === 'unit_head' || formData.role === 'representative') {
-        if (!formData.department || !formData.grade || !formData.clubDuty || !formData.nsosyalAccount) {
-          setError('Lütfen ek bilgileri eksiksiz doldurunuz.');
-          return false;
-        }
+        if (!formData.department) newErrors.department = 'Lütfen bölümünüzü giriniz.';
+        if (!formData.grade) newErrors.grade = 'Lütfen sınıfınızı seçiniz.';
+        if (!formData.clubDuty) newErrors.clubDuty = 'Lütfen kulüpteki görevinizi giriniz.';
+        if (!formData.nsosyalAccount) newErrors.nsosyalAccount = 'Lütfen NSosyal linkini giriniz.';
       }
     } else if (currentStep === 3) {
-      if (!formData.email.trim() || !formData.email.includes('@')) {
-        setError('Lütfen geçerli bir e-posta giriniz.');
-        return false;
-      }
-      if (formData.phone.length < 10) {
-        setError('Lütfen geçerli bir telefon numarası giriniz.');
-        return false;
-      }
+      if (!formData.email.trim() || !formData.email.includes('@')) newErrors.email = 'Geçerli bir e-posta giriniz.';
+      if (formData.phone.length < 10) newErrors.phone = 'Geçerli bir telefon numarası giriniz.';
     }
-    return true;
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setError('Lütfen kırmızı ile işaretlenmiş hatalı/eksik alanları düzeltiniz.');
+      isValid = false;
+    } else {
+      setErrors({});
+    }
+
+    return isValid;
   };
 
   const nextStep = () => {
@@ -95,23 +95,23 @@ export default function RegisterPage() {
 
   const prevStep = () => {
     setError(null);
+    setErrors({});
     setStep(prev => prev - 1);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setErrors({});
 
-    if (formData.password !== formData.passwordConfirm) {
-      setError('Şifreler eşleşmiyor.');
-      return;
-    }
-    if (formData.password.length < 6) {
-      setError('Şifreniz en az 6 karakter olmalıdır.');
-      return;
-    }
-    if (!formData.kvkkApproved) {
-      setError('Devam edebilmek için KVKK metnini onaylamalısınız.');
+    const finalErrors: Record<string, string> = {};
+    if (formData.password.length < 6) finalErrors.password = 'Şifreniz en az 6 karakter olmalıdır.';
+    if (formData.password !== formData.passwordConfirm) finalErrors.passwordConfirm = 'Şifreler eşleşmiyor.';
+    if (!formData.kvkkApproved) finalErrors.kvkkApproved = 'Devam edebilmek için KVKK metnini onaylamalısınız.';
+
+    if (Object.keys(finalErrors).length > 0) {
+      setErrors(finalErrors);
+      setError('Lütfen hatalı alanları düzeltiniz.');
       return;
     }
 
@@ -187,9 +187,11 @@ const tealPrimary = '#0e9b8f';
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem', color: '#1f2937' }}>
             Başvurunuz Alındı, {formData.fullName.split(' ')[0]}!
           </h2>
-          <p style={{ color: '#4b5563', marginBottom: '2rem', fontSize: '0.95rem', lineHeight: '1.6' }}>
-            Kaydınız Cansağlığı Vakfı Etkinlik Yönetim Sistemi&apos;ne iletilmiştir. Güvenlik ve yetkilendirme prosedürleri gereği başvurunuz incelemeye alınmıştır.
-          </p>
+          <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fef3c7', borderRadius: '8px', padding: '1rem', marginBottom: '2rem' }}>
+            <p style={{ color: '#92400e', margin: 0, fontSize: '0.95rem', lineHeight: '1.6', fontWeight: 500 }}>
+              Kayıt işleminiz tamamlandı ancak sisteme henüz <strong>direkt olarak giriş yapamazsınız.</strong> Güvenlik ve yetkilendirme prosedürleri gereği sisteme giriş yapabilmeniz için öncelikle <strong>Genel ve Bölge Sorumlularının onayından geçmeniz gerekmektedir.</strong>
+            </p>
+          </div>
 
           <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.25rem', textAlign: 'left', marginBottom: '2rem' }}>
             <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -270,17 +272,17 @@ const tealPrimary = '#0e9b8f';
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb', padding: '2rem 1rem' }}>
+    <div className="auth-layout">
       
-      <div className="card" style={{ maxWidth: '700px', width: '100%', padding: '2.5rem', position: 'relative' }}>
+      <div className="auth-card">
         
-        <Link href="/login" style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem' }}>
+        <Link href="/login" className="auth-back-link">
           <ChevronLeft size={16} /> Geri Dön
         </Link>
 
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem', marginTop: '1rem' }}>
-          <img src="/logo.png" alt="Cansağlığı Logo" style={{ height: '45px', objectFit: 'contain', margin: '0 auto 0.5rem' }} />
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1a202c' }}>Yeni Kayıt Oluştur</h1>
+        <div className="auth-logo-container">
+          <img src="/logo.png" alt="Cansağlığı Logo" className="auth-logo" />
+          <h1 className="auth-title">Yeni Kayıt Oluştur</h1>
         </div>
 
         {/* Progress Bar */}
@@ -301,7 +303,7 @@ const tealPrimary = '#0e9b8f';
         </div>
 
         {error && (
-          <div style={{ backgroundColor: '#fef2f2', color: '#991b1b', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', marginBottom: '1.5rem', border: '1px solid #fecaca' }}>
+          <div className="error-box">
             {error}
           </div>
         )}
@@ -312,11 +314,11 @@ const tealPrimary = '#0e9b8f';
             {/* Step 1: Görev Seçimi */}
             {step === 1 && (
               <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#1f2937' }}>Görev Seçimi ve Kurumsal Bilgiler</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                <h3 className="step-title">Görev Seçimi ve Kurumsal Bilgiler</h3>
+                <div className="form-grid-2">
                   <div>
                     <label className="label">Görev / Rol *</label>
-                    <select className="input" value={formData.role} onChange={e => handleRoleChange(e.target.value)}>
+                    <select className="input" value={formData.role} onChange={e => { handleRoleChange(e.target.value); setErrors(prev => ({...prev, role: ''})); }} style={{ borderColor: errors.role ? '#dc2626' : undefined }}>
                       <option value="">Seçiniz...</option>
                       <option value="unit_head">Birim Başkanı (Birim Sorumlusu)</option>
                       <option value="region_manager">Bölge Sorumlusu</option>
@@ -329,6 +331,7 @@ const tealPrimary = '#0e9b8f';
                       <option value="representative">Okul Temsilcisi</option>
                       <option value="bursary_student">Bursiyer Öğrenci</option>
                     </select>
+                    {errors.role && <div className="error-text">{errors.role}</div>}
                   </div>
                   <div>
                     <label className="label">Bağlı Olduğu Birim *</label>
@@ -337,7 +340,7 @@ const tealPrimary = '#0e9b8f';
                         🤝 Temsilcilikler Birimi
                       </div>
                     ) : (
-                      <select className="input" value={formData.unitName} onChange={e => setFormData({...formData, unitName: e.target.value})}>
+                      <select className="input" value={formData.unitName} onChange={e => { setFormData({...formData, unitName: e.target.value}); setErrors(prev => ({...prev, unitName: ''})); }} style={{ borderColor: errors.unitName ? '#dc2626' : undefined }}>
                         <option value="">Seçiniz...</option>
                         <option value="Sosyal Çalışmalar Birimi">Sosyal Çalışmalar Birimi</option>
                         <option value="Mesleki ve Kariyer Çalışmaları Birimi">Mesleki ve Kariyer Çalışmaları Birimi</option>
@@ -347,14 +350,16 @@ const tealPrimary = '#0e9b8f';
                         <option value="Bursiyer">Bursiyer (Birim Yok)</option>
                       </select>
                     )}
+                    {errors.unitName && <div className="error-text">{errors.unitName}</div>}
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label className="label">Üniversite *</label>
-                    <input type="text" className="input" placeholder="Örn: Boğaziçi Üniversitesi" value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} />
+                    <input type="text" className="input" placeholder="Örn: Boğaziçi Üniversitesi" value={formData.university} onChange={e => { setFormData({...formData, university: e.target.value}); setErrors(prev => ({...prev, university: ''})); }} style={{ borderColor: errors.university ? '#dc2626' : undefined }} />
+                    {errors.university && <div className="error-text">{errors.university}</div>}
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label className="label">Bölge *</label>
-                    <select className="input" value={formData.region} onChange={e => setFormData({...formData, region: e.target.value})}>
+                    <select className="input" value={formData.region} onChange={e => { setFormData({...formData, region: e.target.value}); setErrors(prev => ({...prev, region: ''})); }} style={{ borderColor: errors.region ? '#dc2626' : undefined }}>
                       <option value="">Seçiniz...</option>
                       <option value="İstanbul Avrupa">İstanbul Avrupa</option>
                       <option value="İstanbul Anadolu">İstanbul Anadolu</option>
@@ -367,6 +372,7 @@ const tealPrimary = '#0e9b8f';
                       <option value="Akdeniz">Akdeniz</option>
                       <option value="Karadeniz">Karadeniz</option>
                     </select>
+                    {errors.region && <div className="error-text">{errors.region}</div>}
                   </div>
                 </div>
               </div>
@@ -375,11 +381,12 @@ const tealPrimary = '#0e9b8f';
             {/* Step 2: Kimlik Bilgileri */}
             {step === 2 && (
               <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#1f2937' }}>Kimlik Bilgileri</h3>
-                <div style={{ display: 'grid', gap: '1.25rem' }}>
+                <h3 className="step-title">Kimlik Bilgileri</h3>
+                <div className="form-grid">
                   <div>
                     <label className="label">Ad - Soyad *</label>
-                    <input type="text" className="input" placeholder="Örn: Ali Yılmaz" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} style={{ borderColor: formData.fullName ? tealPrimary : undefined }} />
+                    <input type="text" className="input" placeholder="Örn: Ali Yılmaz" value={formData.fullName} onChange={e => { setFormData({...formData, fullName: e.target.value}); setErrors(prev => ({...prev, fullName: ''})); }} style={{ borderColor: errors.fullName ? '#dc2626' : (formData.fullName ? tealPrimary : undefined) }} />
+                    {errors.fullName && <div className="error-text">{errors.fullName}</div>}
                   </div>
                   <div>
                     <label className="label">Öğrenci Numarası</label>
@@ -392,10 +399,11 @@ const tealPrimary = '#0e9b8f';
                     <h4 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '1rem', color: redHover }}>Öğrenci & Birim Ek Bilgileri *</h4>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div>
-                        <input type="text" className="input" placeholder="Bölüm" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} style={{ fontSize: '0.875rem' }} />
+                        <input type="text" className="input" placeholder="Bölüm" value={formData.department} onChange={e => { setFormData({...formData, department: e.target.value}); setErrors(prev => ({...prev, department: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.department ? '#dc2626' : undefined }} />
+                        {errors.department && <div className="error-text">{errors.department}</div>}
                       </div>
                       <div>
-                        <select className="input" value={formData.grade} onChange={e => setFormData({...formData, grade: e.target.value})} style={{ fontSize: '0.875rem' }}>
+                        <select className="input" value={formData.grade} onChange={e => { setFormData({...formData, grade: e.target.value}); setErrors(prev => ({...prev, grade: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.grade ? '#dc2626' : undefined }}>
                           <option value="">Sınıf Seçiniz</option>
                           <option value="Hazırlık">Hazırlık</option>
                           <option value="1. Sınıf">1. Sınıf</option>
@@ -405,12 +413,15 @@ const tealPrimary = '#0e9b8f';
                           <option value="Yüksek Lisans">Yüksek Lisans</option>
                           <option value="Doktora">Doktora</option>
                         </select>
+                        {errors.grade && <div className="error-text">{errors.grade}</div>}
                       </div>
                       <div>
-                        <input type="text" className="input" placeholder="Kulüpteki Görevi" value={formData.clubDuty} onChange={e => setFormData({...formData, clubDuty: e.target.value})} style={{ fontSize: '0.875rem' }} />
+                        <input type="text" className="input" placeholder="Kulüpteki Görevi" value={formData.clubDuty} onChange={e => { setFormData({...formData, clubDuty: e.target.value}); setErrors(prev => ({...prev, clubDuty: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.clubDuty ? '#dc2626' : undefined }} />
+                        {errors.clubDuty && <div className="error-text">{errors.clubDuty}</div>}
                       </div>
                       <div>
-                        <input type="url" className="input" placeholder="NSosyal Linki" value={formData.nsosyalAccount} onChange={e => setFormData({...formData, nsosyalAccount: e.target.value})} style={{ fontSize: '0.875rem' }} />
+                        <input type="url" className="input" placeholder="NSosyal Linki" value={formData.nsosyalAccount} onChange={e => { setFormData({...formData, nsosyalAccount: e.target.value}); setErrors(prev => ({...prev, nsosyalAccount: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.nsosyalAccount ? '#dc2626' : undefined }} />
+                        {errors.nsosyalAccount && <div className="error-text">{errors.nsosyalAccount}</div>}
                       </div>
                     </div>
                   </div>
@@ -421,15 +432,17 @@ const tealPrimary = '#0e9b8f';
             {/* Step 3: İletişim */}
             {step === 3 && (
               <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#1f2937' }}>İletişim Bilgileri</h3>
-                <div style={{ display: 'grid', gap: '1.25rem' }}>
+                <h3 className="step-title">İletişim Bilgileri</h3>
+                <div className="form-grid">
                   <div>
                     <label className="label">E-posta Adresi *</label>
-                    <input type="email" className="input" placeholder="ornek@edu.tr" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                    <input type="email" className="input" placeholder="ornek@edu.tr" value={formData.email} onChange={e => { setFormData({...formData, email: e.target.value}); setErrors(prev => ({...prev, email: ''})); }} style={{ borderColor: errors.email ? '#dc2626' : undefined }} />
+                    {errors.email && <div className="error-text">{errors.email}</div>}
                   </div>
                   <div>
                     <label className="label">Telefon Numarası * (WhatsApp)</label>
-                    <input type="text" className="input" value={formData.phone} onChange={handlePhoneChange} placeholder="+90 5XX XXX XX XX" />
+                    <input type="text" className="input" value={formData.phone} onChange={e => { handlePhoneChange(e); setErrors(prev => ({...prev, phone: ''})); }} placeholder="+90 5XX XXX XX XX" style={{ borderColor: errors.phone ? '#dc2626' : undefined }} />
+                    {errors.phone && <div className="error-text">{errors.phone}</div>}
                   </div>
                 </div>
               </div>
@@ -438,28 +451,33 @@ const tealPrimary = '#0e9b8f';
             {/* Step 4: Güvenlik */}
             {step === 4 && (
               <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#1f2937' }}>Güvenlik ve Onay</h3>
-                <div style={{ display: 'grid', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                <h3 className="step-title">Güvenlik ve Onay</h3>
+                <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
                   <div>
                     <label className="label">Şifre *</label>
-                    <input type="password" className="input" minLength={6} placeholder="••••••••" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
+                    <input type="password" className="input" minLength={6} placeholder="••••••••" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
+                    {errors.password && <div className="error-text">{errors.password}</div>}
                   </div>
                   <div>
                     <label className="label">Şifre Tekrar *</label>
-                    <input type="password" className="input" minLength={6} placeholder="••••••••" value={formData.passwordConfirm} onChange={e => setFormData({...formData, passwordConfirm: e.target.value})} />
+                    <input type="password" className="input" minLength={6} placeholder="••••••••" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
+                    {errors.passwordConfirm && <div className="error-text">{errors.passwordConfirm}</div>}
                   </div>
                 </div>
-                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', backgroundColor: '#f8fafc', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <input type="checkbox" checked={formData.kvkkApproved} onChange={e => setFormData({...formData, kvkkApproved: e.target.checked})} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
-                  <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
-                    Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve WhatsApp bildirimleri için işlenmesine <strong>açık rıza gösteriyorum.</strong>
-                  </span>
-                </label>
+                <div>
+                  <label className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : '#e2e8f0'}` }}>
+                    <input type="checkbox" checked={formData.kvkkApproved} onChange={e => { setFormData({...formData, kvkkApproved: e.target.checked}); setErrors(prev => ({...prev, kvkkApproved: ''})); }} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
+                    <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
+                      Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve WhatsApp bildirimleri için işlenmesine <strong>açık rıza gösteriyorum.</strong>
+                    </span>
+                  </label>
+                  {errors.kvkkApproved && <div className="error-text" style={{ marginTop: '0.5rem', paddingLeft: '0.25rem' }}>{errors.kvkkApproved}</div>}
+                </div>
               </div>
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e5e7eb' }}>
+          <div className="btn-group">
             <button type="button" onClick={prevStep} disabled={step === 1 || isLoading} className="btn" style={{ backgroundColor: 'transparent', color: step === 1 ? '#d1d5db' : '#4b5563', border: `1px solid ${step === 1 ? '#e5e7eb' : '#d1d5db'}`, padding: '0.5rem 1.5rem', cursor: step === 1 ? 'not-allowed' : 'pointer' }}>
               Geri
             </button>

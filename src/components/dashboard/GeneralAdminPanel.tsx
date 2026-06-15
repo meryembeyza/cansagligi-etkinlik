@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import EmptyState from '@/components/ui/EmptyState';
+import LoadingState from '@/components/ui/LoadingState';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Search, Filter, Download, AlertTriangle } from 'lucide-react';
+import { Loader2, Search, Filter, Download, AlertTriangle, Calendar } from 'lucide-react';
 import Link from 'next/link';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 export default function GeneralAdminPanel() {
   const [events, setEvents] = useState<any[]>([]);
@@ -71,7 +73,7 @@ export default function GeneralAdminPanel() {
     }
   };
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     if (events.length === 0) {
       alert('İndirilecek etkinlik bulunamadı.');
       return;
@@ -87,11 +89,22 @@ export default function GeneralAdminPanel() {
       'Katılımcı Sayısı': e.expected_participants || 0
     }));
 
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Etkinlikler");
-    
-    XLSX.writeFile(workbook, `etkinlik_raporu_${new Date().toLocaleDateString('tr-TR')}.xlsx`);
+    const workbook = new ExcelJS.Workbook();
+    const ws = workbook.addWorksheet('Etkinlikler');
+    if (excelData.length > 0) {
+      ws.columns = Object.keys(excelData[0]).map(key => ({ header: key, key: key, width: 20 }));
+      ws.addRows(excelData);
+    }
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `etkinlik_raporu_${new Date().toLocaleDateString('tr-TR')}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   useEffect(() => {
@@ -183,9 +196,14 @@ export default function GeneralAdminPanel() {
       {/* Etkinlik Listesi */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {isLoading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><Loader2 className="animate-spin" color="var(--color-primary)" size={32} /></div>
+          <LoadingState message="Etkinlikler yükleniyor..." minHeight="300px" />
         ) : events.length === 0 ? (
-          <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>Etkinlik bulunamadı.</div>
+          <EmptyState 
+            icon={Calendar} 
+            title="Etkinlik Bulunamadı" 
+            description="Filtrelerinize uygun bir etkinlik bulunmamaktadır." 
+            minHeight="300px" 
+          />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>

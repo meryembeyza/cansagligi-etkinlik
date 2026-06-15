@@ -3,6 +3,8 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import EmptyState from '@/components/ui/EmptyState';
+import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
 import { Package, Plus, ClipboardList, CheckCircle2, Search, Edit2, Phone, Briefcase, FileText, Check, X, ShieldAlert } from 'lucide-react';
@@ -404,11 +406,13 @@ export default function V4InventoryPage() {
         <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>📋 Malzeme Talep Başvuruları</h3>
 
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>Yükleniyor...</div>
+          <LoadingState message="Envanter talepleri yükleniyor..." />
         ) : filteredRequests.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-            Herhangi bir envanter talebi bulunamadı.
-          </div>
+          <EmptyState 
+            icon={Package} 
+            title="Talep Bulunamadı" 
+            description="Kriterlerinize uygun bir envanter talebi bulunamadı." 
+          />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>

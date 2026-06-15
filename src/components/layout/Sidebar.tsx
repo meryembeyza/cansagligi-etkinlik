@@ -87,7 +87,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
     <>
       {isOpen && (
         <div 
-          className="sidebar-overlay"
+          className="sidebar-overlay active"
           onClick={() => setIsOpen && setIsOpen(false)}
         />
       )}
@@ -141,49 +141,6 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
           Çıkış Yap
         </button>
       </div>
-      <style dangerouslySetInnerHTML={{__html: `
-        .sidebar-container {
-          width: 250px;
-          min-width: 250px;
-          background-color: var(--bg-card);
-          border-right: 1px solid #eaeaea;
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          position: sticky;
-          top: 0;
-          z-index: 50;
-        }
-        .sidebar-overlay {
-          display: none;
-        }
-        .sidebar-link-hover:hover {
-          background-color: #f3f4f6 !important;
-        }
-        @media (max-width: 768px) {
-          .sidebar-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            transform: translateX(-250px);
-            transition: transform 300ms ease;
-          }
-          .sidebar-container.open {
-            transform: translateX(0);
-          }
-          .sidebar-overlay {
-            display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 40;
-          }
-        }
-      `}} />
     </aside>
     </>
   );

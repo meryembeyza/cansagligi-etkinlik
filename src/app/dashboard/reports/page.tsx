@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { Download, Filter, BarChart2, PieChart as PieChartIcon } from 'lucide-react';
 import { useRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import LoadingState from '@/components/ui/LoadingState';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const UNIT_COLORS: Record<string, string> = {
@@ -23,7 +24,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function ReportsExportPage() {
-  const { currentRole, user } = useRole();
+  const { currentRole, userData } = useRole();
   const [isExporting, setIsExporting] = useState(false);
   const [events, setEvents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,8 +39,8 @@ export default function ReportsExportPage() {
       setIsLoading(true);
       try {
         let query = supabase.from('events').select('*');
-        if (currentRole === 'region_manager' && user?.region) {
-          query = query.eq('region', user.region);
+        if (currentRole === 'region_manager' && userData?.region) {
+          query = query.eq('region', userData.region);
         }
         const { data, error } = await query;
         if (error) throw error;
@@ -51,7 +52,7 @@ export default function ReportsExportPage() {
       }
     };
     fetchEvents();
-  }, [currentRole, user]);
+  }, [currentRole, userData]);
 
   const filteredEvents = useMemo(() => {
     return events.filter(e => {
@@ -99,7 +100,7 @@ export default function ReportsExportPage() {
     return Object.values(stats);
   }, [filteredEvents]);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     setIsExporting(true);
     try {
       const eventList = filteredEvents.map(e => ({
@@ -165,17 +166,37 @@ export default function ReportsExportPage() {
         }
       });
 
-      const wb = XLSX.utils.book_new();
-      const ws1 = XLSX.utils.json_to_sheet(eventList);
-      XLSX.utils.book_append_sheet(wb, ws1, "Etkinlikler");
+      const workbook = new ExcelJS.Workbook();
       
-      const ws2 = XLSX.utils.json_to_sheet(unitSummary);
-      XLSX.utils.book_append_sheet(wb, ws2, "Birim Özetleri");
+      const ws1 = workbook.addWorksheet('Etkinlikler');
+      if (eventList.length > 0) {
+        ws1.columns = Object.keys(eventList[0]).map(key => ({ header: key, key: key, width: 20 }));
+        ws1.addRows(eventList);
+      }
       
-      const ws3 = XLSX.utils.json_to_sheet(logisticsList);
-      XLSX.utils.book_append_sheet(wb, ws3, "Lojistik Raporu");
+      const ws2 = workbook.addWorksheet('Birim Özetleri');
+      if (unitSummary.length > 0) {
+        ws2.columns = Object.keys(unitSummary[0]).map(key => ({ header: key, key: key, width: 20 }));
+        ws2.addRows(unitSummary);
+      }
+      
+      const ws3 = workbook.addWorksheet('Lojistik Raporu');
+      if (logisticsList.length > 0) {
+        ws3.columns = Object.keys(logisticsList[0]).map(key => ({ header: key, key: key, width: 25 }));
+        ws3.addRows(logisticsList);
+      }
 
-      XLSX.writeFile(wb, "Cansagligi_Rapor.xlsx");
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Cansagligi_Rapor.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
 
     } catch (err) {
       console.error(err);
@@ -202,7 +223,7 @@ export default function ReportsExportPage() {
       </div>
 
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '3rem' }}>Yükleniyor...</div>
+        <LoadingState message="Raporlar yükleniyor..." />
       ) : (
         <>
           <div className="card" style={{ marginBottom: '2rem' }}>

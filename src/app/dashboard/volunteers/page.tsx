@@ -3,6 +3,8 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import EmptyState from '@/components/ui/EmptyState';
+import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
 import { Users, Search, Filter, Trophy, School, MapPin, GraduationCap } from 'lucide-react';
@@ -193,11 +195,14 @@ export default function VolunteersPage() {
         <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>👥 Üniversite Gönüllü Havuzu</h3>
 
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>Yükleniyor...</div>
+          <LoadingState message="Gönüllüler yükleniyor..." minHeight="200px" />
         ) : filteredVolunteers.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-            Kriterlere uygun kayıtlı gönüllü bulunamadı.
-          </div>
+          <EmptyState 
+            icon={Users} 
+            title="Gönüllü Bulunamadı" 
+            description="Kriterlere uygun kayıtlı gönüllü bulunamadı." 
+            minHeight="200px" 
+          />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>

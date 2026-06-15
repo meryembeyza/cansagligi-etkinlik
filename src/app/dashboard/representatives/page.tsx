@@ -3,10 +3,12 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import EmptyState from '@/components/ui/EmptyState';
+import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
 import { supabase } from '@/lib/supabase';
 import { Users, Filter, MessageSquare, Trash2, Edit2, Download, Search, CheckCircle, XCircle, AlertCircle, Eye, Clock } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import Link from 'next/link';
 
 interface Representative {
@@ -213,8 +215,7 @@ export default function RepresentativesPage() {
     );
   }
 
-  // Handle excel export
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     const data = filteredReps.map(r => ({
       'Ad Soyad': r.full_name,
       'E-posta': r.email,
@@ -229,10 +230,22 @@ export default function RepresentativesPage() {
       'Notlar': r.representative_profiles?.notes || ''
     }));
 
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Temsilciler");
-    XLSX.writeFile(wb, `Cansagligi_Temsilciler_${selectedRegion || 'Tum_Bolgeler'}.xlsx`);
+    const workbook = new ExcelJS.Workbook();
+    const ws = workbook.addWorksheet('Temsilciler');
+    if (data.length > 0) {
+      ws.columns = Object.keys(data[0]).map(key => ({ header: key, key: key, width: 20 }));
+      ws.addRows(data);
+    }
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Cansagligi_Temsilciler_${selectedRegion || 'Tum_Bolgeler'}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // Open communication history modal
@@ -465,12 +478,13 @@ export default function RepresentativesPage() {
         <div className="card" style={{ padding: '2rem' }}>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem', color: '#92400e' }}>🕐 Onay Bekleyen Temsilci Kayıtları</h2>
           {isLoading ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Yükleniyor...</div>
+            <LoadingState message="Temsilciler yükleniyor..." />
           ) : pendingReps.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 'var(--radius-md)' }}>
-              <CheckCircle size={40} color="var(--status-success)" style={{ marginBottom: '1rem' }} />
-              <p style={{ color: 'var(--text-muted)' }}>Onay bekleyen temsilci kaydı bulunmuyor. 🎉</p>
-            </div>
+            <EmptyState 
+              icon={CheckCircle} 
+              title="Her Şey Tamam" 
+              description="Onay bekleyen temsilci kaydı bulunmuyor. 🎉" 
+            />
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
@@ -615,11 +629,13 @@ export default function RepresentativesPage() {
           </div>
 
           {isLoading ? (
-            <div style={{ textAlign: 'center', padding: '3rem' }}>Temsilciler yükleniyor...</div>
+            <LoadingState message="Temsilciler yükleniyor..." />
           ) : filteredReps.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-              Arama kriterlerine uygun temsilci bulunamadı.
-            </div>
+            <EmptyState 
+              icon={Users} 
+              title="Temsilci Bulunamadı" 
+              description="Arama kriterlerine uygun temsilci bulunamadı." 
+            />
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>

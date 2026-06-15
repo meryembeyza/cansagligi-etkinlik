@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Bell, CheckCircle2, Menu } from 'lucide-react';
-import { useRole, UserRole } from '@/context/RoleContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useRole } from '@/context/RoleContext';
+import { UserRole } from '@/types';
 import { supabase } from '@/lib/supabase';
 
 export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
@@ -57,7 +59,6 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         <button 
           className="mobile-menu-btn" 
           onClick={onMenuClick} 
-          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'none', color: 'var(--text-main)', padding: '0.25rem' }}
         >
           <Menu size={24} />
         </button>
@@ -66,6 +67,8 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         
+        <ThemeToggle />
+
         <div style={{ position: 'relative' }}>
           <button 
             onClick={() => setIsNotifOpen(!isNotifOpen)}
@@ -143,15 +146,6 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
             </div>
           )}
         </div>
-        <style dangerouslySetInnerHTML={{__html: `
-          .hover-bg-gray:hover { background-color: #f3f4f6; }
-          @media (max-width: 768px) {
-            .mobile-menu-btn { display: flex !important; align-items: center; justify-content: center; }
-            header { padding: 0 1rem !important; }
-          }
-          .mobile-menu-btn:hover { color: #da1c15 !important; }
-        `}} />
-
       </div>
     </header>
   );

@@ -2,14 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import EmptyState from '@/components/ui/EmptyState';
+import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
 import Link from 'next/link';
 import { Plus, Calendar, MapPin, Clock } from 'lucide-react';
+import { AppEvent } from '@/types';
 
 export default function EventsPage() {
-  const { user } = useRole();
-  const [events, setEvents] = useState<any[]>([]);
+  const { user, currentRole } = useRole();
+  const [events, setEvents] = useState<AppEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const isGlobalRole = ['general_admin', 'region_manager', 'design_team', 'resource_manager', 'rep_region_manager', 'rep_coordinator'].includes(currentRole as string);
+  const pageTitle = isGlobalRole ? "Tüm Etkinlikler" : "Etkinliklerim";
+  const pageDesc = isGlobalRole ? "Sistemdeki tüm etkinliklerin listesi" : "Oluşturduğunuz ve dahil olduğunuz etkinliklerin listesi";
 
   useEffect(() => {
     if (!user) return;
@@ -53,8 +60,8 @@ export default function EventsPage() {
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-main)' }}>Etkinliklerim</h1>
-          <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Oluşturduğunuz ve dahil olduğunuz etkinliklerin listesi</p>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-main)' }}>{pageTitle}</h1>
+          <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>{pageDesc}</p>
         </div>
         <Link href="/dashboard/events/new" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Plus size={18} /> Yeni Etkinlik
@@ -62,18 +69,15 @@ export default function EventsPage() {
       </div>
 
       {isLoading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem 0' }}>
-          <div className="spinner" style={{ width: '40px', height: '40px', border: '3px solid var(--color-primary-light)', borderTop: '3px solid var(--color-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-        </div>
+        <LoadingState message="Etkinlikler yükleniyor..." />
       ) : events.length === 0 ? (
-        <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'var(--bg-main)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--text-muted)' }}>
-            <Calendar size={32} />
-          </div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>Henüz etkinlik yok</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Burada oluşturduğunuz etkinlikler listelenecek.</p>
-          <Link href="/dashboard/events/new" className="btn btn-primary">İlk Etkinliğinizi Oluşturun</Link>
-        </div>
+        <EmptyState 
+          icon={Calendar} 
+          title="Henüz etkinlik yok" 
+          description="Burada oluşturduğunuz etkinlikler listelenecek." 
+          actionText="İlk Etkinliğinizi Oluşturun"
+          actionHref="/dashboard/events/new"
+        />
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
           {events.map((event) => (

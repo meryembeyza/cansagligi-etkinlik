@@ -21,27 +21,13 @@ export default function LoginPage() {
       const urlParams = new URLSearchParams(window.location.search);
       const errParam = urlParams.get('error');
       if (errParam === 'not_approved') {
-        setError('Hesabınız alınmıştır ancak henüz yöneticiniz tarafından onaylanmamıştır.');
+        setError('Hesabınız alınmıştır ancak sisteme giriş yapabilmeniz için Genel veya Bölge Sorumluları tarafından onaylanmanız gerekmektedir.');
       } else if (errParam === 'not_found') {
         setError('Kullanıcı profiliniz veritabanında bulunamadı. Lütfen kayıt ekranından yeni bir kayıt oluşturun.');
       } else if (errParam === 'session_error') {
         setError('Oturum bilgileri alınırken bir ağ hatası oluştu. Lütfen tekrar giriş yapın.');
       } else if (errParam === 'no_session') {
         setError('Oturum zaman aşımına uğradı veya bulunamadı. Lütfen tekrar giriş yapın.');
-      }
-      
-      // Kilitlenmiş Supabase Auth lock'larını temizle (giriş yapamama / asılı kalma sorununu çözer)
-      try {
-        const keysToRemove = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (key.startsWith('sb-') || key.includes('auth-token'))) {
-             keysToRemove.push(key);
-          }
-        }
-        keysToRemove.forEach(k => localStorage.removeItem(k));
-      } catch (e) {
-        // Ignore storage errors
       }
     }
   }, []);

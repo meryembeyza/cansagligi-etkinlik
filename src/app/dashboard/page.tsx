@@ -36,6 +36,7 @@ export default function DashboardPage() {
           {currentRole === 'rep_region_manager' && 'Temsilcilikler Birimi Bölge Sorumlusu Paneli'}
           {currentRole === 'rep_coordinator' && 'Temsilcilikler Birimi Koordinatörü Paneli'}
           {currentRole === 'representative' && 'Temsilci Paneli'}
+          {currentRole === 'bursary_student' && 'Öğrenci Paneli'}
         </h1>
         {currentRole === 'unit_head' && (
           <Link href="/dashboard/events/new" className="btn btn-primary" style={{ textDecoration: 'none' }}>
@@ -98,6 +99,23 @@ export default function DashboardPage() {
 
           {currentRole === 'representative' && (
             <RepresentativePanel />
+          )}
+
+          {currentRole === 'bursary_student' && (
+            <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', marginTop: '2rem' }}>
+              <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#f0fdf4', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                <span style={{ fontSize: '2.5rem' }}>🎓</span>
+              </div>
+              <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.75rem', color: '#111827' }}>
+                Öğrenci Paneline Hoş Geldiniz
+              </h2>
+              <p style={{ color: '#4b5563', marginBottom: '2.5rem', maxWidth: '550px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
+                Cansağlığı Vakfı Etkinlik Yönetim Sistemi üzerinden sizin için tanımlanan zorunlu etkinlikleri takip edebilir, RSVP bildirimlerinizi yapabilir ve etkinlik günü yoklamanızı verebilirsiniz.
+              </p>
+              <Link href="/dashboard/bursary-panel" className="btn btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '1rem', fontWeight: 600, borderRadius: '8px' }}>
+                Öğrenci Etkinlik Paneline Git
+              </Link>
+            </div>
           )}
         </>
       )}

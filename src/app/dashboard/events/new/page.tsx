@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Save, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useRole } from '@/context/RoleContext';
 import ImageUpload from '@/components/ImageUpload';
@@ -11,12 +12,24 @@ import ExpertiseMultiSelect from '@/components/ExpertiseMultiSelect';
 type Step = 1 | 2 | 3 | 4;
 
 export default function NewEventPage() {
-  const { currentRole } = useRole();
+  const { currentRole, isLoading } = useRole();
+  const router = useRouter();
+  
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [isSaving, setIsSaving] = useState(false);
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [isDraftLoaded, setIsDraftLoaded] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Client-side yetkilendirme kontrolü
+  useEffect(() => {
+    if (!isLoading && currentRole) {
+      const allowedRoles = ['unit_head', 'admin', 'representative'];
+      if (!allowedRoles.includes(currentRole)) {
+        router.push('/dashboard');
+      }
+    }
+  }, [currentRole, isLoading, router]);
 
   // Form State
   const [formData, setFormData] = useState({
