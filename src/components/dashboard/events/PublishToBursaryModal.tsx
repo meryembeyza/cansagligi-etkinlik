@@ -1,3 +1,4 @@
+﻿import { toast } from 'react-hot-toast';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { X, Upload, Plus, Trash2, Eye, Calendar, MapPin, User, ArrowRight, XCircle } from 'lucide-react';
@@ -33,7 +34,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Turkey's cities for the dropdown
-  const cities = ["Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"];
+  const cities = ["Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Åanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", "Batman", "Åırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"];
 
   const handleSpeakerChange = (index: number, field: string, value: string) => {
     const newSpeakers = [...formData.speakers];
@@ -53,11 +54,11 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 2 * 1024 * 1024) {
-        alert("Dosya boyutu 2MB'ı geçemez.");
+        toast.error("Dosya boyutu 2MB'ı geçemez.");
         return;
       }
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        alert("Sadece JPG, PNG veya WEBP formatları desteklenir.");
+        toast.error("Sadece JPG, PNG veya WEBP formatları desteklenir.");
         return;
       }
       setPosterFile(file);
@@ -67,11 +68,11 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
   const validateAndShowPreview = () => {
     if (!formData.display_title || !formData.event_date || !formData.city) {
-      alert("Lütfen zorunlu alanları (Etkinlik Adı, Tarih ve Şehir) doldurunuz.");
+      toast.error("Lütfen zorunlu alanları (Etkinlik Adı, Tarih ve Åehir) doldurunuz.");
       return;
     }
     if (formData.requires_registration && !formData.registration_url.startsWith('https://')) {
-      alert("Başvuru linki 'https://' ile başlamalıdır.");
+      toast.success("Başvuru linki 'https://' ile başlamalıdır.");
       return;
     }
     setShowPreview(true);
@@ -247,7 +248,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
             </div>
             
             <div>
-              <label className="label">Şehir *</label>
+              <label className="label">Åehir *</label>
               <select className="input" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} required>
                 <option value="">Seçiniz</option>
                 {cities.sort().map(city => <option key={city} value={city}>{city}</option>)}
@@ -308,7 +309,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
             <label className="label">Afiş Yükle (Maksimum 2MB, JPG/PNG/WEBP)</label>
             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
               <div style={{ flex: 1 }}>
-                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', border: '2px dashed #cbd5e1', borderRadius: 'var(--radius-md)', cursor: 'pointer', backgroundColor: '#f8fafc', transition: 'border-color 0.2s' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', border: '2px dashed var(--border-color)', borderRadius: 'var(--radius-md)', cursor: 'pointer', backgroundColor: 'var(--bg-nested)', transition: 'border-color 0.2s' }}>
                   <Upload size={24} color="#94a3b8" style={{ marginBottom: '0.5rem' }} />
                   <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>Görsel seçmek için tıklayın</span>
                   <input type="file" accept="image/jpeg,image/png,image/webp" style={{ display: 'none' }} onChange={handleFileChange} />
@@ -372,3 +373,4 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
     </div>
   );
 }
+

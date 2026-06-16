@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,7 +78,7 @@ export default function BursaryPanelPage() {
     if (!activeEvent || !rsvpMode) return;
 
     if (rsvpMode === 'not_attending' && !excuseText.trim()) {
-      alert('Lütfen geçerli bir mazeret giriniz.');
+      toast.success('Lütfen geçerli bir mazeret giriniz.');
       return;
     }
 
@@ -107,14 +108,14 @@ export default function BursaryPanelPage() {
         if (error) throw error;
       }
 
-      alert('RSVP durumunuz başarıyla kaydedildi.');
+      toast.success('RSVP durumunuz başarıyla kaydedildi.');
       setActiveEvent(null);
       setRsvpMode(null);
       setExcuseText('');
       fetchEvents();
     } catch (err: any) {
       console.error(err);
-      alert('Hata: ' + err.message);
+      toast.error('Hata: ' + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -130,10 +131,10 @@ export default function BursaryPanelPage() {
         .eq('id', attendanceId);
 
       if (error) throw error;
-      alert('Yoklamanız başarıyla alındı!');
+      toast.success('Yoklamanız başarıyla alındı!');
       fetchEvents();
     } catch (err: any) {
-      alert('Hata: ' + err.message);
+      toast.error('Hata: ' + err.message);
     }
   };
 
@@ -252,16 +253,16 @@ export default function BursaryPanelPage() {
                   backgroundColor: rsvpMode === 'attending' ? '#ecfdf5' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'attending' ? 'var(--status-success)' : 'inherit'
                 }}
               >
-                ✅ Katılacağım
+                âœ… Katılacağım
               </button>
               <button 
                 onClick={() => setRsvpMode('not_attending')}
                 style={{ 
                   padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'not_attending' ? '2px solid var(--status-danger)' : '1px solid var(--border-color)', 
-                  backgroundColor: rsvpMode === 'not_attending' ? '#fef2f2' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'not_attending' ? 'var(--status-danger)' : 'inherit'
+                  backgroundColor: rsvpMode === 'not_attending' ? 'var(--bg-danger-light)' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'not_attending' ? 'var(--status-danger)' : 'inherit'
                 }}
               >
-                ❌ Katılamayacağım
+                âŒ Katılamayacağım
               </button>
             </div>
 
@@ -292,3 +293,4 @@ export default function BursaryPanelPage() {
     </div>
   );
 }
+

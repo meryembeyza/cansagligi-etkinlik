@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -157,14 +158,14 @@ export default function RepresentativesPage() {
         .from('representative_profiles')
         .upsert([{ user_id: repId, status: 'Aktif', start_date: new Date().toISOString().split('T')[0] }]);
 
-      alert(`${repName} başarıyla onaylandı!`);
+      toast.success(`${repName} başarıyla onaylandı!`);
       fetchReps();
     } catch (err: any) {
-      alert('Onaylama sırasında hata: ' + err.message);
+      toast.error('Onaylama sırasında hata: ' + err.message);
     }
   };
 
-  // Reject (soft — do NOT delete, just keep unapproved, mark as rejected)
+  // Reject (soft â€” do NOT delete, just keep unapproved, mark as rejected)
   const handleReject = async (repId: string, repName: string) => {
     if (!confirm(`${repName} adlı temsilciyi reddetmek istiyor musunuz? Hesap silinmeyecek, onay bekleyenler listesinde kalıp "Reddedildi" olarak işaretlenecektir.`)) return;
     try {
@@ -173,26 +174,26 @@ export default function RepresentativesPage() {
         .update({ club_duty: `[Reddedildi: ${new Date().toLocaleDateString('tr-TR')}]` })
         .eq('id', repId);
       if (error) throw error;
-      alert(`${repName} reddedildi ve işaretlendi.`);
+      toast.success(`${repName} reddedildi ve işaretlendi.`);
       fetchReps();
     } catch (err: any) {
-      alert('İşlem sırasında hata: ' + err.message);
+      toast.error('İşlem sırasında hata: ' + err.message);
     }
   };
 
   // Permanently delete a pending (unapproved) representative
   const handleDeletePending = async (repId: string, repName: string) => {
-    if (!confirm(`⚠️ ${repName} adlı temsilcinin kaydını kalıcı olarak SILMEK istediğinizden emin misiniz? Bu işlem geri alınamaz!`)) return;
+    if (!confirm(`âš ï¸ ${repName} adlı temsilcinin kaydını kalıcı olarak SILMEK istediğinizden emin misiniz? Bu işlem geri alınamaz!`)) return;
     try {
       const { error } = await supabase
         .from('users')
         .delete()
         .eq('id', repId);
       if (error) throw error;
-      alert(`${repName} adlı temsilci kalıcı olarak silindi.`);
+      toast.success(`${repName} adlı temsilci kalıcı olarak silindi.`);
       fetchReps();
     } catch (err: any) {
-      alert('Silme işlemi sırasında hata: ' + err.message);
+      toast.error('Silme işlemi sırasında hata: ' + err.message);
     }
   };
 
@@ -303,10 +304,10 @@ export default function RepresentativesPage() {
       // Reset & refresh
       setIsCommModalOpen(false);
       fetchReps();
-      alert('İletişim başarıyla kaydedildi!');
+      toast.success('İletişim başarıyla kaydedildi!');
     } catch (err) {
       console.error("Communication logging error:", err);
-      alert('Hata oluştu, iletişim kaydedilemedi.');
+      toast.error('Hata oluştu, iletişim kaydedilemedi.');
     }
   };
 
@@ -363,10 +364,10 @@ export default function RepresentativesPage() {
 
       setIsEditModalOpen(false);
       fetchReps();
-      alert('Temsilci başarıyla güncellendi!');
+      toast.success('Temsilci başarıyla güncellendi!');
     } catch (err) {
       console.error("Save representative changes error:", err);
-      alert('Güncelleme sırasında hata oluştu.');
+      toast.error('Güncelleme sırasında hata oluştu.');
     }
   };
 
@@ -382,10 +383,10 @@ export default function RepresentativesPage() {
 
       if (error) throw error;
       fetchReps();
-      alert('Temsilci başarıyla silindi!');
+      toast.success('Temsilci başarıyla silindi!');
     } catch (err) {
       console.error("Delete representative error:", err);
-      alert('Silme işlemi başarısız oldu.');
+      toast.error('Silme işlemi başarısız oldu.');
     }
   };
 
@@ -482,7 +483,7 @@ export default function RepresentativesPage() {
           ) : pendingReps.length === 0 ? (
             <EmptyState 
               icon={CheckCircle} 
-              title="Her Şey Tamam" 
+              title="Her Åey Tamam" 
               description="Onay bekleyen temsilci kaydı bulunmuyor. 🎉" 
             />
           ) : (
@@ -573,7 +574,7 @@ export default function RepresentativesPage() {
             
             {isRegionManager ? (
               <div style={{ padding: '0.5rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', fontWeight: 700, borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                📍 {userRegion.toUpperCase()}
+                📝 {userRegion.toUpperCase()}
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -775,7 +776,7 @@ export default function RepresentativesPage() {
                 className="btn btn-primary"
                 style={{ flex: 1, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', color: 'white', fontSize: '0.875rem' }}
               >
-                ✉️ E-posta Gönder
+                âœ‰ï¸ E-posta Gönder
               </a>
             </div>
 
@@ -842,7 +843,7 @@ export default function RepresentativesPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>📝 Temsilci Bilgilerini Güncelle</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>📜 Temsilci Bilgilerini Güncelle</h2>
               <button onClick={() => setIsEditModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -925,3 +926,4 @@ export default function RepresentativesPage() {
     </div>
   );
 }
+

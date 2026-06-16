@@ -169,7 +169,7 @@ export default function RegisterPage() {
 
   const redPrimary = '#da1c15';
 const redHover = '#b91610';
-const redLight = '#fef2f2';
+const redLight = 'var(--bg-danger-light)';
 const tealPrimary = '#0e9b8f';
 
   if (success) {
@@ -193,27 +193,27 @@ const tealPrimary = '#0e9b8f';
             </p>
           </div>
 
-          <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.25rem', textAlign: 'left', marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ backgroundColor: 'var(--bg-nested)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '1.25rem', textAlign: 'left', marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Onay Süreci
             </h3>
             <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#f1f5f9', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>1</div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>1</div>
                 Başvurunuz inceleniyor
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#f1f5f9', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>2</div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>2</div>
                 Genel Yetkili onayı
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#f1f5f9', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>3</div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>3</div>
                 WhatsApp bildirimi alırsınız
               </li>
             </ul>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem', color: '#334155', backgroundColor: '#f1f5f9', padding: '0.75rem', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem', color: 'var(--text-main)', backgroundColor: 'var(--border-color)', padding: '0.75rem', borderRadius: '8px' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
             </svg>
@@ -222,7 +222,7 @@ const tealPrimary = '#0e9b8f';
             </span>
           </div>
 
-          <div style={{ display: 'inline-block', backgroundColor: '#f1f5f9', color: '#475569', fontSize: '0.75rem', fontWeight: 600, padding: '0.25rem 0.75rem', borderRadius: '9999px', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'inline-block', backgroundColor: 'var(--border-color)', color: '#475569', fontSize: '0.75rem', fontWeight: 600, padding: '0.25rem 0.75rem', borderRadius: '9999px', marginBottom: '2.5rem' }}>
             Genellikle 1–3 iş günü
           </div>
 
@@ -272,34 +272,46 @@ const tealPrimary = '#0e9b8f';
   }
 
   return (
-    <div className="auth-layout">
-      
-      <div className="auth-card">
+    <div style={{ colorScheme: 'light', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem', background: 'radial-gradient(ellipse 500px 400px at 95% 0%, rgba(220,38,38,0.04) 0%, transparent 60%), linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)' }}>
+      <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e5e7eb', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', padding: '48px 56px', maxWidth: '680px', margin: '40px auto', width: '100%' }}>
         
-        <Link href="/login" className="auth-back-link">
+        <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#6b7280', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none', marginBottom: '1.5rem' }}>
           <ChevronLeft size={16} /> Geri Dön
         </Link>
 
-        <div className="auth-logo-container">
-          <img src="/logo.png" alt="Cansağlığı Logo" className="auth-logo" />
-          <h1 className="auth-title">Yeni Kayıt Oluştur</h1>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <img src="/logo.png" alt="Cansağlığı Logo" style={{ width: '64px', height: 'auto', marginBottom: '24px' }} />
+          <h1 style={{ color: '#111827', fontSize: '1.75rem', fontWeight: 700, margin: '0 0 8px 0' }}>Yeni Kayıt Oluştur</h1>
+          <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>Hesabınızı oluşturmak için bilgilerinizi girin.</p>
         </div>
 
         {/* Progress Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '50%', left: '0', right: '0', height: '2px', backgroundColor: 'var(--border-color)', zIndex: 0, transform: 'translateY(-50%)' }} />
-          <div style={{ position: 'absolute', top: '50%', left: '0', height: '2px', backgroundColor: redPrimary, zIndex: 0, transform: 'translateY(-50%)', width: `${((step - 1) / (steps.length - 1)) * 100}%`, transition: 'width 0.3s ease' }} />
+        <div style={{ margin: '32px 0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '16px', left: '0', right: '0', height: '2px', backgroundColor: '#e5e7eb', zIndex: 0 }} />
+          <div style={{ position: 'absolute', top: '16px', left: '0', height: '2px', backgroundColor: '#dc2626', zIndex: 0, width: `${((step - 1) / (steps.length - 1)) * 100}%`, transition: 'width 0.3s ease' }} />
           
-          {steps.map((s) => (
-            <div key={s.num} style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', width: '80px' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: step >= s.num ? redPrimary : '#fff', border: `2px solid ${step >= s.num ? redPrimary : '#d1d5db'}`, color: step >= s.num ? '#fff' : '#6b7280', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 600, transition: 'all 0.3s ease' }}>
-                {step > s.num ? <Check size={16} /> : s.num}
+          {steps.map((s) => {
+            const isActive = step === s.num;
+            const isCompleted = step > s.num;
+            return (
+              <div key={s.num} style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '80px' }}>
+                <div style={{ 
+                  width: '32px', height: '32px', borderRadius: '50%', 
+                  backgroundColor: (isActive || isCompleted) ? '#dc2626' : '#ffffff', 
+                  border: `2px solid ${(isActive || isCompleted) ? '#dc2626' : '#d1d5db'}`, 
+                  color: (isActive || isCompleted) ? '#ffffff' : '#9ca3af', 
+                  boxShadow: isActive ? '0 0 0 4px rgba(220,38,38,0.15)' : 'none',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                  fontSize: '0.875rem', fontWeight: 600, transition: 'all 0.3s ease' 
+                }}>
+                  {isCompleted ? <Check size={16} /> : s.num}
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: isActive ? 600 : 400, color: isActive ? '#dc2626' : '#9ca3af', textAlign: 'center' }}>
+                  {s.title}
+                </span>
               </div>
-              <span style={{ fontSize: '0.75rem', fontWeight: step >= s.num ? 600 : 400, color: step >= s.num ? '#1f2937' : '#6b7280', textAlign: 'center' }}>
-                {s.title}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {error && (
@@ -440,7 +452,7 @@ const tealPrimary = '#0e9b8f';
                     {errors.email && <div className="error-text">{errors.email}</div>}
                   </div>
                   <div>
-                    <label className="label">Telefon Numarası * (WhatsApp)</label>
+                    <label className="label">Telefon Numarası *</label>
                     <input type="text" className="input" value={formData.phone} onChange={e => { handlePhoneChange(e); setErrors(prev => ({...prev, phone: ''})); }} placeholder="+90 5XX XXX XX XX" style={{ borderColor: errors.phone ? '#dc2626' : undefined }} />
                     {errors.phone && <div className="error-text">{errors.phone}</div>}
                   </div>
@@ -465,7 +477,7 @@ const tealPrimary = '#0e9b8f';
                   </div>
                 </div>
                 <div>
-                  <label className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : '#e2e8f0'}` }}>
+                  <label className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : 'var(--border-color)'}` }}>
                     <input type="checkbox" checked={formData.kvkkApproved} onChange={e => { setFormData({...formData, kvkkApproved: e.target.checked}); setErrors(prev => ({...prev, kvkkApproved: ''})); }} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
                     <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
                       Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve WhatsApp bildirimleri için işlenmesine <strong>açık rıza gösteriyorum.</strong>
@@ -477,17 +489,17 @@ const tealPrimary = '#0e9b8f';
             )}
           </div>
 
-          <div className="btn-group">
-            <button type="button" onClick={prevStep} disabled={step === 1 || isLoading} className="btn" style={{ backgroundColor: 'transparent', color: step === 1 ? '#d1d5db' : '#4b5563', border: `1px solid ${step === 1 ? '#e5e7eb' : '#d1d5db'}`, padding: '0.5rem 1.5rem', cursor: step === 1 ? 'not-allowed' : 'pointer' }}>
+          <div style={{ borderTop: '1px solid #f3f4f6', margin: '32px 0 24px', paddingTop: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button type="button" onClick={prevStep} disabled={step === 1 || isLoading} style={{ background: '#ffffff', border: '1.5px solid #d1d5db', color: '#374151', borderRadius: '8px', padding: '10px 24px', cursor: step === 1 ? 'not-allowed' : 'pointer', opacity: step === 1 ? 0.5 : 1, transition: 'all 150ms ease', fontWeight: 500 }} onMouseEnter={e => { if(step !== 1) { e.currentTarget.style.borderColor = '#9ca3af'; e.currentTarget.style.backgroundColor = '#f9fafb'; } }} onMouseLeave={e => { if(step !== 1) { e.currentTarget.style.borderColor = '#d1d5db'; e.currentTarget.style.backgroundColor = '#ffffff'; } }}>
               Geri
             </button>
             
             {step < 4 ? (
-              <button type="button" onClick={nextStep} className="btn" style={{ backgroundColor: redPrimary, color: 'white', padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: 'none' }}>
+              <button type="button" onClick={nextStep} style={{ background: '#dc2626', color: 'white', borderRadius: '8px', padding: '10px 28px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', border: 'none', cursor: 'pointer', transition: 'all 150ms ease', boxShadow: '0 4px 12px rgba(220,38,38,0.30)' }} onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#b91c1c'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#dc2626'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 İleri <ChevronRight size={16} />
               </button>
             ) : (
-              <button type="submit" disabled={isLoading} className="btn" style={{ backgroundColor: redPrimary, color: 'white', padding: '0.5rem 2rem', fontWeight: 600, border: 'none' }}>
+              <button type="submit" disabled={isLoading} style={{ background: '#dc2626', color: 'white', borderRadius: '8px', padding: '10px 28px', fontWeight: 600, border: 'none', cursor: isLoading ? 'not-allowed' : 'pointer', transition: 'all 150ms ease', boxShadow: '0 4px 12px rgba(220,38,38,0.30)' }} onMouseEnter={e => { if(!isLoading) { e.currentTarget.style.backgroundColor = '#b91c1c'; e.currentTarget.style.transform = 'translateY(-1px)'; } }} onMouseLeave={e => { if(!isLoading) { e.currentTarget.style.backgroundColor = '#dc2626'; e.currentTarget.style.transform = 'translateY(0)'; } }}>
                 {isLoading ? 'Kaydediliyor...' : 'Kaydı Tamamla'}
               </button>
             )}
@@ -498,6 +510,66 @@ const tealPrimary = '#0e9b8f';
           @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
+          }
+          .step-title {
+            color: #111827 !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            padding-bottom: 16px !important;
+            border-bottom: 2px solid #fee2e2 !important;
+            border-left: 3px solid #dc2626 !important;
+            padding-left: 12px !important;
+            margin-bottom: 28px !important;
+          }
+          .label {
+            color: #374151 !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            margin-bottom: 6px !important;
+            display: block;
+          }
+          .input {
+            background-color: #ffffff !important;
+            border: 1.5px solid #d1d5db !important;
+            border-radius: 10px !important;
+            padding: 12px 16px !important;
+            font-size: 0.95rem !important;
+            color: #111827 !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+            width: 100%;
+            transition: all 150ms ease;
+          }
+          select.input {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px !important;
+          }
+          .input:focus {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.10) !important;
+            outline: none !important;
+          }
+          .input::placeholder {
+            color: #9ca3af !important;
+          }
+          .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+          }
+          .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+          }
+          @media (max-width: 640px) {
+            .form-grid-2 {
+              grid-template-columns: 1fr;
+            }
           }
         `}} />
       </div>

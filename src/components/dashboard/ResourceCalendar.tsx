@@ -23,7 +23,7 @@ import {
 // Kaynak kategorileri ve ikonları
 const RESOURCE_CATEGORIES = [
   { id: 'Araç', name: 'Ulaşım / Servis', icon: Truck, color: '#eab308', bg: '#fef9c3', text: '#854d0e' },
-  { id: 'TemelYaşamDesteği', name: 'Temel Yaşam Desteği Malz.', icon: Heart, color: '#3b82f6', bg: '#dbeafe', text: '#1e40af' },
+  { id: 'TemelYaşamDesteği', name: 'Temel Yaşam Desteği Malz.', icon: Heart, color: '#3b82f6', bg: '#dbeafe', text: 'var(--status-info)' },
   { id: 'İleriYaşamDesteği', name: 'İleri Yaşam Desteği Malz.', icon: ShieldAlert, color: '#ef4444', bg: '#fee2e2', text: '#991b1b' },
   { id: 'SüturEğitimi', name: 'Sütur Eğitimi Malz.', icon: Scissors, color: '#ec4899', bg: '#fce7f3', text: '#9d174d' },
   { id: 'Eşantiyon', name: 'Aromaterapi Yağları', icon: Droplet, color: '#10b981', bg: '#d1fae5', text: '#065f46' },
@@ -325,7 +325,7 @@ export default function ResourceCalendar() {
                     minWidth: '220px', 
                     padding: '1rem', 
                     textAlign: 'left', 
-                    borderBottom: '2px solid #e2e8f0', 
+                    borderBottom: '2px solid var(--border-color)', 
                     boxShadow: '2px 0 5px rgba(0,0,0,0.02)'
                   }}>
                     <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -342,11 +342,11 @@ export default function ResourceCalendar() {
                       <th key={day} style={{ 
                         padding: '0.75rem 0.25rem', 
                         textAlign: 'center', 
-                        borderBottom: '2px solid #e2e8f0',
-                        backgroundColor: isToday(day) ? '#fee2e2' : isWeekend ? '#f8fafc' : 'transparent',
-                        color: isToday(day) ? '#ef4444' : isWeekend ? '#64748b' : '#334155',
+                        borderBottom: '2px solid var(--border-color)',
+                        backgroundColor: isToday(day) ? '#fee2e2' : isWeekend ? 'var(--bg-nested)' : 'transparent',
+                        color: isToday(day) ? '#ef4444' : isWeekend ? '#64748b' : 'var(--text-main)',
                         minWidth: '40px',
-                        borderLeft: '1px solid #f1f5f9'
+                        borderLeft: '1px solid var(--border-color)'
                       }}>
                         <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', opacity: 0.8 }}>{wDay}</div>
                         <div style={{ fontSize: '1rem', fontWeight: 800, marginTop: '2px' }}>{day}</div>
@@ -360,7 +360,7 @@ export default function ResourceCalendar() {
                 {RESOURCE_CATEGORIES.map(category => {
                   const IconComponent = category.icon;
                   return (
-                    <tr key={category.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <tr key={category.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       
                       {/* Sticky Ürün Hücresi */}
                       <td style={{ 
@@ -369,7 +369,7 @@ export default function ResourceCalendar() {
                         backgroundColor: 'var(--bg-card)', 
                         zIndex: 10, 
                         padding: '1.25rem 1rem', 
-                        borderBottom: '1px solid #f1f5f9',
+                        borderBottom: '1px solid var(--border-color)',
                         boxShadow: '2px 0 5px rgba(0,0,0,0.02)',
                         minWidth: '220px'
                       }}>
@@ -412,7 +412,7 @@ export default function ResourceCalendar() {
                             padding: '0.5rem 0.25rem', 
                             textAlign: 'center', 
                             backgroundColor: isToday(day) ? '#fff5f5' : isWeekend ? '#fafbfd' : 'transparent',
-                            borderLeft: '1px solid #f1f5f9',
+                            borderLeft: '1px solid var(--border-color)',
                             position: 'relative',
                             height: '75px'
                           }}>
@@ -455,13 +455,13 @@ export default function ResourceCalendar() {
                                   alignItems: 'center', 
                                   justifyContent: 'center',
                                   fontSize: '0.875rem',
-                                  color: '#cbd5e1',
+                                  color: 'var(--border-color)',
                                   cursor: 'default',
                                   transition: 'background-color 0.15s ease, color 0.15s ease',
                                   borderRadius: '6px'
                                 }}
-                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f1f5f9'; e.currentTarget.style.color = 'var(--color-primary)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#cbd5e1'; }}
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--color-primary)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--border-color)'; }}
                               >
                                 +
                               </div>
@@ -511,12 +511,12 @@ export default function ResourceCalendar() {
             
             {/* Modal Header */}
             <div style={{ 
-              backgroundColor: RESOURCE_CATEGORIES.find(c => c.id === selectedRes.type)?.bg || '#f1f5f9',
+              backgroundColor: RESOURCE_CATEGORIES.find(c => c.id === selectedRes.type)?.bg || 'var(--border-color)',
               padding: '1.5rem',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              borderBottom: '1px solid #e2e8f0'
+              borderBottom: '1px solid var(--border-color)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div style={{ 
@@ -561,32 +561,32 @@ export default function ResourceCalendar() {
               </div>
 
               {/* Detay Kartı */}
-              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ backgroundColor: 'var(--bg-nested)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Birim</div>
-                  <div style={{ fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>{selectedRes.unitName || 'Bilinmeyen Birim'}</div>
+                  <div style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem' }}>{selectedRes.unitName || 'Bilinmeyen Birim'}</div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.5rem' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Tarih & Zaman</div>
-                    <div style={{ fontWeight: 600, color: '#334155', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                       <Calendar size={14} color="#64748b" /> {new Date(selectedRes.date).toLocaleDateString('tr-TR', { dateStyle: 'long' })}
                     </div>
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Miktar</div>
-                    <div style={{ fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>{selectedRes.quantity} Adet</div>
+                    <div style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem' }}>{selectedRes.quantity} Adet</div>
                   </div>
                 </div>
 
-                <hr style={{ border: 0, borderTop: '1px solid #e2e8f0', margin: '0.25rem 0' }} />
+                <hr style={{ border: 0, borderTop: '1px solid var(--border-color)', margin: '0.25rem 0' }} />
 
                 <div>
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <Info size={14} color="#64748b" /> TALEP DETAYLARI
                   </div>
-                  <div style={{ fontSize: '0.875rem', color: '#475569', lineHeight: '1.5', whiteSpace: 'pre-wrap', backgroundColor: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '0.875rem', color: '#475569', lineHeight: '1.5', whiteSpace: 'pre-wrap', backgroundColor: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                     {selectedRes.details}
                   </div>
                 </div>
@@ -595,7 +595,7 @@ export default function ResourceCalendar() {
             </div>
 
             {/* Modal Footer */}
-            <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc' }}>
+            <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-nested)' }}>
               <span style={{ fontSize: '0.75rem', color: 'var(--status-success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 ● REZERVASYON ONAYLI
               </span>

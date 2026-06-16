@@ -8,10 +8,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import RevisionModal from '@/components/events/RevisionModal';
 import PublishToBursaryModal from '@/components/dashboard/events/PublishToBursaryModal';
-
+import { toast } from 'react-hot-toast';
+import { usePrompt } from '@/components/ui/usePrompt';
 export default function EventDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { currentRole, user } = useRole();
+  const { PromptModal, prompt } = usePrompt();
   const [event, setEvent] = useState<any>(null);
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [revisions, setRevisions] = useState<any[]>([]);
@@ -100,10 +102,14 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       // E-posta gönderimi
       const { data: creator } = await supabase.from('users').select('email').eq('id', event.created_by).single();
       if (creator && creator.email) {
+        const { data: { session } } = await supabase.auth.getSession();
         // Arayüzü bekletmemek için await kullanılmıyor - Fire and forget
         fetch('/api/send-email', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token || ''}`
+          },
           body: JSON.stringify({
             to: creator.email,
             subject: pendingStatus === 'Onaylandı' ? 'Etkinliğiniz Onaylandı 🎉' : 'Etkinlik Durumu Güncellendi',
@@ -115,10 +121,10 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       setEvent({ ...event, status: pendingStatus, admin_notes: adminNote || event.admin_notes });
       setShowAdminNoteModal(false);
       setAdminNote('');
-      alert(`Etkinlik durumu "${pendingStatus}" olarak güncellendi.`);
+      toast.success(`Etkinlik durumu "${pendingStatus}" olarak güncellendi.`);
     } catch (err: any) {
       console.error(err);
-      alert('İşlem başarısız: ' + (err.message || 'Bilinmeyen Hata'));
+      toast.error('İşlem başarısız: ' + (err.message || 'Bilinmeyen Hata'));
     } finally {
       setProcessing(false);
     }
@@ -129,7 +135,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     
     // Eğer reddediliyorsa not isteyelim
     if (newStatus === 'Reddedildi') {
-      const reason = window.prompt(`"${speakerName}" isimli konuşmacıyı reddediyorsunuz.\nLütfen reddetme nedeninizi yazın (Sorumluya iletilecektir):`);
+      const reason = await prompt(`"${speakerName}" isimli konuşmacıyı reddediyorsunuz.\nLütfen reddetme nedeninizi yazın (Sorumluya iletilecektir):`);
       if (reason === null) return; // İptal edildi
       cancelReason = reason;
     }
@@ -160,13 +166,13 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         }]);
       }
     } catch (err) {
-      alert('Konuşmacı durumu güncellenemedi.');
+      toast.error('Konuşmacı durumu güncellenemedi.');
       console.error(err);
     }
   };
 
   const handleLogisticStatus = async (type: string, index: number | null, newStatus: string) => {
-    const reason = window.prompt(`${type.toUpperCase()} talebini ${newStatus} yapıyorsunuz.\nLütfen bir not girin (Miktar değişikliği veya red nedeni vb.):`);
+    const reason = await prompt(`${type.toUpperCase()} talebini ${newStatus} yapıyorsunuz.\nLütfen bir not girin (Miktar değişikliği veya red nedeni vb.):`);
     if (reason === null && newStatus === 'Reddedildi') {
       return; // Red işlemi için not zorunlu gibi düşünülebilir veya iptal edildi
     }
@@ -221,7 +227,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       }]);
       
     } catch (err) {
-      alert('Lojistik durumu güncellenemedi.');
+      toast.error('Lojistik durumu güncellenemedi.');
       console.error(err);
     } finally {
       setProcessing(false);
@@ -245,13 +251,13 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       html2pdf().set(opt).from(element).save();
     } catch (error) {
       console.error('PDF oluşturulurken hata:', error);
-      alert('PDF oluşturulurken bir hata oluştu.');
+      toast.error('PDF oluşturulurken bir hata oluştu.');
     }
   };
 
   const handleCancelEvent = async () => {
-    const confirmCancel = window.confirm("Bu Ramazan etkinliğini iptal etmek istediğinize emin misiniz?");
-    if (!confirmCancel) return;
+    const confirmCancel = await prompt("Bu Ramazan etkinliğini iptal etmek istediğinize emin misiniz? Lütfen nedenini girin:");
+    if (confirmCancel === null) return;
 
     setProcessing(true);
     try {
@@ -263,10 +269,10 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       if (error) throw error;
 
       setEvent({ ...event, status: 'İptal Edildi' });
-      alert("Etkinlik başarıyla 'İptal Edildi' olarak güncellendi.");
+      toast.success("Etkinlik başarıyla 'İptal Edildi' olarak güncellendi.");
     } catch (err: any) {
       console.error(err);
-      alert("İptal işlemi sırasında bir hata oluştu: " + (err.message || err));
+      toast.error("İptal işlemi sırasında bir hata oluştu: " + (err.message || err));
     } finally {
       setProcessing(false);
     }
@@ -285,6 +291,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+      
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
           body * { visibility: hidden; }
@@ -314,9 +321,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           onClose={() => setShowPublishModal(false)}
           onSuccess={() => {
             setShowPublishModal(false);
-            setTimeout(() => {
-              alert('Harika! Etkinlik başarıyla Bursiyer Paneline eklendi ve yayına alındı.');
-            }, 100);
+            toast.success('Harika! Etkinlik başarıyla Bursiyer Paneline eklendi ve yayına alındı.');
           }}
         />
       )}
@@ -345,8 +350,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <button 
                 className="btn btn-primary" 
                 onClick={() => {
-                  if (pendingStatus === 'Reddedildi' && !adminNote) {
-                    alert('Reddederken neden belirtmeniz zorunludur.');
+                  if (pendingStatus === 'Reddedildi' && !adminNote.trim()) {
+                    toast.error('Reddederken neden belirtmeniz zorunludur.');
                     return;
                   }
                   handleStatusChangeSubmit();
@@ -425,8 +430,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
         {/* Admin Notes Section */}
         {event.admin_notes && (
-          <div style={{ padding: '1.5rem', backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#1e40af', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-info-light)', border: '1px solid var(--border-info)', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--status-info)', fontWeight: 700, marginBottom: '0.5rem' }}>
               <AlertTriangle size={18} /> Yönetim Notu
             </div>
             <div style={{ color: '#1e3a8a', fontSize: '0.9rem', lineHeight: 1.5 }}>
@@ -484,7 +489,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--color-primary)' }}><strong>Neden:</strong> {s.select_reason}</div>
                     
                     {s.cancel_reason && s.status === 'Reddedildi' && (
-                      <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--status-danger)', backgroundColor: '#fef2f2', padding: '0.5rem', borderRadius: '4px' }}>
+                      <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--status-danger)', backgroundColor: 'var(--bg-danger-light)', padding: '0.5rem', borderRadius: '4px' }}>
                         <strong>Red Nedeni:</strong> {s.cancel_reason}
                       </div>
                     )}
@@ -515,8 +520,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               
               {/* Shuttle */}
               {logistics.hasShuttle && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: '#334155' }}>🚐 Araç / Servis Talebi</h4>
+                <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>🚐 Araç / Servis Talebi</h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.875rem' }}>
                     <div><span style={{ color: 'var(--text-muted)' }}>Tarih:</span> <strong>{logistics.shuttle?.date || '-'}</strong></div>
                     <div><span style={{ color: 'var(--text-muted)' }}>Araç Talebi:</span> <strong>{logistics.shuttle?.description || '-'}</strong></div>
@@ -526,7 +531,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     <div><span style={{ color: 'var(--text-muted)' }}>Sorumlu:</span> <strong>{logistics.shuttle?.vehicleManager || '-'}</strong></div>
                   </div>
                   {logistics.shuttle?.adminNote && (
-                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: '#1e40af' }}>
+                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-info-light)', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: 'var(--status-info)' }}>
                       <strong>Yönetici Notu:</strong> {logistics.shuttle.adminNote}
                     </div>
                   )}
@@ -546,8 +551,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
               {/* Aroma */}
               {logistics.hasAroma && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: '#334155' }}>🌿 Aromaterapi Yağ Talebi</h4>
+                <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>🌿 Aromaterapi Yağ Talebi</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
                     {(logistics.aroma || []).map((a: any, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
@@ -559,7 +564,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                         </div>
                         {a.notes && <div style={{ marginTop: '0.5rem', color: 'var(--text-muted)' }}><em>Not: {a.notes}</em></div>}
                         {a.adminNote && (
-                          <div style={{ marginTop: '0.75rem', padding: '0.5rem', backgroundColor: '#eff6ff', borderRadius: '4px', color: '#1e40af' }}>
+                          <div style={{ marginTop: '0.75rem', padding: '0.5rem', backgroundColor: 'var(--bg-info-light)', borderRadius: '4px', color: 'var(--status-info)' }}>
                             <strong>Yönetici Notu:</strong> {a.adminNote}
                           </div>
                         )}
@@ -582,12 +587,12 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
               {/* Temel Yaşam Desteği */}
               {logistics.hasBasicLifeSupport && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#334155' }}>🫁 Temel Yaşam Desteği Malzemeleri</h4>
+                <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-main)' }}>🫁 Temel Yaşam Desteği Malzemeleri</h4>
                   <p style={{ fontSize: '0.875rem', margin: 0 }}>{logistics.basicLifeSupportDetailsObj?.text || logistics.basicLifeSupportDetails || 'Detay belirtilmemiş.'}</p>
                   
                   {logistics.basicLifeSupportDetailsObj?.adminNote && (
-                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: '#1e40af' }}>
+                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-info-light)', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: 'var(--status-info)' }}>
                       <strong>Yönetici Notu:</strong> {logistics.basicLifeSupportDetailsObj.adminNote}
                     </div>
                   )}
@@ -608,12 +613,12 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
               {/* İleri Yaşam Desteği */}
               {logistics.hasAdvancedLifeSupport && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#334155' }}>🩺 İleri Yaşam Desteği Malzemeleri</h4>
+                <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-main)' }}>🩺 İleri Yaşam Desteği Malzemeleri</h4>
                   <p style={{ fontSize: '0.875rem', margin: 0 }}>{logistics.advancedLifeSupportDetailsObj?.text || logistics.advancedLifeSupportDetails || 'Detay belirtilmemiş.'}</p>
                   
                   {logistics.advancedLifeSupportDetailsObj?.adminNote && (
-                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: '#1e40af' }}>
+                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-info-light)', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: 'var(--status-info)' }}>
                       <strong>Yönetici Notu:</strong> {logistics.advancedLifeSupportDetailsObj.adminNote}
                     </div>
                   )}
@@ -634,12 +639,12 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
               {/* Sütur Eğitimi */}
               {logistics.hasSutureTraining && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#334155' }}>🪡 Sütur Eğitimi Malzemeleri</h4>
+                <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-main)' }}>🪡 Sütur Eğitimi Malzemeleri</h4>
                   <p style={{ fontSize: '0.875rem', margin: 0 }}>{logistics.sutureTrainingDetailsObj?.text || logistics.sutureTrainingDetails || 'Detay belirtilmemiş.'}</p>
                   
                   {logistics.sutureTrainingDetailsObj?.adminNote && (
-                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: '#1e40af' }}>
+                    <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-info-light)', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', color: 'var(--status-info)' }}>
                       <strong>Yönetici Notu:</strong> {logistics.sutureTrainingDetailsObj.adminNote}
                     </div>
                   )}
@@ -660,8 +665,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
               {/* Custom Requests */}
               {(logistics.customRequests || []).length > 0 && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: '#334155' }}>⭐ Özel Talepler</h4>
+                <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>⭐ Özel Talepler</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
                     {(logistics.customRequests || []).map((req: any, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
@@ -669,7 +674,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                         <div style={{ color: 'var(--text-muted)' }}>{req.note || '-'}</div>
                         
                         {req.adminNote && (
-                          <div style={{ marginTop: '0.75rem', padding: '0.5rem', backgroundColor: '#eff6ff', borderRadius: '4px', color: '#1e40af' }}>
+                          <div style={{ marginTop: '0.75rem', padding: '0.5rem', backgroundColor: 'var(--bg-info-light)', borderRadius: '4px', color: 'var(--status-info)' }}>
                             <strong>Yönetici Notu:</strong> {req.adminNote}
                           </div>
                         )}
@@ -705,17 +710,17 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
         {/* Revision History */}
         {revisions.length > 0 && (
-          <div style={{ marginBottom: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ marginBottom: '2rem', backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Clock size={18} /> Revizyon Geçmişi
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderLeft: '2px solid #e2e8f0', paddingLeft: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderLeft: '2px solid var(--border-color)', paddingLeft: '1rem' }}>
               {revisions.map((rev, idx) => (
                 <div key={idx} style={{ position: 'relative' }}>
                   <div style={{ position: 'absolute', width: '10px', height: '10px', backgroundColor: 'var(--color-primary)', borderRadius: '50%', left: '-1.35rem', top: '0.35rem' }}></div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{new Date(rev.created_at).toLocaleString('tr-TR')}</div>
                   <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Revize eden: {rev.users?.full_name || 'Birim Sorumlusu'}</div>
-                  <div style={{ fontSize: '0.875rem', marginTop: '0.25rem', padding: '0.5rem', backgroundColor: 'var(--bg-card)', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-sm)' }}>
+                  <div style={{ fontSize: '0.875rem', marginTop: '0.25rem', padding: '0.5rem', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
                     <strong>Not:</strong> {rev.revision_notes || 'Not girilmedi.'}
                   </div>
                 </div>
@@ -728,7 +733,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
       {/* Admin Actions */}
       {canApprove && (
-        <div className="card" style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f0fdfa', border: '1px solid #14b8a6' }}>
+        <div className="card" style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-success-light)', border: '1px solid var(--status-success)' }}>
           <div>
             <h4 style={{ margin: '0 0 0.25rem 0', color: '#0f766e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><AlertTriangle size={18} /> Yönetim İşlemleri</h4>
             <p style={{ margin: 0, fontSize: '0.875rem', color: '#0d9488' }}>Taleplerle ilgili bir not girerek etkinliği onaylayabilir veya reddedebilirsiniz.</p>
@@ -753,6 +758,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           </div>
         </div>
       )}
+
+      {PromptModal}
     </div>
   );
 }
+

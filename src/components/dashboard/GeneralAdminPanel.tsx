@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
@@ -75,7 +76,7 @@ export default function GeneralAdminPanel() {
 
   const exportToExcel = async () => {
     if (events.length === 0) {
-      alert('İndirilecek etkinlik bulunamadı.');
+      toast.error('İndirilecek etkinlik bulunamadı.');
       return;
     }
     
@@ -140,7 +141,7 @@ export default function GeneralAdminPanel() {
 
       {/* Gecikmiş Onay Uyarıları */}
       {delayedEvents.length > 0 && (
-        <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ backgroundColor: 'var(--bg-danger-light)', border: '1px solid #fca5a5', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#991b1b', fontWeight: 600, marginBottom: '0.5rem' }}>
             <AlertTriangle size={20} />
             Dikkat: {delayedEvents.length} etkinlik 3 günden uzun süredir onay bekliyor!
@@ -254,3 +255,4 @@ export default function GeneralAdminPanel() {
     </div>
   );
 }
+

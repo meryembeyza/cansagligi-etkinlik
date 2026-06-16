@@ -123,7 +123,7 @@ export default function BursaryEventDetailPage() {
             {/* Sol Kolon - Detaylar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Tarih ve Konum */}
-              <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid #e2e8f0' }}>
+              <div style={{ backgroundColor: 'var(--bg-nested)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)' }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Clock size={18} color="#da1c15" /> Zaman & Mekan
                 </h3>
@@ -153,7 +153,7 @@ export default function BursaryEventDetailPage() {
 
               {/* İletişim */}
               {event.contact_person && event.contact_person.name && (
-                <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid #e2e8f0' }}>
+                <div style={{ backgroundColor: 'var(--bg-nested)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)' }}>
                   <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <User size={18} color="#da1c15" /> İletişim Kişisi
                   </h3>
@@ -178,7 +178,7 @@ export default function BursaryEventDetailPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Başvuru Butonu Alanı */}
               {event.requires_registration && (
-                <div style={{ backgroundColor: isPastDeadline ? '#fef2f2' : '#f0fdf4', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: `1px solid ${isPastDeadline ? '#fecaca' : '#bbf7d0'}`, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                <div style={{ backgroundColor: isPastDeadline ? 'var(--bg-danger-light)' : '#f0fdf4', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: `1px solid ${isPastDeadline ? 'var(--border-danger)' : '#bbf7d0'}`, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                   
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: isPastDeadline ? '#dc2626' : '#16a34a', marginBottom: '0.5rem' }}>
                     {isPastDeadline ? 'Başvurular Kapandı' : 'Başvurular Açık'}

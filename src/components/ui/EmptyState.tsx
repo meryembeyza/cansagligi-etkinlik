@@ -32,7 +32,7 @@ export default function EmptyState({
       textAlign: 'center',
       backgroundColor: 'var(--bg-card)',
       borderRadius: 'var(--radius-lg)',
-      border: '1px dashed #e2e8f0'
+      border: '1px dashed var(--border-color)'
     }}>
       <div style={{ 
         width: '64px', 

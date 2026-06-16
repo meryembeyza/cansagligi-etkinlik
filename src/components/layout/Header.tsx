@@ -54,7 +54,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   ];
 
   return (
-    <header style={{ height: '70px', backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem' }}>
+    <header className="header-container">
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button 
           className="mobile-menu-btn" 
@@ -62,7 +62,9 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         >
           <Menu size={24} />
         </button>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Hoş Geldiniz</h2>
+        <h2 className="header-greeting">
+          Hoş Geldiniz{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name.split(' ')[0]} 👋` : ''}
+        </h2>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -72,13 +74,11 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         <div style={{ position: 'relative' }}>
           <button 
             onClick={() => setIsNotifOpen(!isNotifOpen)}
-            style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+            className="header-icon-btn"
           >
-            <Bell size={24} />
+            <Bell size={20} />
             {unreadCount > 0 && (
-              <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--status-danger)', color: 'white', fontSize: '0.65rem', fontWeight: 'bold', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {unreadCount}
-              </span>
+              <span className="notif-dot"></span>
             )}
           </button>
 
@@ -117,12 +117,12 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className="hover-bg-gray"
           >
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', fontWeight: 'bold' }}>
+            <div className="header-avatar">
               {user?.user_metadata?.full_name?.charAt(0) || 'U'}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user?.user_metadata?.full_name || 'Kullanıcı'}</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              <span className="header-user-name">{user?.user_metadata?.full_name || 'Kullanıcı'}</span>
+              <span className="header-user-role">
                 {currentRole === 'unit_head' ? 'Birim Başkanı' : 
                  currentRole === 'region_manager' ? 'Bölge Sorumlusu' : 
                  currentRole === 'general_admin' ? 'Genel Yetkili' : 

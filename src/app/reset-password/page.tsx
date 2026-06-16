@@ -79,7 +79,7 @@ export default function ResetPasswordPage() {
         </div>
 
         {error && (
-          <div style={{ backgroundColor: '#fef2f2', color: '#b91c1c', padding: '1rem', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.5rem', border: '1px solid #fca5a5' }}>
+          <div style={{ backgroundColor: 'var(--bg-danger-light)', color: '#b91c1c', padding: '1rem', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.5rem', border: '1px solid #fca5a5' }}>
             {error}
           </div>
         )}

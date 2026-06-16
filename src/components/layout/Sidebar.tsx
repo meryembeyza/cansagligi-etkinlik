@@ -92,12 +92,12 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
         />
       )}
       <aside className={`sidebar-container ${isOpen ? 'open' : ''}`}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--sidebar-logo-border, var(--border-color))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <img src="/logo.png" alt="Cansağlığı Vakfı Logo" style={{ height: '45px', objectFit: 'contain' }} />
       </div>
       
       <nav style={{ flex: 1, padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+        <p className="sidebar-menu-label">
           Menü
         </p>
         
@@ -108,35 +108,21 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
             <Link
               key={index}
               href={item.path}
-              style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.75rem 1rem',
-                  paddingLeft: isActive ? 'calc(1rem - 3px)' : '1rem',
-                  borderLeft: isActive ? '3px solid var(--color-primary)' : '3px solid transparent',
-                  borderRadius: 'var(--radius-md)',
-                  color: isActive ? 'var(--color-primary)' : 'var(--text-main)',
-                  backgroundColor: isActive ? 'var(--color-primary-light)' : 'transparent',
-                  transition: 'background-color 150ms',
-                  fontWeight: isActive ? 600 : 500,
-                  textDecoration: 'none',
-                }}
-              className={isActive ? '' : 'sidebar-link-hover'}
+              className={`sidebar-link ${isActive ? 'active' : ''}`}
             >
-              <Icon size={18} color={isActive ? 'var(--color-primary)' : 'var(--text-muted)'} />
+              <Icon size={18} className="sidebar-link-icon" />
               {item.name}
             </Link>
           );
         })}
       </nav>
 
-      <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <Link href="/dashboard/profile" className="btn btn-outline" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', backgroundColor: 'transparent', padding: '0.5rem 1rem' }}>
+      <div className="sidebar-bottom-section">
+        <Link href="/dashboard/profile" className="btn btn-outline sidebar-bottom-btn" style={{ width: '100%', justifyContent: 'flex-start', border: 'none' }}>
           <User size={18} />
           Profilim
         </Link>
-        <button onClick={logout} className="btn btn-outline" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--status-danger)', borderColor: 'var(--status-danger)' }}>
+        <button onClick={logout} className="btn sidebar-logout-btn" style={{ width: '100%', justifyContent: 'flex-start', border: 'none' }}>
           <LogOut size={18} />
           Çıkış Yap
         </button>

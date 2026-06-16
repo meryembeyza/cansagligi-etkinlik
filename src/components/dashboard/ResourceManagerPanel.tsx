@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -90,7 +91,7 @@ export default function ResourceManagerPanel() {
       setAltDate('');
       await fetchReservations();
     } catch (err: any) {
-      alert('İşlem başarısız: ' + err.message);
+      toast.error('İşlem başarısız: ' + err.message);
     } finally {
       setProcessingId(null);
     }
@@ -107,7 +108,7 @@ export default function ResourceManagerPanel() {
       {reservations.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Şu an onay bekleyen herhangi bir kaynak/lojistik talebi bulunmuyor.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Åu an onay bekleyen herhangi bir kaynak/lojistik talebi bulunmuyor.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -213,3 +214,4 @@ export default function ResourceManagerPanel() {
     </div>
   );
 }
+

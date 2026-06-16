@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -139,10 +140,10 @@ export default function BursaryPage() {
       setIsAddModalOpen(false);
       fetchCandidates();
       setAddFormData({ fullName: '', email: '', phone: '', university: '', department: '', grade: '1. Sınıf', region: 'Marmara' });
-      alert('Bursiyer adayı başarıyla kaydedildi!');
+      toast.success('Bursiyer adayı başarıyla kaydedildi!');
     } catch (err) {
       console.error("Add candidate error:", err);
-      alert('Aday eklenirken hata oluştu.');
+      toast.error('Aday eklenirken hata oluştu.');
     }
   };
 
@@ -188,10 +189,10 @@ export default function BursaryPage() {
 
       setIsInterviewModalOpen(false);
       fetchCandidates();
-      alert('Mülakat ve değerlendirme verileri başarıyla kaydedildi!');
+      toast.success('Mülakat ve değerlendirme verileri başarıyla kaydedildi!');
     } catch (err) {
       console.error("Save interview error:", err);
-      alert('Kaydedilirken hata oluştu.');
+      toast.error('Kaydedilirken hata oluştu.');
     }
   };
 
@@ -207,10 +208,10 @@ export default function BursaryPage() {
 
       if (error) throw error;
       fetchCandidates();
-      alert('Aday kaydı başarıyla silindi.');
+      toast.success('Aday kaydı başarıyla silindi.');
     } catch (err) {
       console.error("Delete candidate error:", err);
-      alert('Silme işlemi başarısız oldu.');
+      toast.error('Silme işlemi başarısız oldu.');
     }
   };
 
@@ -305,7 +306,7 @@ export default function BursaryPage() {
         {isRegionManager && (
           <div>
             <label className="label">Bölge</label>
-            <input type="text" className="input" disabled value={`📍 ${userRegion.toUpperCase()}`} />
+            <input type="text" className="input" disabled value={`📝 ${userRegion.toUpperCase()}`} />
           </div>
         )}
 
@@ -432,7 +433,7 @@ export default function BursaryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>➕ Yeni Bursiyer Adayı Ekle</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>â• Yeni Bursiyer Adayı Ekle</h2>
               <button onClick={() => setIsAddModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -551,3 +552,4 @@ export default function BursaryPage() {
     </div>
   );
 }
+

@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -75,13 +76,13 @@ export default function ProfilePage() {
 
       if (error) {
         console.error('Arka planda kaydederken hata oluştu:', error);
-        alert('Kaydetme başarısız: ' + error.message);
+        toast.error('Kaydetme başarısız: ' + error.message);
       } else {
-        alert('Profil bilgileriniz başarıyla güncellendi!');
+        toast.success('Profil bilgileriniz başarıyla güncellendi!');
       }
     } catch (err: any) {
       console.error(err);
-      alert('Kaydetme başarısız: ' + err.message);
+      toast.error('Kaydetme başarısız: ' + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -97,7 +98,7 @@ export default function ProfilePage() {
       if (updateError) throw updateError;
       setAvatarUrl(url);
     } catch (error: any) {
-      alert('Profil fotoğrafı güncellenirken hata oluştu: ' + error.message);
+      toast.error('Profil fotoğrafı güncellenirken hata oluştu: ' + error.message);
     }
   };
 
@@ -195,3 +196,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+

@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
@@ -101,33 +103,42 @@ export default function LoginPage() {
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
               <label className={styles.label}>E-posta Adresi</label>
-              <input 
-                type="email" 
-                required 
-                className={styles.input} 
-                placeholder="ad.soyad@cansagligi.org" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div className={styles.inputWrapper}>
+                <Mail className={styles.inputIcon} size={16} />
+                <input 
+                  type="email" 
+                  required 
+                  className={styles.input} 
+                  placeholder="ad.soyad@cansagligi.org" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             </div>
             
             <div className={styles.formGroup}>
               <label className={styles.label}>Şifre</label>
-              <input 
-                type="password" 
-                required 
-                className={styles.input} 
-                placeholder="••••••••" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className={styles.inputWrapper}>
+                <Lock className={styles.inputIcon} size={16} />
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  required 
+                  className={styles.input} 
+                  placeholder="••••••••" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="button" className={styles.passwordToggle} onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
 
             <div className={styles.forgotPassword}>
               <a href="#" className={styles.forgotPasswordLink} onClick={(e) => { e.preventDefault(); setShowResetModal(!showResetModal); }}>Şifremi unuttum</a>
               
               {showResetModal && (
-                <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', width: '100%', textAlign: 'left' }}>
+                <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: 'var(--bg-nested)', borderRadius: '8px', border: '1px solid var(--border-color)', width: '100%', textAlign: 'left' }}>
                   <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem', color: '#475569' }}>Şifrenizi sıfırlamak için e-posta adresinizi girin:</p>
                   <input 
                     type="email" 

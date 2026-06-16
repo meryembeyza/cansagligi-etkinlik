@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Save, Plus, Trash2 } from 'lucide-react';
@@ -230,12 +231,17 @@ export default function NewEventPage() {
             }));
             await supabase.from('notifications').insert(notifications);
 
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token || '';
             // E-posta gönderimi (Arayüzü bekletmemek için await kullanılmıyor - Fire and forget)
             for (const rm of rmData) {
               if (rm.email) {
                 fetch('/api/send-email', {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
                   body: JSON.stringify({
                     to: rm.email,
                     subject: 'Yeni Etkinlik Onay Bekliyor 🔔',
@@ -268,7 +274,7 @@ export default function NewEventPage() {
       setIsSubmitted(true);
     } catch (err: any) {
       const errorMessage = err?.message || JSON.stringify(err) || 'Bilinmeyen bir hata oluştu.';
-      alert('Kayıt sırasında bir hata oluştu:\n' + errorMessage);
+      toast.error('Kayıt sırasında bir hata oluştu:\n' + errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -357,7 +363,7 @@ export default function NewEventPage() {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <div className="card" style={{ maxWidth: '500px', width: '100%', padding: '3rem 2rem', textAlign: 'center' }}>
-          <div style={{ width: '80px', height: '80px', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem' }}>✓</div>
+          <div style={{ width: '80px', height: '80px', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem' }}>âœ“</div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>Etkinlik Başvurunuz Alındı</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
             Etkinliğiniz başarıyla sisteme kaydedildi ve Bölge Sorumlusunun onayına gönderildi. Onay durumuyla ilgili bildirim alacaksınız.
@@ -402,7 +408,7 @@ export default function NewEventPage() {
             { step: 4, title: 'Lojistik & Onay' }
           ].map((s) => (
             <div key={s.step} style={{ flex: 1 }}>
-              <div style={{ height: '6px', borderRadius: '4px', backgroundColor: currentStep >= s.step ? 'var(--color-primary)' : '#e5e7eb', marginBottom: '0.5rem', transition: 'background-color 0.3s' }} />
+              <div style={{ height: '6px', borderRadius: '4px', backgroundColor: currentStep >= s.step ? 'var(--color-primary)' : 'var(--border-color)', marginBottom: '0.5rem', transition: 'background-color 0.3s' }} />
               <div style={{ fontSize: '0.875rem', fontWeight: currentStep >= s.step ? 600 : 400, color: currentStep >= s.step ? 'var(--text-main)' : 'var(--text-muted)' }}>
                 Adım {s.step}: {s.title}
               </div>
@@ -564,7 +570,7 @@ export default function NewEventPage() {
                     />
                   </div>
 
-                  {/* ETKİNLİK FOTOĞRAFI UPLOAD */}
+                  {/* ETKİNLİK FOTOÄRAFI UPLOAD */}
                   <div>
                     <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>📸 Etkinlik Fotoğrafı Yükle</label>
                     <ImageUpload
@@ -580,7 +586,7 @@ export default function NewEventPage() {
                     />
                   </div>
 
-                  {/* FİŞ / FATURA FOTOĞRAFI UPLOAD */}
+                  {/* FİÅ / FATURA FOTOÄRAFI UPLOAD */}
                   <div>
                     <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>🧾 Fiş / Fatura Görseli Yükle</label>
                     <ImageUpload
@@ -596,7 +602,7 @@ export default function NewEventPage() {
                     />
                   </div>
 
-                  <div style={{ gridColumn: 'span 2', padding: '1rem', backgroundColor: '#fef2f2', borderRadius: 'var(--radius-md)', border: '1px solid #fecaca' }}>
+                  <div style={{ gridColumn: 'span 2', padding: '1rem', backgroundColor: 'var(--bg-danger-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-danger)' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 700, color: '#991b1b' }}>
                       <input 
                         type="checkbox" 
@@ -607,7 +613,7 @@ export default function NewEventPage() {
                         })} 
                         style={{ width: '18px', height: '18px' }} 
                       />
-                      ⚠️ Bu etkinlik İPTAL oldu
+                      âš ï¸ Bu etkinlik İPTAL oldu
                     </label>
                     
                     {formData.ramadan.cancelled && (
@@ -801,7 +807,7 @@ export default function NewEventPage() {
               <div style={{ border: `1px solid ${formData.logistics.hasShuttle ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasShuttle', !formData.logistics.hasShuttle)} 
-                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasShuttle ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
+                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasShuttle ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasShuttle} readOnly style={{ width: '18px', height: '18px' }} />
                   Araç / Servis Talebi
@@ -811,7 +817,7 @@ export default function NewEventPage() {
                   <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', backgroundColor: 'var(--bg-card)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div><label className="label">Tarih</label><input type="date" className="input" value={formData.logistics.shuttle.date} onChange={e => updateShuttle('date', e.target.value)} /></div>
-                      <div><label className="label">Araç Talebi (Adet/Kişi)</label><input type="text" className="input" placeholder="Örn: 1 ADET 10-12 KİŞİLİK ARAÇ TALEBİMİZ BULUNMAKTADIR" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
+                      <div><label className="label">Araç Talebi (Adet/Kişi)</label><input type="text" className="input" placeholder="Örn: 1 ADET 10-12 KİÅİLİK ARAÇ TALEBİMİZ BULUNMAKTADIR" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
                       <div><label className="label">Kalkış Noktası</label><input type="text" className="input" value={formData.logistics.shuttle.departurePoint} onChange={e => updateShuttle('departurePoint', e.target.value)} /></div>
                       <div><label className="label">Varış Noktası</label><input type="text" className="input" value={formData.logistics.shuttle.arrivalPoint} onChange={e => updateShuttle('arrivalPoint', e.target.value)} /></div>
                       <div><label className="label">Hareket Saati (Gidiş)</label><input type="time" className="input" value={formData.logistics.shuttle.departureTime} onChange={e => updateShuttle('departureTime', e.target.value)} /></div>
@@ -828,7 +834,7 @@ export default function NewEventPage() {
               <div style={{ border: `1px solid ${formData.logistics.hasAroma ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasAroma', !formData.logistics.hasAroma)} 
-                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAroma ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
+                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAroma ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasAroma} readOnly style={{ width: '18px', height: '18px' }} />
                   Aromaterapi Yağ Talebi
@@ -859,10 +865,10 @@ export default function NewEventPage() {
               <div style={{ border: `1px solid ${formData.logistics.hasBasicLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} 
-                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
+                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} />
-                  🫁 Temel Yaşam Desteği Malzemeleri Talebi
+                  🩹 Temel Yaşam Desteği Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasBasicLifeSupport && (
@@ -877,7 +883,7 @@ export default function NewEventPage() {
               <div style={{ border: `1px solid ${formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} 
-                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
+                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} />
                   🩺 İleri Yaşam Desteği Malzemeleri Talebi
@@ -895,7 +901,7 @@ export default function NewEventPage() {
               <div style={{ border: `1px solid ${formData.logistics.hasSutureTraining ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} 
-                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
+                  style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} />
                   🪡 Sütur Eğitimi Malzemeleri Talebi
@@ -912,7 +918,7 @@ export default function NewEventPage() {
               {/* Özel Talep Ekleme */}
               <div style={{ border: `1px solid ${(formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
-                  style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}
+                  style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}
                 >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     Diğer Özel Talepleriniz
@@ -945,7 +951,7 @@ export default function NewEventPage() {
 
             </div>
 
-            <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#fef2f2', borderRadius: 'var(--radius-md)', border: '1px solid #fecaca' }}>
+            <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: 'var(--bg-danger-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-danger)' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#991b1b', marginBottom: '0.5rem' }}>Son Kontrol</h3>
               <p style={{ fontSize: '0.875rem', color: '#7f1d1d' }}>
                 Formu onaya gönderdiğinizde etkinlik Bölge Sorumlusunun paneline düşecektir. Onaylanana kadar etkinlik afiş süreci başlamaz.
@@ -978,3 +984,4 @@ export default function NewEventPage() {
     </div>
   );
 }
+

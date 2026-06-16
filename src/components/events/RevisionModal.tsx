@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -185,7 +186,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!revisionNotes) {
-      alert('Lütfen bir revizyon notu giriniz.');
+      toast.success('Lütfen bir revizyon notu giriniz.');
       return;
     }
 
@@ -302,11 +303,11 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         localStorage.removeItem(`revision_draft_${event.id}`);
       }
 
-      alert('Revizyon başarıyla gönderildi.');
+      toast.success('Revizyon başarıyla gönderildi.');
       onSuccess(updatedEvent);
     } catch (err: any) {
       console.error(err);
-      alert('Hata: ' + (err.message || 'Revizyon kaydedilemedi.'));
+      toast.error('Hata: ' + (err.message || 'Revizyon kaydedilemedi.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -317,7 +318,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
       <div className="card" style={{ backgroundColor: 'var(--bg-card)', width: '100%', maxWidth: '900px', height: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: 'var(--radius-lg)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
         
         {/* Header */}
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-nested)' }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Etkinliği Revize Et</h2>
             <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{event.event_name}</div>
@@ -349,7 +350,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
             { step: 4, title: 'Lojistik & Onay' }
           ].map((s) => (
             <div key={s.step} style={{ flex: 1, cursor: 'pointer' }} onClick={() => setCurrentStep(s.step as Step)}>
-              <div style={{ height: '4px', borderRadius: '2px', backgroundColor: currentStep >= s.step ? 'var(--color-primary)' : '#e5e7eb', marginBottom: '0.25rem', transition: 'background-color 0.3s' }} />
+              <div style={{ height: '4px', borderRadius: '2px', backgroundColor: currentStep >= s.step ? 'var(--color-primary)' : 'var(--border-color)', marginBottom: '0.25rem', transition: 'background-color 0.3s' }} />
               <div style={{ fontSize: '0.75rem', fontWeight: currentStep === s.step ? 700 : 500, color: currentStep >= s.step ? 'var(--text-main)' : 'var(--text-muted)' }}>
                 {s.title}
               </div>
@@ -429,7 +430,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {speakers.map((s, index) => (
-                    <div key={index} style={{ padding: '1.5rem', backgroundColor: s.is_cancelled ? '#fef2f2' : '#f9fafb', border: `1px solid ${s.is_cancelled ? '#fecaca' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', position: 'relative', opacity: s.is_cancelled ? 0.7 : 1 }}>
+                    <div key={index} style={{ padding: '1.5rem', backgroundColor: s.is_cancelled ? 'var(--bg-danger-light)' : 'var(--bg-nested)', border: `1px solid ${s.is_cancelled ? 'var(--border-danger)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', position: 'relative', opacity: s.is_cancelled ? 0.7 : 1 }}>
                       {s.is_cancelled && (
                         <div style={{ position: 'absolute', top: '1rem', left: '1rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--status-danger)', textTransform: 'uppercase' }}>İPTAL EDİLECEK</div>
                       )}
@@ -485,7 +486,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               
               {/* Shuttle */}
               <div style={{ border: `1px solid ${formData.logistics.hasShuttle ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                <div onClick={() => updateLogistics('hasShuttle', !formData.logistics.hasShuttle)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasShuttle ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                <div onClick={() => updateLogistics('hasShuttle', !formData.logistics.hasShuttle)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasShuttle ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
                   <input type="checkbox" checked={formData.logistics.hasShuttle} readOnly style={{ width: '18px', height: '18px' }} /> Araç / Servis Talebi
                 </div>
                 {formData.logistics.hasShuttle && (
@@ -505,7 +506,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
               {/* Aroma */}
               <div style={{ border: `1px solid ${formData.logistics.hasAroma ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                <div onClick={() => updateLogistics('hasAroma', !formData.logistics.hasAroma)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAroma ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                <div onClick={() => updateLogistics('hasAroma', !formData.logistics.hasAroma)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAroma ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
                   <input type="checkbox" checked={formData.logistics.hasAroma} readOnly style={{ width: '18px', height: '18px' }} /> Aromaterapi Yağ Talebi
                 </div>
                 {formData.logistics.hasAroma && (
@@ -528,8 +529,8 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
               {/* Temel Yaşam Desteği */}
               <div style={{ border: `1px solid ${formData.logistics.hasBasicLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                <div onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🫁 Temel Yaşam Desteği Malzemeleri
+                <div onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                  <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🩹 Temel Yaşam Desteği Malzemeleri
                 </div>
                 {formData.logistics.hasBasicLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
@@ -541,7 +542,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
               {/* İleri Yaşam Desteği */}
               <div style={{ border: `1px solid ${formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                <div onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                <div onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
                   <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🩺 İleri Yaşam Desteği Malzemeleri
                 </div>
                 {formData.logistics.hasAdvancedLifeSupport && (
@@ -554,7 +555,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
               {/* Sütur Eğitimi */}
               <div style={{ border: `1px solid ${formData.logistics.hasSutureTraining ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                <div onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                <div onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
                   <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} /> 🪡 Sütur Eğitimi Malzemeleri
                 </div>
                 {formData.logistics.hasSutureTraining && (
@@ -567,7 +568,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
               {/* Custom Requests */}
               <div style={{ border: `1px solid ${(formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                <div style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}>
+                <div style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}>
                   <span>Özel Talepler</span>
                   <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: 'var(--bg-card)' }}><Plus size={14} /> Yeni Talep</button>
                 </div>
@@ -597,7 +598,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         </div>
 
         {/* Footer Actions */}
-        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', backgroundColor: '#f8fafc', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--bg-nested)', display: 'flex', justifyContent: 'space-between' }}>
           <button type="button" onClick={handlePrev} disabled={currentStep === 1} className="btn btn-outline" style={{ opacity: currentStep === 1 ? 0.5 : 1 }}>
             <ChevronLeft size={16} /> Önceki Adım
           </button>
@@ -620,3 +621,4 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
     </div>
   );
 }
+

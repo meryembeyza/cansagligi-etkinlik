@@ -180,7 +180,7 @@ export default function BursiyerEventsPage() {
           `}} />
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem 2rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed #cbd5e1' }}>
+        <div style={{ textAlign: 'center', padding: '4rem 2rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--border-color)' }}>
           <div style={{ width: '120px', height: '120px', margin: '0 auto 1.5rem auto', backgroundColor: '#fcdbd9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Calendar size={48} color="#da1c15" />
           </div>

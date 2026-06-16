@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -177,7 +178,7 @@ export default function V4InventoryPage() {
   const handleCreateRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gerekliTarih) {
-      alert('Lütfen gerekli tarihi seçin.');
+      toast.success('Lütfen gerekli tarihi seçin.');
       return;
     }
 
@@ -208,10 +209,10 @@ export default function V4InventoryPage() {
       setNotes('');
       setGerekliTarih('');
       fetchRequestsAndData();
-      alert('Malzeme talebiniz başarıyla Koordinasyon Birimine gönderildi!');
+      toast.success('Malzeme talebiniz başarıyla Koordinasyon Birimine gönderildi!');
     } catch (err) {
       console.error("Create request error:", err);
-      alert('Talep gönderilirken hata oluştu.');
+      toast.error('Talep gönderilirken hata oluştu.');
     }
   };
 
@@ -240,10 +241,10 @@ export default function V4InventoryPage() {
 
       setIsReviewModalOpen(false);
       fetchRequestsAndData();
-      alert('Talebin onay/red durumu başarıyla güncellendi!');
+      toast.success('Talebin onay/red durumu başarıyla güncellendi!');
     } catch (err) {
       console.error("Save review error:", err);
-      alert('Kaydedilirken hata oluştu.');
+      toast.error('Kaydedilirken hata oluştu.');
     }
   };
 
@@ -268,7 +269,7 @@ export default function V4InventoryPage() {
   const handleSaveUsageReport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeRequest || !selectedEventId) {
-      alert('Lütfen geçerli bir etkinlik seçin.');
+      toast.success('Lütfen geçerli bir etkinlik seçin.');
       return;
     }
 
@@ -297,10 +298,10 @@ export default function V4InventoryPage() {
 
       setIsReportModalOpen(false);
       fetchRequestsAndData();
-      alert('Envanter kullanım raporunuz başarıyla sisteme kaydedildi!');
+      toast.success('Envanter kullanım raporunuz başarıyla sisteme kaydedildi!');
     } catch (err) {
       console.error("Save usage report error:", err);
-      alert('Rapor kaydedilirken hata oluştu.');
+      toast.error('Rapor kaydedilirken hata oluştu.');
     }
   };
 
@@ -443,12 +444,12 @@ export default function V4InventoryPage() {
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.25rem', fontSize: '0.8rem' }}>
-                        {req.bez_canta > 0 && <div>🛍️ Bez Çanta: <strong>{req.bez_canta}</strong></div>}
-                        {req.rozet > 0 && <div>🏅 Rozet: <strong>{req.rozet}</strong></div>}
-                        {req.etiket > 0 && <div>🏷️ Etiket: <strong>{req.etiket}</strong></div>}
-                        {req.cepli_dosya > 0 && <div>📂 Cepli Dosya: <strong>{req.cepli_dosya}</strong></div>}
+                        {req.bez_canta > 0 && <div>🛍️ï¸ Bez Çanta: <strong>{req.bez_canta}</strong></div>}
+                        {req.rozet > 0 && <div>🎖️ Rozet: <strong>{req.rozet}</strong></div>}
+                        {req.etiket > 0 && <div>🏷️ï¸ Etiket: <strong>{req.etiket}</strong></div>}
+                        {req.cepli_dosya > 0 && <div>📁 Cepli Dosya: <strong>{req.cepli_dosya}</strong></div>}
                         {req.defter > 0 && <div>📓 Defter: <strong>{req.defter}</strong></div>}
-                        {req.kalem > 0 && <div>🖋️ Kalem: <strong>{req.kalem}</strong></div>}
+                        {req.kalem > 0 && <div>🖋️ï¸ Kalem: <strong>{req.kalem}</strong></div>}
                         {req.brosur > 0 && <div>📄 Broşür: <strong>{req.brosur}</strong></div>}
                       </div>
                       {req.notes && (
@@ -522,7 +523,7 @@ export default function V4InventoryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>➕ Yeni Envanter Talebi Oluştur</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>â• Yeni Envanter Talebi Oluştur</h2>
               <button onClick={() => setIsAddModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -548,19 +549,19 @@ export default function V4InventoryPage() {
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label className="label">🛍️ Bez Çanta</label>
+                    <label className="label">🛍️ï¸ Bez Çanta</label>
                     <input type="number" min={0} className="input" value={materials.bezCanta} onChange={e => setMaterials({...materials, bezCanta: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">🏷️ Etiket</label>
+                    <label className="label">🏷️ï¸ Etiket</label>
                     <input type="number" min={0} className="input" value={materials.etiket} onChange={e => setMaterials({...materials, etiket: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">🏅 Rozet</label>
+                    <label className="label">🎖️ Rozet</label>
                     <input type="number" min={0} className="input" value={materials.rozet} onChange={e => setMaterials({...materials, rozet: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">📂 Cepli Dosya</label>
+                    <label className="label">📁 Cepli Dosya</label>
                     <input type="number" min={0} className="input" value={materials.cepliDosya} onChange={e => setMaterials({...materials, cepliDosya: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
@@ -568,7 +569,7 @@ export default function V4InventoryPage() {
                     <input type="number" min={0} className="input" value={materials.defter} onChange={e => setMaterials({...materials, defter: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">🖊️ Kalem</label>
+                    <label className="label">🖊️ï¸ Kalem</label>
                     <input type="number" min={0} className="input" value={materials.kalem} onChange={e => setMaterials({...materials, kalem: parseInt(e.target.value) || 0})} />
                   </div>
                   <div style={{ gridColumn: 'span 3' }}>
@@ -756,3 +757,4 @@ export default function V4InventoryPage() {
     </div>
   );
 }
+

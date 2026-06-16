@@ -136,7 +136,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
 
   const days = [];
   for (let i = 0; i < startOffset; i++) {
-    days.push(<div key={`empty-${i}`} className="calendar-day empty" style={{ backgroundColor: '#fafafa', border: '0.5px solid #f0f0f0', minHeight: '90px' }} />);
+    days.push(<div key={`empty-${i}`} className="calendar-day empty" style={{ backgroundColor: 'var(--bg-main)', border: '0.5px solid var(--border-color)', minHeight: '90px' }} />);
   }
   
   for (let i = 1; i <= daysInMonth; i++) {
@@ -152,15 +152,15 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
       minHeight: '90px',
       display: 'flex',
       flexDirection: 'column',
-      border: '0.5px solid #f0f0f0',
+      border: '0.5px solid var(--border-color)',
       padding: '0.5rem',
-      backgroundColor: isToday ? '#fcdbd9' : 'transparent',
+      backgroundColor: isToday ? 'var(--color-primary-light)' : 'transparent',
       position: 'relative',
     };
 
     const dayNumberStyle: React.CSSProperties = isToday ? {
       backgroundColor: '#da1c15',
-      color: '#ffffff',
+      color: '#fff',
       borderRadius: '50%',
       width: '24px',
       height: '24px',
@@ -241,7 +241,7 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
           width: ${isFilterOpen ? '280px' : '0px'};
           border-right: ${isFilterOpen ? '1px solid var(--border-color)' : 'none'};
           padding: ${isFilterOpen ? '2rem 1.5rem' : '0'};
-          background: #fcfcfc;
+          background: var(--bg-card);
           transition: all 0.3s ease;
           position: relative;
           overflow: hidden;

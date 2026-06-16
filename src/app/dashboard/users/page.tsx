@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -50,10 +51,10 @@ export default function UsersAdminPage() {
     try {
       const { error } = await supabase.from('users').update({ is_approved: true }).eq('id', userId);
       if (error) throw error;
-      alert(`${userName} başarıyla onaylandı.`);
+      toast.success(`${userName} başarıyla onaylandı.`);
       fetchUsers();
     } catch (err: any) {
-      alert('Onaylama sırasında hata oluştu: ' + err.message);
+      toast.error('Onaylama sırasında hata oluştu: ' + err.message);
     }
   };
 
@@ -63,10 +64,10 @@ export default function UsersAdminPage() {
     try {
       const { error } = await supabase.from('users').delete().eq('id', userId);
       if (error) throw error;
-      alert(`${userName} kaydı silindi.`);
+      toast.success(`${userName} kaydı silindi.`);
       fetchUsers();
     } catch (err: any) {
-      alert('Silme sırasında hata oluştu: ' + err.message);
+      toast.error('Silme sırasında hata oluştu: ' + err.message);
     }
   };
 
@@ -180,7 +181,7 @@ export default function UsersAdminPage() {
             </div>
           )
         ) : (
-          // AKTİF KULLANICI AĞACI TAB'i
+          // AKTİF KULLANICI AÄACI TAB'i
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {Object.keys(treeData).length === 0 ? (
               <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Sistemde aktif kullanıcı bulunmuyor.</div>
@@ -188,10 +189,10 @@ export default function UsersAdminPage() {
               Object.entries(treeData).sort(([a], [b]) => a.localeCompare(b)).map(([region, data]) => (
                 <div key={region} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                   
-                  {/* BÖLGE BAŞLIĞI */}
+                  {/* BÖLGE BAÅLIÄI */}
                   <div 
                     onClick={() => toggleRegion(region)}
-                    style={{ padding: '1rem', backgroundColor: expandedRegions[region] ? 'var(--color-primary-light)' : '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', transition: 'all 0.2s' }}
+                    style={{ padding: '1rem', backgroundColor: expandedRegions[region] ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', transition: 'all 0.2s' }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: expandedRegions[region] ? 'var(--color-primary)' : 'var(--text-main)' }}>
                       {expandedRegions[region] ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
@@ -203,7 +204,7 @@ export default function UsersAdminPage() {
                     </div>
                   </div>
 
-                  {/* BÖLGE İÇERİĞİ */}
+                  {/* BÖLGE İÇERİÄİ */}
                   {expandedRegions[region] && (
                     <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-color)' }}>
                       
@@ -227,7 +228,7 @@ export default function UsersAdminPage() {
                         )}
                       </div>
 
-                      {/* ÜNİVERSİTELER VE BİRİM BAŞKANLARI */}
+                      {/* ÜNİVERSİTELER VE BİRİM BAÅKANLARI */}
                       <div>
                         <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Bağlı Üniversiteler</h4>
                         {Object.keys(data.universities).length === 0 ? (
@@ -278,3 +279,4 @@ export default function UsersAdminPage() {
     </div>
   );
 }
+

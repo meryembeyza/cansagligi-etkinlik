@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -101,13 +102,17 @@ export default function BursaryAdminPage() {
           const emails = bursaryUsers.map(u => u.email).filter(Boolean);
           
           if (emails.length > 0) {
+            const { data: { session } } = await supabase.auth.getSession();
             // Asenkron gönder (Fire and forget)
             fetch('/api/send-email', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session?.access_token || ''}`
+              },
               body: JSON.stringify({
                 to: emails.join(','),
-                subject: `YENİ BURSİYER ETKİNLİĞİ: ${formData.title}`,
+                subject: `YENİ BURSİYER ETKİNLİÄİ: ${formData.title}`,
                 html: `
                   <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
                     <h2>Yeni Bursiyer Etkinliği: ${formData.title}</h2>
@@ -130,9 +135,9 @@ export default function BursaryAdminPage() {
       setIsCreateModalOpen(false);
       setFormData({ title: '', description: '', event_date: '', event_time: '', location: '' });
       fetchEvents();
-      alert('Etkinlik başarıyla oluşturuldu ve bursiyerlere e-posta bildirimi kuyruğa alındı.');
+      toast.success('Etkinlik başarıyla oluşturuldu ve bursiyerlere e-posta bildirimi kuyruğa alındı.');
     } catch (err: any) {
-      alert('Hata: ' + err.message);
+      toast.error('Hata: ' + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -185,7 +190,7 @@ export default function BursaryAdminPage() {
       setAttendances(finalAttendances);
     } catch (err: any) {
       console.error(err);
-      alert('Detaylar yüklenirken hata oluştu.');
+      toast.error('Detaylar yüklenirken hata oluştu.');
     } finally {
       setIsLoadingDetails(false);
     }
@@ -297,7 +302,7 @@ export default function BursaryAdminPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Rapor: {selectedEvent.title}</h2>
-                <p style={{ color: 'var(--text-muted)' }}>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} • {selectedEvent.location}</p>
+                <p style={{ color: 'var(--text-muted)' }}>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} â€¢ {selectedEvent.location}</p>
               </div>
               <button onClick={() => setSelectedEvent(null)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
@@ -312,11 +317,11 @@ export default function BursaryAdminPage() {
                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--status-success)' }}>{attendances.filter(a => a.rsvp_status === 'attending').length}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--status-success)' }}>Katılacağım Diyenler</div>
               </div>
-              <div style={{ backgroundColor: '#fef2f2', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+              <div style={{ backgroundColor: 'var(--bg-danger-light)', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--status-danger)' }}>{attendances.filter(a => a.rsvp_status === 'not_attending').length}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--status-danger)' }}>Mazeret Bildirenler</div>
               </div>
-              <div style={{ backgroundColor: '#eff6ff', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+              <div style={{ backgroundColor: 'var(--bg-info-light)', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 700, color: '#3b82f6' }}>{attendances.filter(a => a.has_attended).length}</div>
                 <div style={{ fontSize: '0.75rem', color: '#3b82f6' }}>Fiilen Katılanlar</div>
               </div>
@@ -375,3 +380,4 @@ export default function BursaryAdminPage() {
     </div>
   );
 }
+

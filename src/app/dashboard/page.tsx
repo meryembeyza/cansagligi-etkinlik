@@ -12,6 +12,7 @@ import CalendarView from '@/components/dashboard/CalendarView';
 import ResourceCalendar from '@/components/dashboard/ResourceCalendar';
 import UnitHeadPanel from '@/components/dashboard/UnitHeadPanel';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import RepHeadPanel from '@/components/dashboard/RepHeadPanel';
 import RepRegionManagerPanel from '@/components/dashboard/RepRegionManagerPanel';
 import RepCoordinatorPanel from '@/components/dashboard/RepCoordinatorPanel';
@@ -39,21 +40,22 @@ export default function DashboardPage() {
           {currentRole === 'bursary_student' && 'Öğrenci Paneli'}
         </h1>
         {currentRole === 'unit_head' && (
-          <Link href="/dashboard/events/new" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+          <Link href="/dashboard/events/new" className="btn-create-event">
+            <Plus size={18} />
             Yeni Etkinlik Oluştur
           </Link>
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+      <div className="tab-group-pill">
         <button 
-          className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
+          className={`tab-pill-btn ${viewMode === 'list' ? 'active' : ''}`}
           onClick={() => setViewMode('list')}
         >
-          Yönetim Paneli (Liste)
+          Yönetim Paneli
         </button>
         <button 
-          className={`btn ${viewMode === 'calendar' ? 'btn-primary' : 'btn-outline'}`}
+          className={`tab-pill-btn ${viewMode === 'calendar' ? 'active' : ''}`}
           onClick={() => setViewMode('calendar')}
         >
           Etkinlik Takvimi

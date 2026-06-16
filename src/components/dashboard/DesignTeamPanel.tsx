@@ -1,4 +1,5 @@
-'use client';
+﻿'use client';
+import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -87,7 +88,7 @@ export default function DesignTeamPanel() {
 
       await fetchRequests();
     } catch (err: any) {
-      alert('Dosya yüklenirken hata oluştu: ' + err.message);
+      toast.error('Dosya yüklenirken hata oluştu: ' + err.message);
     } finally {
       setProcessingId(null);
     }
@@ -104,7 +105,7 @@ export default function DesignTeamPanel() {
       if (error) throw error;
       await fetchRequests();
     } catch (err: any) {
-      alert('Hata: ' + err.message);
+      toast.error('Hata: ' + err.message);
     } finally {
       setProcessingId(null);
     }
@@ -121,7 +122,7 @@ export default function DesignTeamPanel() {
       {requests.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Şu an bekleyen veya devam eden bir afiş talebi bulunmuyor.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Åu an bekleyen veya devam eden bir afiş talebi bulunmuyor.</p>
         </div>
       ) : (
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
@@ -294,3 +295,4 @@ export default function DesignTeamPanel() {
     </div>
   );
 }
+

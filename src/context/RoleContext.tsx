@@ -87,20 +87,19 @@ export function RoleProvider({ children }: { children: ReactNode }) {
         return;
       }
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
         
-        if (sessionError) throw sessionError;
+        if (userError && userError.name !== 'AuthSessionMissingError' && !userError.message.includes('missing')) {
+          console.error("getUser error:", userError);
+        }
 
-        await handleSession(session);
+        await handleSession(user ? { user } : null);
       } catch (error) {
         console.error("Auth/Network error in RoleContext:", error);
         if (mounted) {
           setUser(null);
           setUserData(null);
           setCurrentRole(null);
-        }
-        if (window.location.pathname?.startsWith('/dashboard')) {
-          window.location.href = '/login?error=session_error';
         }
       } finally {
         if (mounted) setIsLoading(false);
