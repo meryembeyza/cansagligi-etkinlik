@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
 import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Calendar, Search, Filter, Moon, MapPin, Edit2, Users, School, Download, AlertCircle, BookOpen, Clock, Heart } from 'lucide-react';
 import ExcelJS from 'exceljs';
 
@@ -342,3 +343,4 @@ export default function RamadanPage() {
     </div>
   );
 }
+

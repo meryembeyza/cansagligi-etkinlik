@@ -4,7 +4,8 @@ export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { ArrowLeft, User, Calendar, Clipboard, Package, Award, Sparkles, MessageCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -472,3 +473,4 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
     </div>
   );
 }
+

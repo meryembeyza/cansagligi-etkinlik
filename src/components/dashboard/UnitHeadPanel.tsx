@@ -2,7 +2,8 @@
 import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
 import { Loader2, Calendar, FileText, CheckCircle, AlertCircle, Link as LinkIcon, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
@@ -89,9 +90,9 @@ export default function UnitHeadPanel() {
       setRequiredLogos('');
       setSpecialInstructions('');
       fetchMyEvents();
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error('Tasarım talebi gönderilemedi: ' + (err.message || 'Bilinmeyen Hata'));
+      toast.error('Tasarım talebi gönderilemedi: ' + ((err as Error).message || 'Bilinmeyen Hata'));
     } finally {
       setIsSubmittingPoster(false);
     }
@@ -158,11 +159,11 @@ export default function UnitHeadPanel() {
       setSocialLink('');
       // Refresh events list
       fetchMyEvents();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Report submission error:', err);
       let errorMessage = 'Bilinmeyen bir hata oluştu.';
-      if (err instanceof Error) errorMessage = err.message;
-      else if (err?.message) errorMessage = err.message;
+      if (err instanceof Error) errorMessage = (err as Error).message;
+      else if (err?.message) errorMessage = (err as Error).message;
       else if (typeof err === 'string') errorMessage = err;
       else errorMessage = JSON.stringify(err);
       
@@ -242,7 +243,7 @@ export default function UnitHeadPanel() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
             {events.map(event => {
-              const getStatusClass = (status: string, date: string, reports: any[]) => {
+              const getStatusClass = (status: string, date: string, reports: PostEventReport[]) => {
                 if (status === 'Yeniden Onay Bekliyor') return 'event-status-pending';
                 if (new Date(date) < new Date() && (!reports || reports.length === 0)) return 'event-status-rejected';
                 if (status === 'Onaylandı') return 'event-status-approved';
@@ -400,7 +401,7 @@ export default function UnitHeadPanel() {
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
                   <label className="label">Konuşmacı(lar)</label>
-                  <input type="text" name="p_speakers" className="input" required defaultValue={posterEvent.event_speakers && posterEvent.event_speakers.length > 0 ? posterEvent.event_speakers.map((s: any) => s.speakers?.full_name).join(', ') : ''} />
+                  <input type="text" name="p_speakers" className="input" required defaultValue={posterEvent.event_speakers && posterEvent.event_speakers.length > 0 ? posterEvent.event_speakers.map((s: EventSpeaker) => s.speakers?.full_name).join(', ') : ''} />
                 </div>
               </div>
               <div>
@@ -441,4 +442,8 @@ export default function UnitHeadPanel() {
     </div>
   );
 }
+
+
+
+
 

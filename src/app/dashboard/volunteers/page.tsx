@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
 import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Users, Search, Filter, Trophy, School, MapPin, GraduationCap } from 'lucide-react';
 
 interface VolunteerStat {
@@ -111,7 +112,7 @@ export default function VolunteersPage() {
   const totalCount = volunteers.length;
   
   // Top universities
-  const uniCounts = volunteers.reduce((acc: any, curr) => {
+  const uniCounts = volunteers.reduce((acc: Record<string, number>, curr) => {
     acc[curr.university] = (acc[curr.university] || 0) + 1;
     return acc;
   }, {});
@@ -255,3 +256,5 @@ export default function VolunteersPage() {
     </div>
   );
 }
+
+

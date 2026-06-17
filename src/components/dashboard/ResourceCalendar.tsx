@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useRole } from '@/context/RoleContext';
-import { 
+import { AppEvent,  useState, useEffect } from 'react';
+import { AppEvent,  createClient } from '@/utils/supabase/client';
+const supabase = createClient();
+import { AppEvent,  useRole } from '@/context/RoleContext';
+import { AppEvent,  
   ChevronLeft, 
   ChevronRight, 
   MapPin, 
@@ -63,7 +64,7 @@ export default function ResourceCalendar() {
       const { data: eventsData, error: eventsError } = await eventsQuery;
       if (eventsError) throw eventsError;
 
-      const parsedFromEvents: any[] = [];
+      const parsedFromevents: AppEvent[] = [];
 
       eventsData?.forEach(event => {
         try {
@@ -95,7 +96,7 @@ export default function ResourceCalendar() {
 
           // B. Aromaterapi Yağları -> Eşantiyon
           if (logData.hasAroma && logData.aroma && logData.aroma.length > 0) {
-            const aromaDetails = logData.aroma.map((a: any, idx: number) => 
+            const aromaDetails = logData.aroma.map((a: string, idx: number) => 
               `Formül ${idx + 1}: ${a.oils} (${a.amount}) - ${a.peopleCount} Kişilik`
             ).join(' | ');
 
@@ -175,7 +176,7 @@ export default function ResourceCalendar() {
 
           // D. Özel Talepler -> Serbest
           if (logData.customRequests && logData.customRequests.length > 0) {
-            logData.customRequests.forEach((cr: any, idx: number) => {
+            logData.customRequests.forEach((cr: Record<string, unknown>, idx: number) => {
               parsedFromEvents.push({
                 id: `${event.id}-custom-${idx}`,
                 eventId: event.id,
@@ -214,7 +215,7 @@ export default function ResourceCalendar() {
       const { data: dbResData, error: dbResError } = await resQuery;
       if (dbResError) throw dbResError;
 
-      const parsedFromDb: any[] = [];
+      const parsedFromDb: Record<string, unknown>[] = [];
       dbResData?.forEach(res => {
         // Kaynak sorumlusu filtre kontrolü
         if (currentRole === 'resource_manager' && userData?.unit_name) {
@@ -245,8 +246,8 @@ export default function ResourceCalendar() {
       const allMerged = [...parsedFromEvents, ...parsedFromDb];
       setMergedReservations(allMerged);
 
-    } catch (err: any) {
-      console.error('Kaynak takvimi yüklenemedi:', err.message);
+    } catch (err) {
+      console.error('Kaynak takvimi yüklenemedi:', (err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -616,3 +617,9 @@ export default function ResourceCalendar() {
     </div>
   );
 }
+
+
+
+
+
+

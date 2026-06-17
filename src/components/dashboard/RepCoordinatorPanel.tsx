@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Users, ClipboardList, Calendar, Award, Briefcase, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 
@@ -148,3 +149,4 @@ export default function RepCoordinatorPanel() {
     </div>
   );
 }
+

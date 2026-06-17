@@ -1,8 +1,9 @@
-ï»¿'use client';
+'use client';
 import { toast } from 'react-hot-toast';
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
 import { Camera, Save, User } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
@@ -52,8 +53,8 @@ export default function ProfilePage() {
         clubRole: data.club_role || ''
       });
       setAvatarUrl(data.avatar_url);
-    } catch (err: any) {
-      console.error('Profil yÃ¼klenirken hata:', err.message);
+    } catch (err) {
+      console.error('Profil yüklenirken hata:', (err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -75,14 +76,14 @@ export default function ProfilePage() {
         .eq('id', user?.id);
 
       if (error) {
-        console.error('Arka planda kaydederken hata oluÅŸtu:', error);
-        toast.error('Kaydetme baÅŸarÄ±sÄ±z: ' + error.message);
+        console.error('Arka planda kaydederken hata oluştu:', error);
+        toast.error('Kaydetme başarısız: ' + (error as Error).message);
       } else {
-        toast.success('Profil bilgileriniz baÅŸarÄ±yla gÃ¼ncellendi!');
+        toast.success('Profil bilgileriniz başarıyla güncellendi!');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error('Kaydetme baÅŸarÄ±sÄ±z: ' + err.message);
+      toast.error('Kaydetme başarısız: ' + (err as Error).message);
     } finally {
       setIsSaving(false);
     }
@@ -97,16 +98,16 @@ export default function ProfilePage() {
 
       if (updateError) throw updateError;
       setAvatarUrl(url);
-    } catch (error: any) {
-      toast.error('Profil fotoÄŸrafÄ± gÃ¼ncellenirken hata oluÅŸtu: ' + error.message);
+    } catch (error) {
+      toast.error('Profil fotoğrafı güncellenirken hata oluştu: ' + (error as Error).message);
     }
   };
 
-  if (isLoading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Profil YÃ¼kleniyor...</div>;
+  if (isLoading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Profil Yükleniyor...</div>;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '4rem' }}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>Profil AyarlarÄ±m</h1>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>Profil Ayarlarım</h1>
 
       <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         
@@ -121,8 +122,8 @@ export default function ProfilePage() {
             label=""
           />
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Profil FotoÄŸrafÄ±</h3>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Kare formatta bir fotoÄŸraf yÃ¼klemeniz Ã¶nerilir.</p>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Profil Fotoğrafı</h3>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Kare formatta bir fotoğraf yüklemeniz önerilir.</p>
           </div>
         </div>
 
@@ -133,55 +134,55 @@ export default function ProfilePage() {
             <input type="text" className="input" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
           </div>
           <div>
-            <label className="label">Telefon NumarasÄ±</label>
+            <label className="label">Telefon Numarası</label>
             <input type="text" className="input" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
           </div>
 
           {/* Sistemden Gelen (Salt Okunur) Alanlar */}
           <div>
-            <label className="label">Ãœniversite</label>
+            <label className="label">Üniversite</label>
             <input type="text" className="input" value={formData.university} disabled style={{ backgroundColor: 'var(--bg-main)', color: '#6b7280' }} />
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Ãœniversite veya bÃ¶lge deÄŸiÅŸiklikleri iÃ§in merkeze baÅŸvurun.</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Üniversite veya bölge değişiklikleri için merkeze başvurun.</span>
           </div>
 
           <div>
-            <label className="label">BaÄŸlÄ± OlduÄŸu Birim</label>
+            <label className="label">Bağlı Olduğu Birim</label>
             <select className="input" value={formData.unitName} onChange={e => setFormData({...formData, unitName: e.target.value})}>
-              <option value="">SeÃ§iniz...</option>
-              <option value="Sosyal Ã‡alÄ±ÅŸmalar Birimi">Sosyal Ã‡alÄ±ÅŸmalar Birimi</option>
-              <option value="Mesleki ve Kariyer Ã‡alÄ±ÅŸmalarÄ± Birimi">Mesleki ve Kariyer Ã‡alÄ±ÅŸmalarÄ± Birimi</option>
-              <option value="Bilimsel ve Akademik Ã‡alÄ±ÅŸmalar Birimi">Bilimsel ve Akademik Ã‡alÄ±ÅŸmalar Birimi</option>
-              <option value="Ä°letiÅŸim ve Planlama Birimi">Ä°letiÅŸim ve Planlama Birimi</option>
+              <option value="">Seçiniz...</option>
+              <option value="Sosyal Çalışmalar Birimi">Sosyal Çalışmalar Birimi</option>
+              <option value="Mesleki ve Kariyer Çalışmaları Birimi">Mesleki ve Kariyer Çalışmaları Birimi</option>
+              <option value="Bilimsel ve Akademik Çalışmalar Birimi">Bilimsel ve Akademik Çalışmalar Birimi</option>
+              <option value="İletişim ve Planlama Birimi">İletişim ve Planlama Birimi</option>
               <option value="Temsilcilikler Birimi">Temsilcilikler Birimi</option>
               <option value="Bursiyer">Bursiyer (Birim Yok)</option>
             </select>
           </div>
 
-          {/* Sadece Bursiyerler Ä°Ã§in */}
+          {/* Sadece Bursiyerler İçin */}
           {profile?.role === 'bursary_student' && (
             <div style={{ gridColumn: 'span 2' }}>
-              <label className="label">KulÃ¼p GÃ¶revi / RolÃ¼</label>
-              <input type="text" className="input" placeholder="Ã–rn: Organizasyon Ekibi Ãœyesi" value={formData.clubRole} onChange={e => setFormData({...formData, clubRole: e.target.value})} />
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>VakÄ±f bÃ¼nyesinde dahil olduÄŸunuz bir kulÃ¼p veya gÃ¶rev varsa belirtiniz.</p>
+              <label className="label">Kulüp Görevi / Rolü</label>
+              <input type="text" className="input" placeholder="Örn: Organizasyon Ekibi Üyesi" value={formData.clubRole} onChange={e => setFormData({...formData, clubRole: e.target.value})} />
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Vakıf bünyesinde dahil olduğunuz bir kulüp veya görev varsa belirtiniz.</p>
             </div>
           )}
 
           {/* Yeni Eklenen Dinamik Alanlar */}
           <div>
-            <label className="label">BÃ¶lÃ¼m</label>
-            <input type="text" className="input" placeholder="Ã–rn: TÄ±p, DiÅŸ HekimliÄŸi, Hukuk" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} />
+            <label className="label">Bölüm</label>
+            <input type="text" className="input" placeholder="Örn: Tıp, Diş Hekimliği, Hukuk" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} />
           </div>
           <div>
-            <label className="label">SÄ±nÄ±f</label>
+            <label className="label">Sınıf</label>
             <select className="input" value={formData.classYear} onChange={e => setFormData({...formData, classYear: e.target.value})}>
-              <option value="">SeÃ§iniz...</option>
-              <option value="HazÄ±rlÄ±k">HazÄ±rlÄ±k</option>
-              <option value="1. SÄ±nÄ±f">1. SÄ±nÄ±f</option>
-              <option value="2. SÄ±nÄ±f">2. SÄ±nÄ±f</option>
-              <option value="3. SÄ±nÄ±f">3. SÄ±nÄ±f</option>
-              <option value="4. SÄ±nÄ±f">4. SÄ±nÄ±f</option>
-              <option value="5. SÄ±nÄ±f">5. SÄ±nÄ±f</option>
-              <option value="6. SÄ±nÄ±f">6. SÄ±nÄ±f</option>
+              <option value="">Seçiniz...</option>
+              <option value="Hazırlık">Hazırlık</option>
+              <option value="1. Sınıf">1. Sınıf</option>
+              <option value="2. Sınıf">2. Sınıf</option>
+              <option value="3. Sınıf">3. Sınıf</option>
+              <option value="4. Sınıf">4. Sınıf</option>
+              <option value="5. Sınıf">5. Sınıf</option>
+              <option value="6. Sınıf">6. Sınıf</option>
               <option value="Mezun">Mezun</option>
             </select>
           </div>
@@ -189,11 +190,15 @@ export default function ProfilePage() {
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
           <button onClick={handleSave} disabled={isSaving} className="btn btn-primary" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <Save size={18} /> {isSaving ? 'Kaydediliyor...' : 'DeÄŸiÅŸiklikleri Kaydet'}
+            <Save size={18} /> {isSaving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+
+
+
 

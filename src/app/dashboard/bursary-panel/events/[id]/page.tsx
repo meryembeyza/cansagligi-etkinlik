@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useParams, useRouter } from 'next/navigation';
 import { Calendar, MapPin, User, ArrowLeft, XCircle, ArrowRight, Phone, Mail, Clock } from 'lucide-react';
 
@@ -32,7 +33,7 @@ export default function BursaryEventDetailPage() {
         if (mounted) {
           setEvent(data);
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error('Error fetching bursary event:', err);
         if (mounted) setError('Etkinlik bulunamadı veya görüntüleme yetkiniz yok.');
       } finally {
@@ -245,7 +246,7 @@ export default function BursaryEventDetailPage() {
                 <div style={{ marginTop: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem' }}>Konuşmacılar</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {event.speakers.map((speaker: any, idx: number) => (
+                    {event.speakers.map((speaker: EventSpeaker, idx: number) => (
                       <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid #f3f4f6' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#da1c15', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 'bold', flexShrink: 0 }}>
                           {speaker.name.charAt(0).toUpperCase()}
@@ -267,3 +268,6 @@ export default function BursaryEventDetailPage() {
     </div>
   );
 }
+
+
+

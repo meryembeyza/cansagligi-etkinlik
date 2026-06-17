@@ -1,11 +1,12 @@
-ï»¿import { toast } from 'react-hot-toast';
+import { AppEvent,  toast } from 'react-hot-toast';
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { X, Upload, Plus, Trash2, Eye, Calendar, MapPin, User, ArrowRight, XCircle } from 'lucide-react';
+import { AppEvent,  createClient } from '@/utils/supabase/client';
+const supabase = createClient();
+import { AppEvent,  X, Upload, Plus, Trash2, Eye, Calendar, MapPin, User, ArrowRight, XCircle } from 'lucide-react';
 import BursiyerEventCard from '../bursary-panel/BursiyerEventCard';
 
 interface PublishToBursaryModalProps {
-  event: any;
+  event: AppEvent;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -34,7 +35,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Turkey's cities for the dropdown
-  const cities = ["Adana", "AdÄ±yaman", "Afyonkarahisar", "AÄŸrÄ±", "Amasya", "Ankara", "Antalya", "Artvin", "AydÄ±n", "BalÄ±kesir", "Bilecik", "BingÃ¶l", "Bitlis", "Bolu", "Burdur", "Bursa", "Ã‡anakkale", "Ã‡ankÄ±rÄ±", "Ã‡orum", "Denizli", "DiyarbakÄ±r", "Edirne", "ElazÄ±ÄŸ", "Erzincan", "Erzurum", "EskiÅŸehir", "Gaziantep", "Giresun", "GÃ¼mÃ¼ÅŸhane", "Hakkari", "Hatay", "Isparta", "Mersin", "Ä°stanbul", "Ä°zmir", "Kars", "Kastamonu", "Kayseri", "KÄ±rklareli", "KÄ±rÅŸehir", "Kocaeli", "Konya", "KÃ¼tahya", "Malatya", "Manisa", "KahramanmaraÅŸ", "Mardin", "MuÄŸla", "MuÅŸ", "NevÅŸehir", "NiÄŸde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "TekirdaÄŸ", "Tokat", "Trabzon", "Tunceli", "Ã…ÂžanlÄ±urfa", "UÅŸak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "KÄ±rÄ±kkale", "Batman", "Ã…ÂžÄ±rnak", "BartÄ±n", "Ardahan", "IÄŸdÄ±r", "Yalova", "KarabÃ¼k", "Kilis", "Osmaniye", "DÃ¼zce"];
+  const cities = ["Adana", "Adýyaman", "Afyonkarahisar", "Aðrý", "Amasya", "Ankara", "Antalya", "Artvin", "Aydýn", "Balýkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankýrý", "Çorum", "Denizli", "Diyarbakýr", "Edirne", "Elazýð", "Erzincan", "Erzurum", "Eskiþehir", "Gaziantep", "Giresun", "Gümüþhane", "Hakkari", "Hatay", "Isparta", "Mersin", "Ýstanbul", "Ýzmir", "Kars", "Kastamonu", "Kayseri", "Kýrklareli", "Kýrþehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraþ", "Mardin", "Muðla", "Muþ", "Nevþehir", "Niðde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdað", "Tokat", "Trabzon", "Tunceli", "Åžanlýurfa", "Uþak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kýrýkkale", "Batman", "Åžýrnak", "Bartýn", "Ardahan", "Iðdýr", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"];
 
   const handleSpeakerChange = (index: number, field: string, value: string) => {
     const newSpeakers = [...formData.speakers];
@@ -54,11 +55,11 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 2 * 1024 * 1024) {
-        toast.error("Dosya boyutu 2MB'Ä± geÃ§emez.");
+        toast.error("Dosya boyutu 2MB'ý geçemez.");
         return;
       }
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        toast.error("Sadece JPG, PNG veya WEBP formatlarÄ± desteklenir.");
+        toast.error("Sadece JPG, PNG veya WEBP formatlarý desteklenir.");
         return;
       }
       setPosterFile(file);
@@ -68,11 +69,11 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
   const validateAndShowPreview = () => {
     if (!formData.display_title || !formData.event_date || !formData.city) {
-      toast.error("LÃ¼tfen zorunlu alanlarÄ± (Etkinlik AdÄ±, Tarih ve Ã…Âžehir) doldurunuz.");
+      toast.error("Lütfen zorunlu alanlarý (Etkinlik Adý, Tarih ve Åžehir) doldurunuz.");
       return;
     }
     if (formData.requires_registration && !formData.registration_url.startsWith('https://')) {
-      toast.success("BaÅŸvuru linki 'https://' ile baÅŸlamalÄ±dÄ±r.");
+      toast.success("Baþvuru linki 'https://' ile baþlamalýdýr.");
       return;
     }
     setShowPreview(true);
@@ -86,33 +87,33 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
     setErrorMessage(null);
     setProgressState('1/5: Oturum kontrol ediliyor...');
     
-    // Genel bir zaman aÅŸÄ±mÄ± korumasÄ± (tÃ¼m sÃ¼reÃ§ iÃ§in 15 saniye)
+    // Genel bir zaman aþýmý korumasý (tüm süreç için 15 saniye)
     const timeoutId = setTimeout(() => {
-      setErrorMessage("Ä°ÅŸlem Ã§ok uzun sÃ¼rdÃ¼ÄŸÃ¼ iÃ§in iptal edildi. LÃ¼tfen sayfayÄ± yenileyip tekrar deneyin.");
+      setErrorMessage("Ýþlem çok uzun sürdüðü için iptal edildi. Lütfen sayfayý yenileyip tekrar deneyin.");
       setIsSubmitting(false);
     }, 15000);
 
     try {
       const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData?.user) throw new Error("Oturum bulunamadÄ±");
+      if (userError || !userData?.user) throw new Error("Oturum bulunamadý");
       
-      setProgressState('2/5: KullanÄ±cÄ± profili Ã§ekiliyor...');
+      setProgressState('2/5: Kullanýcý profili çekiliyor...');
       const { data: profileData, error: profileError } = await supabase.from('users').select('university').eq('id', userData.user.id).single();
-      if (profileError) throw new Error("Profil Ã§ekilirken hata: " + profileError.message);
-      if (!profileData?.university) throw new Error("KullanÄ±cÄ±nÄ±n Ã¼niversite bilgisi bulunamadÄ±");
+      if (profileError) throw new Error("Profil çekilirken hata: " + profile(error as Error).message);
+      if (!profileData?.university) throw new Error("Kullanýcýnýn üniversite bilgisi bulunamadý");
 
       let finalPosterUrl = '';
       if (posterFile) {
-        setProgressState('3/5: AfiÅŸ yÃ¼kleniyor...');
+        setProgressState('3/5: Afiþ yükleniyor...');
         const fileExt = posterFile.name.split('.').pop();
         const fileName = `${event.id}_${Math.random()}.${fileExt}`;
         const { error: uploadError, data } = await supabase.storage.from('posters').upload(fileName, posterFile);
-        if (uploadError) throw new Error("AfiÅŸ yÃ¼klenemedi. LÃ¼tfen 'posters' adÄ±nda bir storage bucket olduÄŸundan emin olun. Detay: " + uploadError.message);
+        if (uploadError) throw new Error("Afiþ yüklenemedi. Lütfen 'posters' adýnda bir storage bucket olduðundan emin olun. Detay: " + upload(error as Error).message);
         
         const { data: urlData } = supabase.storage.from('posters').getPublicUrl(fileName);
         finalPosterUrl = urlData.publicUrl;
       } else {
-        setProgressState('3/5: AfiÅŸ adÄ±mÄ± geÃ§iliyor...');
+        setProgressState('3/5: Afiþ adýmý geçiliyor...');
       }
 
       const validSpeakers = formData.speakers.filter(s => s.name.trim() !== '');
@@ -138,19 +139,19 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
         is_published: true
       };
 
-      setProgressState('4/5: VeritabanÄ±na kayÄ±t atÄ±lÄ±yor...');
+      setProgressState('4/5: Veritabanýna kayýt atýlýyor...');
       const { error: insertError } = await supabase.from('bursiyer_events').insert(payload);
       if (insertError) {
-        throw new Error("VeritabanÄ±na ekleme hatasÄ±. Tablo oluÅŸturulmamÄ±ÅŸ veya yetki sorunu olabilir. Detay: " + insertError.message);
+        throw new Error("Veritabanýna ekleme hatasý. Tablo oluþturulmamýþ veya yetki sorunu olabilir. Detay: " + insert(error as Error).message);
       }
 
-      setProgressState('5/5: BaÅŸarÄ±lÄ±, tamamlanÄ±yor...');
+      setProgressState('5/5: Baþarýlý, tamamlanýyor...');
       clearTimeout(timeoutId);
       onSuccess();
-    } catch (error: any) {
+    } catch (error) {
       clearTimeout(timeoutId);
-      console.error("YayÄ±nlama hatasÄ±:", error);
-      setErrorMessage(error.message || JSON.stringify(error));
+      console.error("Yayýnlama hatasý:", error);
+      setErrorMessage((error as Error).message || JSON.stringify(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -179,8 +180,8 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
       <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--text-main)', color: '#fff' }}>
           <div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Bursiyer Panelinde BÃ¶yle GÃ¶rÃ¼necek</h2>
-            <p style={{ fontSize: '0.875rem', color: '#aaa' }}>Bu Ã¶nizleme bursiyer gÃ¶zÃ¼nden mobil formattaki gÃ¶rÃ¼nÃ¼mdÃ¼r.</p>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Bursiyer Panelinde Böyle Görünecek</h2>
+            <p style={{ fontSize: '0.875rem', color: '#aaa' }}>Bu önizleme bursiyer gözünden mobil formattaki görünümdür.</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             {errorMessage && (
@@ -194,10 +195,10 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
               </div>
             )}
             <button onClick={() => setShowPreview(false)} className="btn btn-outline" style={{ color: '#fff', borderColor: '#555' }}>
-              DÃ¼zenle
+              Düzenle
             </button>
             <button onClick={handleSubmit} className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'YayÄ±nlanÄ±yor...' : 'YayÄ±nla'}
+              {isSubmitting ? 'Yayýnlanýyor...' : 'Yayýnla'}
             </button>
           </div>
         </div>
@@ -226,31 +227,31 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
         <div style={{ padding: '1.5rem', overflowY: 'auto', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
-          {/* KatÄ±lÄ±mcÄ± Tipi */}
+          {/* Katýlýmcý Tipi */}
           <div>
-            <label className="label">KatÄ±lÄ±mcÄ± Tipi *</label>
+            <label className="label">Katýlýmcý Tipi *</label>
             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '0.5rem' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                 <input type="radio" checked={formData.participant_type === 'university_only'} onChange={() => setFormData({...formData, participant_type: 'university_only'})} />
-                Sadece kendi Ã¼niversitemizin bursiyerleri
+                Sadece kendi üniversitemizin bursiyerleri
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                 <input type="radio" checked={formData.participant_type === 'all'} onChange={() => setFormData({...formData, participant_type: 'all'})} />
-                TÃ¼m bursiyerlere aÃ§Ä±k (dÄ±ÅŸ katÄ±lÄ±mcÄ±)
+                Tüm bursiyerlere açýk (dýþ katýlýmcý)
               </label>
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
             <div>
-              <label className="label">Etkinlik AdÄ± *</label>
+              <label className="label">Etkinlik Adý *</label>
               <input type="text" className="input" value={formData.display_title} onChange={e => setFormData({...formData, display_title: e.target.value})} required />
             </div>
             
             <div>
-              <label className="label">Ã…Âžehir *</label>
+              <label className="label">Åžehir *</label>
               <select className="input" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} required>
-                <option value="">SeÃ§iniz</option>
+                <option value="">Seçiniz</option>
                 {cities.sort().map(city => <option key={city} value={city}>{city}</option>)}
               </select>
             </div>
@@ -258,27 +259,27 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
             <div>
-              <label className="label">BaÅŸlangÄ±Ã§ Tarihi ve Saati *</label>
+              <label className="label">Baþlangýç Tarihi ve Saati *</label>
               <input type="datetime-local" className="input" value={formData.event_date} onChange={e => setFormData({...formData, event_date: e.target.value})} required />
             </div>
             <div>
-              <label className="label">BitiÅŸ Tarihi ve Saati (Opsiyonel)</label>
+              <label className="label">Bitiþ Tarihi ve Saati (Opsiyonel)</label>
               <input type="datetime-local" className="input" value={formData.event_end_date} onChange={e => setFormData({...formData, event_end_date: e.target.value})} />
             </div>
           </div>
 
           <div>
             <label className="label">Mekan / Konum</label>
-            <input type="text" className="input" placeholder="Ã–rn: Konferans Salonu B" value={formData.venue} onChange={e => setFormData({...formData, venue: e.target.value})} />
+            <input type="text" className="input" placeholder="Örn: Konferans Salonu B" value={formData.venue} onChange={e => setFormData({...formData, venue: e.target.value})} />
           </div>
 
           <div>
-            <label className="label">Ä°Ã§erik / AÃ§Ä±klama</label>
+            <label className="label">Ýçerik / Açýklama</label>
             <textarea 
               className="input" 
               rows={4} 
               maxLength={500}
-              placeholder="Etkinlik hakkÄ±nda detaylÄ± bilgi..." 
+              placeholder="Etkinlik hakkýnda detaylý bilgi..." 
               value={formData.description} 
               onChange={e => setFormData({...formData, description: e.target.value})} 
             />
@@ -289,7 +290,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
 
           <div style={{ padding: '1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <label className="label" style={{ margin: 0 }}>KonuÅŸmacÄ±lar</label>
+              <label className="label" style={{ margin: 0 }}>Konuþmacýlar</label>
               <button onClick={addSpeaker} type="button" style={{ background: 'none', border: 'none', color: '#da1c15', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <Plus size={16} /> Ekle
               </button>
@@ -306,12 +307,12 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
           </div>
 
           <div>
-            <label className="label">AfiÅŸ YÃ¼kle (Maksimum 2MB, JPG/PNG/WEBP)</label>
+            <label className="label">Afiþ Yükle (Maksimum 2MB, JPG/PNG/WEBP)</label>
             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
               <div style={{ flex: 1 }}>
                 <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', border: '2px dashed var(--border-color)', borderRadius: 'var(--radius-md)', cursor: 'pointer', backgroundColor: 'var(--bg-nested)', transition: 'border-color 0.2s' }}>
                   <Upload size={24} color="#94a3b8" style={{ marginBottom: '0.5rem' }} />
-                  <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>GÃ¶rsel seÃ§mek iÃ§in tÄ±klayÄ±n</span>
+                  <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>Görsel seçmek için týklayýn</span>
                   <input type="file" accept="image/jpeg,image/png,image/webp" style={{ display: 'none' }} onChange={handleFileChange} />
                 </label>
               </div>
@@ -326,24 +327,24 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
           <div style={{ padding: '1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: 600, color: 'var(--text-main)', marginBottom: formData.requires_registration ? '1rem' : 0 }}>
               <input type="checkbox" style={{ width: '18px', height: '18px' }} checked={formData.requires_registration} onChange={e => setFormData({...formData, requires_registration: e.target.checked})} />
-              BaÅŸvuru gerekli mi?
+              Baþvuru gerekli mi?
             </label>
             
             {formData.requires_registration && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '2rem' }}>
                 <div>
-                  <label className="label">BaÅŸvuru Formu URL&apos;si *</label>
+                  <label className="label">Baþvuru Formu URL&apos;si *</label>
                   <input type="url" className="input" placeholder="https://..." value={formData.registration_url} onChange={e => setFormData({...formData, registration_url: e.target.value})} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', alignItems: 'end' }}>
                   <div>
-                    <label className="label">Son BaÅŸvuru Tarihi</label>
+                    <label className="label">Son Baþvuru Tarihi</label>
                     <input type="date" className="input" value={formData.registration_deadline} onChange={e => setFormData({...formData, registration_deadline: e.target.value})} />
                   </div>
                   <div>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.875rem' }}>
                       <input type="checkbox" checked={formData.registration_required_warning} onChange={e => setFormData({...formData, registration_required_warning: e.target.checked})} />
-                      Kartta &quot;BaÅŸvuru zorunludur&quot; uyarÄ±sÄ± gÃ¶ster
+                      Kartta &quot;Baþvuru zorunludur&quot; uyarýsý göster
                     </label>
                   </div>
                 </div>
@@ -352,7 +353,7 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
           </div>
 
           <div style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}>
-             <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '1rem' }}>Ä°letiÅŸim KiÅŸisi (Opsiyonel)</h3>
+             <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '1rem' }}>Ýletiþim Kiþisi (Opsiyonel)</h3>
              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                 <input type="text" className="input" placeholder="Ad Soyad" value={formData.contact_person.name} onChange={e => setFormData({...formData, contact_person: {...formData.contact_person, name: e.target.value}})} />
                 <input type="tel" className="input" placeholder="Telefon" value={formData.contact_person.phone} onChange={e => setFormData({...formData, contact_person: {...formData.contact_person, phone: e.target.value}})} />
@@ -363,9 +364,9 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
         </div>
 
         <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', gap: '1rem', backgroundColor: 'var(--bg-main)' }}>
-          <button className="btn btn-outline" onClick={onClose}>Ä°ptal</button>
+          <button className="btn btn-outline" onClick={onClose}>Ýptal</button>
           <button className="btn btn-primary" onClick={validateAndShowPreview} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Eye size={18} /> Ã–nizle ve YayÄ±nla
+            <Eye size={18} /> Önizle ve Yayýnla
           </button>
         </div>
 
@@ -373,4 +374,9 @@ export default function PublishToBursaryModal({ event, onClose, onSuccess }: Pub
     </div>
   );
 }
+
+
+
+
+
 

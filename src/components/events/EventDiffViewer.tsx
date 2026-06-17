@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Loader2, X } from 'lucide-react';
+import { AppEvent,  createClient } from '@/utils/supabase/client';
+const supabase = createClient();
+import { AppEvent,  Loader2, X } from 'lucide-react';
 
 interface EventDiffViewerProps {
   eventId: string;
-  currentEvent: any;
+  currentevent: AppEvent;
   onClose: () => void;
 }
 
@@ -122,3 +123,6 @@ export default function EventDiffViewer({ eventId, currentEvent, onClose }: Even
     </div>
   );
 }
+
+
+

@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import Link from 'next/link';
 
 export default function ResetPasswordPage() {
@@ -41,8 +42,8 @@ export default function ResetPasswordPage() {
       setTimeout(() => {
         router.push('/login');
       }, 3000);
-    } catch (err: any) {
-      setError(err.message || 'Şifre güncellenirken bir hata oluştu.');
+    } catch (err) {
+      setError((err as Error).message || 'Şifre güncellenirken bir hata oluştu.');
     } finally {
       setIsLoading(false);
     }
@@ -121,3 +122,6 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
+
+

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import BursiyerEventCard from '@/components/dashboard/bursary-panel/BursiyerEventCard';
 import { Filter, Calendar, MapPin, Loader2, Users } from 'lucide-react';
 
@@ -208,3 +209,4 @@ export default function BursiyerEventsPage() {
     </div>
   );
 }
+

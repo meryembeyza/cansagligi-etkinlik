@@ -1,8 +1,9 @@
-ï»¿'use client';
+'use client';
 import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
 import EventDiffViewer from '@/components/events/EventDiffViewer';
 import { Check, X, Edit3, Calendar, MapPin, Loader2, FileSearch } from 'lucide-react';
@@ -17,7 +18,7 @@ export default function RegionManagerPanel() {
   const [diffEventId, setDiffEventId] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string>('');
 
-  const regions = ['Ä°stanbul Anadolu', 'Ä°stanbul Avrupa', 'Marmara', 'Ege', 'Ä°Ã§ Anadolu', 'Ankara', 'DoÄŸu Anadolu', 'GÃ¼neydoÄŸu Anadolu', 'Akdeniz', 'Karadeniz'];
+  const regions = ['İstanbul Anadolu', 'İstanbul Avrupa', 'Marmara', 'Ege', 'İç Anadolu', 'Ankara', 'Doğu Anadolu', 'Güneydoğu Anadolu', 'Akdeniz', 'Karadeniz'];
 
   useEffect(() => {
     if (userData?.region && !selectedRegion) {
@@ -32,7 +33,7 @@ export default function RegionManagerPanel() {
       const isOwnRegion = selectedRegion === userData?.region;
       const statusFilter = isOwnRegion 
         ? ['Onay Bekliyor', 'Yeniden Onay Bekliyor'] 
-        : ['OnaylandÄ±', 'GerÃ§ekleÅŸti'];
+        : ['Onaylandı', 'Gerçekleşti'];
 
       let query = supabase
         .from('events')
@@ -41,7 +42,7 @@ export default function RegionManagerPanel() {
         .in('status', statusFilter)
         .order('created_at', { ascending: false });
 
-      // Sadece kendi birimine ait etkinlikleri gÃ¶rsÃ¼n (Genel yetkililer hariÃ§)
+      // Sadece kendi birimine ait etkinlikleri görsün (Genel yetkililer hariç)
       if (userData?.unit_name && userData.role === 'region_manager') {
         query = query.eq('unit_name', userData.unit_name);
       }
@@ -51,7 +52,7 @@ export default function RegionManagerPanel() {
       if (error) throw error;
       setEvents(data || []);
     } catch (error) {
-      console.error('Etkinlikler Ã§ekilemedi:', error);
+      console.error('Etkinlikler çekilemedi:', error);
     } finally {
       setIsLoading(false);
     }
@@ -64,7 +65,7 @@ export default function RegionManagerPanel() {
   const handleAction = async (eventId: string, newStatus: string, notes?: string) => {
     setProcessingId(eventId);
     try {
-      // 1. Durumu gÃ¼ncelle
+      // 1. Durumu güncelle
       const { error: updateError } = await supabase
         .from('events')
         .update({ status: newStatus })
@@ -72,23 +73,23 @@ export default function RegionManagerPanel() {
         
       if (updateError) throw updateError;
 
-      // 2. EÄŸer onaylandÄ±ysa otomatik afiÅŸ talebi oluÅŸtur
-      if (newStatus === 'OnaylandÄ±') {
+      // 2. Eğer onaylandıysa otomatik afiş talebi oluştur
+      if (newStatus === 'Onaylandı') {
         const { error: posterError } = await supabase
           .from('poster_requests')
           .insert([{ event_id: eventId, status: 'Bekliyor' }]);
         if (posterError) {
-          console.warn('AfiÅŸ talebi oluÅŸturulurken hata:', posterError);
+          console.warn('Afiş talebi oluşturulurken hata:', posterError);
         }
       }
 
       const targetEvent = events.find(e => e.id === eventId);
       
-      // 3. Bildirim oluÅŸtur (Birim BaÅŸkanÄ±na)
+      // 3. Bildirim oluştur (Birim Başkanına)
       let notifMessage = '';
-      if (newStatus === 'OnaylandÄ±') notifMessage = `Tebrikler, "${targetEvent?.event_name}" etkinliÄŸiniz BÃ¶lge Sorumlusu tarafÄ±ndan onaylandÄ±.`;
-      else if (newStatus === 'Reddedildi') notifMessage = `Maalesef "${targetEvent?.event_name}" etkinliÄŸiniz reddedildi. Neden: ${notes}`;
-      else if (newStatus === 'Yeniden Onay Bekliyor') notifMessage = `"${targetEvent?.event_name}" etkinliÄŸiniz iÃ§in revizyon isteniyor. Notlar: ${notes}`;
+      if (newStatus === 'Onaylandı') notifMessage = `Tebrikler, "${targetEvent?.event_name}" etkinliğiniz Bölge Sorumlusu tarafından onaylandı.`;
+      else if (newStatus === 'Reddedildi') notifMessage = `Maalesef "${targetEvent?.event_name}" etkinliğiniz reddedildi. Neden: ${notes}`;
+      else if (newStatus === 'Yeniden Onay Bekliyor') notifMessage = `"${targetEvent?.event_name}" etkinliğiniz için revizyon isteniyor. Notlar: ${notes}`;
 
       if (notifMessage && targetEvent) {
         await supabase.from('notifications').insert([{
@@ -101,8 +102,8 @@ export default function RegionManagerPanel() {
 
       // 4. Listeyi yenile
       await fetchEvents();
-    } catch (error: any) {
-      toast.error('Ä°ÅŸlem baÅŸarÄ±sÄ±z: ' + error.message);
+    } catch (error) {
+      toast.error('İşlem başarısız: ' + (error as Error).message);
     } finally {
       setProcessingId(null);
     }
@@ -118,7 +119,7 @@ export default function RegionManagerPanel() {
     <div className="card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h3 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-main)' }}>
-          {isOwnRegion ? 'BÃ¶lge OnayÄ± Bekleyen Etkinlikler' : `${selectedRegion} BÃ¶lgesi Etkinlikleri (Salt Okunur)`}
+          {isOwnRegion ? 'Bölge Onayı Bekleyen Etkinlikler' : `${selectedRegion} Bölgesi Etkinlikleri (Salt Okunur)`}
         </h3>
         
         <select 
@@ -135,7 +136,7 @@ export default function RegionManagerPanel() {
         <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
-            {isOwnRegion ? 'BÃ¶lgenizde ÅŸu an onay bekleyen bir etkinlik bulunmuyor.' : 'Bu bÃ¶lgede henÃ¼z onaylanmÄ±ÅŸ bir etkinlik bulunmuyor.'}
+            {isOwnRegion ? 'Bölgenizde şu an onay bekleyen bir etkinlik bulunmuyor.' : 'Bu bölgede henüz onaylanmış bir etkinlik bulunmuyor.'}
           </p>
         </div>
       ) : (
@@ -163,25 +164,25 @@ export default function RegionManagerPanel() {
                       onClick={() => setDiffEventId(event.id)}
                       style={{ fontSize: '0.875rem', padding: '0.5rem 0.75rem' }}
                     >
-                      <FileSearch size={16} style={{ marginRight: '0.5rem' }}/> DeÄŸiÅŸiklik Ã–zeti
+                      <FileSearch size={16} style={{ marginRight: '0.5rem' }}/> Değişiklik Özeti
                     </button>
                   )}
                   <Link href={`/dashboard/events/${event.id}`} className="btn btn-outline" style={{ fontSize: '0.875rem', padding: '0.5rem 0.75rem', borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>
-                    DetaylarÄ± GÃ¶r
+                    Detayları Gör
                   </Link>
                 </div>
               </div>
 
-              {/* GÃ¶nderen KiÅŸi Bilgisi */}
+              {/* Gönderen Kişi Bilgisi */}
               {event.users && (
                 <div style={{ padding: '0.75rem 1rem', backgroundColor: '#f0f9ff', borderRadius: 'var(--radius-sm)', marginBottom: '1rem', border: '1px solid #bae6fd', fontSize: '0.875rem' }}>
-                  <div style={{ fontWeight: 600, color: '#0369a1', marginBottom: '0.25rem' }}>GÃ¶nderen Birim BaÅŸkanÄ±: {event.users.full_name}</div>
+                  <div style={{ fontWeight: 600, color: '#0369a1', marginBottom: '0.25rem' }}>Gönderen Birim Başkanı: {event.users.full_name}</div>
                   <div style={{ color: '#0c4a6e', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    {event.users.region && <span><strong>BÃ¶lge:</strong> {event.users.region}</span>}
-                    {event.users.university && <span><strong>Ãœniversite:</strong> {event.users.university}</span>}
-                    {event.users.department && <span><strong>BÃ¶lÃ¼m:</strong> {event.users.department}</span>}
-                    {event.users.grade && <span><strong>SÄ±nÄ±f:</strong> {event.users.grade}</span>}
-                    {event.users.club_duty && <span><strong>GÃ¶rev:</strong> {event.users.club_duty}</span>}
+                    {event.users.region && <span><strong>Bölge:</strong> {event.users.region}</span>}
+                    {event.users.university && <span><strong>Üniversite:</strong> {event.users.university}</span>}
+                    {event.users.department && <span><strong>Bölüm:</strong> {event.users.department}</span>}
+                    {event.users.grade && <span><strong>Sınıf:</strong> {event.users.grade}</span>}
+                    {event.users.club_duty && <span><strong>Görev:</strong> {event.users.club_duty}</span>}
                     {event.users.nsosyal_account && <span><strong>NSosyal:</strong> <a href={event.users.nsosyal_account} target="_blank" rel="noopener noreferrer" style={{ color: '#0284c7', textDecoration: 'underline' }}>Profil Linki</a></span>}
                   </div>
                 </div>
@@ -189,27 +190,27 @@ export default function RegionManagerPanel() {
 
               <div style={{ padding: '1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Etkinlik TÃ¼rÃ¼ / AmacÄ±</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Etkinlik Türü / Amacı</div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{event.event_type}</div>
                   <div style={{ fontSize: '0.875rem', marginTop: '0.25rem' }}>{event.event_purpose}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Tarih ve KatÄ±lÄ±mcÄ±</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Tarih ve Katılımcı</div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <Calendar size={14} /> 
                     {new Date(event.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })}
                   </div>
-                  <div style={{ fontSize: '0.875rem', marginTop: '0.25rem' }}>{event.expected_participants || 0} KiÅŸi Bekleniyor</div>
+                  <div style={{ fontSize: '0.875rem', marginTop: '0.25rem' }}>{event.expected_participants || 0} Kişi Bekleniyor</div>
                 </div>
               </div>
 
-              {/* Reddetme Notu Input AlanÄ± (Sadece Reddet'e basÄ±ldÄ±ÄŸÄ±nda aÃ§Ä±lÄ±r) */}
+              {/* Reddetme Notu Input Alanı (Sadece Reddet'e basıldığında açılır) */}
               {isOwnRegion && rejectReason[event.id] !== undefined && (
                 <div style={{ marginBottom: '1rem' }}>
                   <input 
                     type="text" 
                     className="input" 
-                    placeholder="Red/Revizyon nedenini yazÄ±n..." 
+                    placeholder="Red/Revizyon nedenini yazın..." 
                     autoFocus
                     value={rejectReason[event.id]}
                     onChange={(e) => setRejectReason({ ...rejectReason, [event.id]: e.target.value })}
@@ -232,11 +233,11 @@ export default function RegionManagerPanel() {
                       <button 
                         className="btn btn-primary" 
                         style={{ backgroundColor: 'var(--status-success)', borderColor: 'var(--status-success)' }}
-                        onClick={() => handleAction(event.id, 'OnaylandÄ±')}
+                        onClick={() => handleAction(event.id, 'Onaylandı')}
                         disabled={processingId === event.id}
                       >
                         {processingId === event.id ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />} 
-                        EtkinliÄŸi Onayla
+                        Etkinliği Onayla
                       </button>
                     </>
                   ) : (
@@ -246,7 +247,7 @@ export default function RegionManagerPanel() {
                         delete newReasons[event.id];
                         setRejectReason(newReasons);
                       }}>
-                        Ä°ptal
+                        İptal
                       </button>
                       <button 
                         className="btn btn-outline" 
@@ -254,7 +255,7 @@ export default function RegionManagerPanel() {
                         onClick={() => handleAction(event.id, 'Yeniden Onay Bekliyor', rejectReason[event.id])}
                         disabled={!rejectReason[event.id] || processingId === event.id}
                       >
-                        <Edit3 size={16} /> Revizyona GÃ¶nder
+                        <Edit3 size={16} /> Revizyona Gönder
                       </button>
                       <button 
                         className="btn btn-primary" 
@@ -283,4 +284,7 @@ export default function RegionManagerPanel() {
     </div>
   );
 }
+
+
+
 

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -153,8 +154,8 @@ export default function RegisterPage() {
         if (dbError) throw dbError;
         setSuccess(true);
       }
-    } catch (err: any) {
-      setError(err.message || 'Kayıt olurken bir hata oluştu.');
+    } catch (err) {
+      setError((err as Error).message || 'Kayıt olurken bir hata oluştu.');
     } finally {
       setIsLoading(false);
     }
@@ -231,62 +232,27 @@ const tealPrimary = '#0e9b8f';
           </Link>
         </div>
 
-        <style dangerouslySetInnerHTML={{__html: `
-          .animated-check {
-            border-radius: 50%;
-            display: block;
-            stroke-width: 3;
-            stroke: ${redPrimary};
-            stroke-miterlimit: 10;
-            box-shadow: inset 0px 0px 0px ${redPrimary};
-            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
-          }
-          .check-circle {
-            stroke-dasharray: 166;
-            stroke-dashoffset: 166;
-            stroke-width: 3;
-            stroke-miterlimit: 10;
-            stroke: ${redPrimary};
-            fill: none;
-            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-          }
-          .check-path {
-            transform-origin: 50% 50%;
-            stroke-dasharray: 48;
-            stroke-dashoffset: 48;
-            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
-          }
-          @keyframes stroke {
-            100% { stroke-dashoffset: 0; }
-          }
-          @keyframes scale {
-            0%, 100% { transform: none; }
-            50% { transform: scale3d(1.1, 1.1, 1); }
-          }
-          @keyframes fill {
-            100% { box-shadow: inset 0px 0px 0px 40px rgba(218, 28, 21, 0.05); }
-          }
-        `}} />
+        
       </div>
     );
   }
 
   return (
-    <div style={{ colorScheme: 'light', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem', background: 'radial-gradient(ellipse 500px 400px at 95% 0%, rgba(220,38,38,0.04) 0%, transparent 60%), linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)' }}>
-      <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e5e7eb', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', padding: '48px 56px', maxWidth: '680px', margin: '40px auto', width: '100%' }}>
+    <div className="auth-layout">
+      <div className="auth-card">
         
-        <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#6b7280', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none', marginBottom: '1.5rem' }}>
+        <Link href="/login" className="auth-back-link">
           <ChevronLeft size={16} /> Geri Dön
         </Link>
 
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <img src="/logo.png" alt="Cansağlığı Logo" style={{ width: '64px', height: 'auto', marginBottom: '24px' }} />
-          <h1 style={{ color: '#111827', fontSize: '1.75rem', fontWeight: 700, margin: '0 0 8px 0' }}>Yeni Kayıt Oluştur</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>Hesabınızı oluşturmak için bilgilerinizi girin.</p>
+        <div className="auth-logo-container">
+          <img src="/logo.png" alt="Cansağlığı Logo" className="auth-logo" />
+          <h1 className="auth-title">Yeni Kayıt Oluştur</h1>
+          <p className="auth-subtitle">Hesabınızı oluşturmak için bilgilerinizi girin.</p>
         </div>
 
         {/* Progress Bar */}
-        <div style={{ margin: '32px 0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+        <div className="auth-progress-bar" style={{ margin: '32px 0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
           <div style={{ position: 'absolute', top: '16px', left: '0', right: '0', height: '2px', backgroundColor: '#e5e7eb', zIndex: 0 }} />
           <div style={{ position: 'absolute', top: '16px', left: '0', height: '2px', backgroundColor: '#dc2626', zIndex: 0, width: `${((step - 1) / (steps.length - 1)) * 100}%`, transition: 'width 0.3s ease' }} />
           
@@ -322,7 +288,7 @@ const tealPrimary = '#0e9b8f';
 
         <form onSubmit={handleRegister}>
           
-          <div style={{ minHeight: '280px' }}>
+          <div className="auth-form-container">
             {/* Step 1: Görev Seçimi */}
             {step === 1 && (
               <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
@@ -489,10 +455,8 @@ const tealPrimary = '#0e9b8f';
             )}
           </div>
 
-          <div style={{ borderTop: '1px solid #f3f4f6', margin: '32px 0 24px', paddingTop: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <button type="button" onClick={prevStep} disabled={step === 1 || isLoading} style={{ background: '#ffffff', border: '1.5px solid #d1d5db', color: '#374151', borderRadius: '8px', padding: '10px 24px', cursor: step === 1 ? 'not-allowed' : 'pointer', opacity: step === 1 ? 0.5 : 1, transition: 'all 150ms ease', fontWeight: 500 }} onMouseEnter={e => { if(step !== 1) { e.currentTarget.style.borderColor = '#9ca3af'; e.currentTarget.style.backgroundColor = '#f9fafb'; } }} onMouseLeave={e => { if(step !== 1) { e.currentTarget.style.borderColor = '#d1d5db'; e.currentTarget.style.backgroundColor = '#ffffff'; } }}>
-              Geri
-            </button>
+          <div className="btn-group">
+            <button type="button" onClick={prevStep} disabled={step === 1 || isLoading} className="btn btn-outline" style={{ opacity: step === 1 ? 0.5 : 1 }}>Geri</button>
             
             {step < 4 ? (
               <button type="button" onClick={nextStep} style={{ background: '#dc2626', color: 'white', borderRadius: '8px', padding: '10px 28px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', border: 'none', cursor: 'pointer', transition: 'all 150ms ease', boxShadow: '0 4px 12px rgba(220,38,38,0.30)' }} onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#b91c1c'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#dc2626'; e.currentTarget.style.transform = 'translateY(0)'; }}>
@@ -506,74 +470,14 @@ const tealPrimary = '#0e9b8f';
           </div>
         </form>
 
-        <style dangerouslySetInnerHTML={{__html: `
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          .step-title {
-            color: #111827 !important;
-            font-size: 1.1rem !important;
-            font-weight: 600 !important;
-            padding-bottom: 16px !important;
-            border-bottom: 2px solid #fee2e2 !important;
-            border-left: 3px solid #dc2626 !important;
-            padding-left: 12px !important;
-            margin-bottom: 28px !important;
-          }
-          .label {
-            color: #374151 !important;
-            font-size: 0.875rem !important;
-            font-weight: 500 !important;
-            margin-bottom: 6px !important;
-            display: block;
-          }
-          .input {
-            background-color: #ffffff !important;
-            border: 1.5px solid #d1d5db !important;
-            border-radius: 10px !important;
-            padding: 12px 16px !important;
-            font-size: 0.95rem !important;
-            color: #111827 !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-            width: 100%;
-            transition: all 150ms ease;
-          }
-          select.input {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 36px !important;
-          }
-          .input:focus {
-            border-color: #dc2626 !important;
-            box-shadow: 0 0 0 3px rgba(220,38,38,0.10) !important;
-            outline: none !important;
-          }
-          .input::placeholder {
-            color: #9ca3af !important;
-          }
-          .form-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-          }
-          .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-          }
-          @media (max-width: 640px) {
-            .form-grid-2 {
-              grid-template-columns: 1fr;
-            }
-          }
-        `}} />
+        
       </div>
     </div>
   );
 }
+
+
+
+
+
 

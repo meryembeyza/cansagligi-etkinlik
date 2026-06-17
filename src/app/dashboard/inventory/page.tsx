@@ -1,4 +1,4 @@
-ï»¿'use client';
+'use client';
 import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,8 @@ import { useState, useEffect } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
 import LoadingState from '@/components/ui/LoadingState';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Package, Plus, ClipboardList, CheckCircle2, Search, Edit2, Phone, Briefcase, FileText, Check, X, ShieldAlert } from 'lucide-react';
 
 interface EnvanterRequest {
@@ -16,7 +17,7 @@ interface EnvanterRequest {
   talep_tarihi: string;
   gerekli_tarih: string;
   is_kulup: boolean;
-  status: string; // 'Onay Bekliyor', 'OnaylandÄ±', 'Reddedildi', 'Rapor Bekleniyor', 'TamamlandÄ±'
+  status: string; // 'Onay Bekliyor', 'Onaylandı', 'Reddedildi', 'Rapor Bekleniyor', 'Tamamlandı'
   bez_canta: number;
   etiket: number;
   rozet: number;
@@ -24,7 +25,7 @@ interface EnvanterRequest {
   defter: number;
   kalem: number;
   brosur: number;
-  other_items_json: any[];
+  other_items_json: Record<string, unknown>[];
   notes: string | null;
   created_at: string;
   requester_user?: {
@@ -36,12 +37,12 @@ interface EnvanterRequest {
   envanter_usage_report?: {
     id: string;
     katilimci_sayisi: number;
-    kullanilan_items_json: any;
+    kullanilan_items_json: Record<string, unknown> | null;
   } | null;
 }
 
 const REGIONS = [
-  'Akdeniz', 'DoÄŸu Anadolu', 'Ege', 'GÃ¼neydoÄŸu Anadolu', 'Ankara', 'Ä°Ã§ Anadolu', 'Karadeniz', 'Ä°stanbul Anadolu', 'Ä°stanbul Avrupa', 'Marmara'
+  'Akdeniz', 'Doğu Anadolu', 'Ege', 'Güneydoğu Anadolu', 'Ankara', 'İç Anadolu', 'Karadeniz', 'İstanbul Anadolu', 'İstanbul Avrupa', 'Marmara'
 ];
 
 export default function V4InventoryPage() {
@@ -82,7 +83,7 @@ export default function V4InventoryPage() {
   const [usageStats, setUsageStats] = useState<any>({});
 
   // Review status
-  const [reviewStatus, setReviewStatus] = useState('OnaylandÄ±');
+  const [reviewStatus, setReviewStatus] = useState('Onaylandı');
 
   const isRepresentative = currentRole === 'representative';
   const isRegionManager = currentRole === 'rep_region_manager';
@@ -107,7 +108,7 @@ export default function V4InventoryPage() {
       if (error) throw error;
 
       // Safe mapping to prevent nested reading locks
-      const mapped = (data || []).map((req: any) => ({
+      const mapped = (data || []).map((req: string) => ({
         ...req,
         requester_user: req.requester_user ? {
           full_name: req.requester_user.full_name,
@@ -123,9 +124,9 @@ export default function V4InventoryPage() {
       // Apply Region Sorumlusu visual isolation (RLS also covers this)
       let finalData = mapped;
       if (isRegionManager && userRegion) {
-        finalData = mapped.filter((r: any) => r.requester_user?.region?.toLowerCase() === userRegion.toLowerCase());
+        finalData = mapped.filter((r: Record<string, unknown>) => r.requester_user?.region?.toLowerCase() === userRegion.toLowerCase());
       } else if (isRepresentative) {
-        finalData = mapped.filter((r: any) => r.representative_id === user?.id);
+        finalData = mapped.filter((r: Record<string, unknown>) => r.representative_id === user?.id);
       }
 
       setRequests(finalData);
@@ -178,7 +179,7 @@ export default function V4InventoryPage() {
   const handleCreateRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gerekliTarih) {
-      toast.success('LÃ¼tfen gerekli tarihi seÃ§in.');
+      toast.success('Lütfen gerekli tarihi seçin.');
       return;
     }
 
@@ -209,17 +210,17 @@ export default function V4InventoryPage() {
       setNotes('');
       setGerekliTarih('');
       fetchRequestsAndData();
-      toast.success('Malzeme talebiniz baÅŸarÄ±yla Koordinasyon Birimine gÃ¶nderildi!');
+      toast.success('Malzeme talebiniz başarıyla Koordinasyon Birimine gönderildi!');
     } catch (err) {
       console.error("Create request error:", err);
-      toast.error('Talep gÃ¶nderilirken hata oluÅŸtu.');
+      toast.error('Talep gönderilirken hata oluştu.');
     }
   };
 
   // Open review modal
   const openReviewModal = (req: EnvanterRequest) => {
     setActiveRequest(req);
-    setReviewStatus(req.status === 'Onay Bekliyor' ? 'OnaylandÄ±' : req.status);
+    setReviewStatus(req.status === 'Onay Bekliyor' ? 'Onaylandı' : req.status);
     setIsReviewModalOpen(true);
   };
 
@@ -230,7 +231,7 @@ export default function V4InventoryPage() {
 
     try {
       // If approved, status goes to 'Rapor Bekleniyor' so representative can log the usage after the event!
-      const statusValue = reviewStatus === 'OnaylandÄ±' ? 'Rapor Bekleniyor' : reviewStatus;
+      const statusValue = reviewStatus === 'Onaylandı' ? 'Rapor Bekleniyor' : reviewStatus;
 
       const { error } = await supabase
         .from('envanter_requests')
@@ -241,10 +242,10 @@ export default function V4InventoryPage() {
 
       setIsReviewModalOpen(false);
       fetchRequestsAndData();
-      toast.success('Talebin onay/red durumu baÅŸarÄ±yla gÃ¼ncellendi!');
+      toast.success('Talebin onay/red durumu başarıyla güncellendi!');
     } catch (err) {
       console.error("Save review error:", err);
-      toast.error('Kaydedilirken hata oluÅŸtu.');
+      toast.error('Kaydedilirken hata oluştu.');
     }
   };
 
@@ -269,7 +270,7 @@ export default function V4InventoryPage() {
   const handleSaveUsageReport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeRequest || !selectedEventId) {
-      toast.success('LÃ¼tfen geÃ§erli bir etkinlik seÃ§in.');
+      toast.success('Lütfen geçerli bir etkinlik seçin.');
       return;
     }
 
@@ -288,20 +289,20 @@ export default function V4InventoryPage() {
 
       if (reportErr) throw reportErr;
 
-      // 2. Mark request as 'TamamlandÄ±'
+      // 2. Mark request as 'Tamamlandı'
       const { error: reqErr } = await supabase
         .from('envanter_requests')
-        .update({ status: 'TamamlandÄ±' })
+        .update({ status: 'Tamamlandı' })
         .eq('id', activeRequest.id);
 
       if (reqErr) throw reqErr;
 
       setIsReportModalOpen(false);
       fetchRequestsAndData();
-      toast.success('Envanter kullanÄ±m raporunuz baÅŸarÄ±yla sisteme kaydedildi!');
+      toast.success('Envanter kullanım raporunuz başarıyla sisteme kaydedildi!');
     } catch (err) {
       console.error("Save usage report error:", err);
-      toast.error('Rapor kaydedilirken hata oluÅŸtu.');
+      toast.error('Rapor kaydedilirken hata oluştu.');
     }
   };
 
@@ -317,13 +318,13 @@ export default function V4InventoryPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            ğŸ“¦ Envanter Talepleri & KullanÄ±m Takibi
+            ?? Envanter Talepleri & Kullanım Takibi
           </h1>
-          <p style={{ color: 'var(--text-muted)' }}>CansaÄŸlÄ±ÄŸÄ± kulÃ¼p tanÄ±tÄ±mlarÄ±, stantlarÄ± ve etkinlikleri iÃ§in malzeme lojistik modÃ¼lÃ¼</p>
+          <p style={{ color: 'var(--text-muted)' }}>Cansağlığı kulüp tanıtımları, stantları ve etkinlikleri için malzeme lojistik modülü</p>
         </div>
         {isRepresentative && (
           <button onClick={() => setIsAddModalOpen(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <Plus size={18} /> Malzeme Talep Formu AÃ§
+            <Plus size={18} /> Malzeme Talep Formu Aç
           </button>
         )}
       </div>
@@ -335,7 +336,7 @@ export default function V4InventoryPage() {
             <Package size={20} color="var(--color-primary)" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Toplam KayÄ±t</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Toplam Kayıt</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{totalRequests} Talep</div>
           </div>
         </div>
@@ -355,7 +356,7 @@ export default function V4InventoryPage() {
             <FileText size={20} color="#3b82f6" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>KullanÄ±m Raporu Bekleyen</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Kullanım Raporu Bekleyen</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#3b82f6' }}>{activeReportPending} Temsilci</div>
           </div>
         </div>
@@ -364,13 +365,13 @@ export default function V4InventoryPage() {
       {/* Filter panel */}
       <div className="card" style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
         <div>
-          <label className="label">Ãœniversite / Temsilci Ara</label>
+          <label className="label">Üniversite / Temsilci Ara</label>
           <div style={{ position: 'relative' }}>
             <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
             <input 
               type="text" 
               className="input" 
-              placeholder="AratÄ±n..." 
+              placeholder="Aratın..." 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               style={{ paddingLeft: '2.25rem' }}
@@ -380,9 +381,9 @@ export default function V4InventoryPage() {
 
         {!isRegionManager && !isRepresentative && (
           <div>
-            <label className="label">BÃ¶lge</label>
+            <label className="label">Bölge</label>
             <select className="input" value={selectedRegion} onChange={e => setSelectedRegion(e.target.value)}>
-              <option value="">TÃ¼m BÃ¶lgeler</option>
+              <option value="">Tüm Bölgeler</option>
               {REGIONS.map(reg => (
                 <option key={reg} value={reg}>{reg.toUpperCase()}</option>
               ))}
@@ -393,10 +394,10 @@ export default function V4InventoryPage() {
         <div>
           <label className="label">Durum</label>
           <select className="input" value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)}>
-            <option value="">TÃ¼mÃ¼</option>
+            <option value="">Tümü</option>
             <option value="Onay Bekliyor">Onay Bekliyor</option>
-            <option value="Rapor Bekleniyor">Rapor Bekleniyor (OnaylÄ±)</option>
-            <option value="TamamlandÄ±">TamamlandÄ± (Raporlu)</option>
+            <option value="Rapor Bekleniyor">Rapor Bekleniyor (Onaylı)</option>
+            <option value="Tamamlandı">Tamamlandı (Raporlu)</option>
             <option value="Reddedildi">Reddedildi</option>
           </select>
         </div>
@@ -404,27 +405,27 @@ export default function V4InventoryPage() {
 
       {/* List table */}
       <div className="card" style={{ padding: '2rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>ğŸ“‹ Malzeme Talep BaÅŸvurularÄ±</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>?? Malzeme Talep Başvuruları</h3>
 
         {isLoading ? (
-          <LoadingState message="Envanter talepleri yÃ¼kleniyor..." />
+          <LoadingState message="Envanter talepleri yükleniyor..." />
         ) : filteredRequests.length === 0 ? (
           <EmptyState 
             icon={Package} 
-            title="Talep BulunamadÄ±" 
-            description="Kriterlerinize uygun bir envanter talebi bulunamadÄ±." 
+            title="Talep Bulunamadı" 
+            description="Kriterlerinize uygun bir envanter talebi bulunamadı." 
           />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #eaeaea' }}>
-                  <th style={{ padding: '1rem 0.5rem' }}>Talep Eden / Ãœniversite</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Talep Eden / Üniversite</th>
                   <th style={{ padding: '1rem 0.5rem' }}>Gerekli Tarih</th>
-                  <th style={{ padding: '1rem 0.5rem' }}>TÃ¼r</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Tür</th>
                   <th style={{ padding: '1rem 0.5rem', width: '35%' }}>Talep Edilen Malzemeler</th>
                   <th style={{ padding: '1rem 0.5rem' }}>Onay Durumu</th>
-                  <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Ä°ÅŸlemler</th>
+                  <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>İşlemler</th>
                 </tr>
               </thead>
               <tbody>
@@ -439,18 +440,18 @@ export default function V4InventoryPage() {
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <span className={`badge ${req.is_kulup ? 'badge-primary' : 'badge-neutral'}`}>
-                        {req.is_kulup ? 'KulÃ¼p' : 'Topluluk'}
+                        {req.is_kulup ? 'Kulüp' : 'Topluluk'}
                       </span>
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.25rem', fontSize: '0.8rem' }}>
-                        {req.bez_canta > 0 && <div>ğŸ›ï¸Ã¯Â¸Â Bez Ã‡anta: <strong>{req.bez_canta}</strong></div>}
-                        {req.rozet > 0 && <div>ğŸ–ï¸ Rozet: <strong>{req.rozet}</strong></div>}
-                        {req.etiket > 0 && <div>ğŸ·ï¸Ã¯Â¸Â Etiket: <strong>{req.etiket}</strong></div>}
-                        {req.cepli_dosya > 0 && <div>ğŸ“ Cepli Dosya: <strong>{req.cepli_dosya}</strong></div>}
-                        {req.defter > 0 && <div>ğŸ““ Defter: <strong>{req.defter}</strong></div>}
-                        {req.kalem > 0 && <div>ğŸ–‹ï¸Ã¯Â¸Â Kalem: <strong>{req.kalem}</strong></div>}
-                        {req.brosur > 0 && <div>ğŸ“„ BroÅŸÃ¼r: <strong>{req.brosur}</strong></div>}
+                        {req.bez_canta > 0 && <div>???ï¸ Bez Çanta: <strong>{req.bez_canta}</strong></div>}
+                        {req.rozet > 0 && <div>??? Rozet: <strong>{req.rozet}</strong></div>}
+                        {req.etiket > 0 && <div>???ï¸ Etiket: <strong>{req.etiket}</strong></div>}
+                        {req.cepli_dosya > 0 && <div>?? Cepli Dosya: <strong>{req.cepli_dosya}</strong></div>}
+                        {req.defter > 0 && <div>?? Defter: <strong>{req.defter}</strong></div>}
+                        {req.kalem > 0 && <div>???ï¸ Kalem: <strong>{req.kalem}</strong></div>}
+                        {req.brosur > 0 && <div>?? Broşür: <strong>{req.brosur}</strong></div>}
                       </div>
                       {req.notes && (
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem', fontStyle: 'italic' }}>
@@ -461,17 +462,17 @@ export default function V4InventoryPage() {
                       {/* Render usage report summary if finished */}
                       {req.envanter_usage_report && (
                         <div style={{ marginTop: '0.5rem', padding: '0.5rem', backgroundColor: '#f0fdf4', borderRadius: '4px', borderLeft: '3px solid #16a34a', fontSize: '0.75rem' }}>
-                          ğŸ“Š <strong>KullanÄ±m Raporu Girildi:</strong> Fiili KatÄ±lÄ±mcÄ±: {req.envanter_usage_report.katilimci_sayisi} KiÅŸi
+                          ?? <strong>Kullanım Raporu Girildi:</strong> Fiili Katılımcı: {req.envanter_usage_report.katilimci_sayisi} Kişi
                         </div>
                       )}
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <span className={`badge ${
-                        req.status === 'TamamlandÄ±' ? 'badge-success' :
+                        req.status === 'Tamamlandı' ? 'badge-success' :
                         req.status === 'Reddedildi' ? 'badge-danger' :
                         req.status === 'Rapor Bekleniyor' ? 'badge-primary' : 'badge-warning'
                       }`}>
-                        {req.status === 'Rapor Bekleniyor' ? 'OnaylandÄ± (Rapor Bekliyor)' : req.status}
+                        {req.status === 'Rapor Bekleniyor' ? 'Onaylandı (Rapor Bekliyor)' : req.status}
                       </span>
                     </td>
                     <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
@@ -492,7 +493,7 @@ export default function V4InventoryPage() {
                           <button 
                             onClick={() => openReviewModal(req)}
                             className="btn btn-outline" 
-                            title="Talebi Ä°ncele / Onayla"
+                            title="Talebi İncele / Onayla"
                             style={{ padding: '0.35rem', color: 'var(--color-primary)', borderColor: 'var(--color-primary-light)' }}
                           >
                             <Edit2 size={16} />
@@ -523,7 +524,7 @@ export default function V4InventoryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Ã¢Ââ€¢ Yeni Envanter Talebi OluÅŸtur</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>â• Yeni Envanter Talebi Oluştur</h2>
               <button onClick={() => setIsAddModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -531,13 +532,13 @@ export default function V4InventoryPage() {
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label className="label">Gerekli OlduÄŸu Tarih *</label>
+                  <label className="label">Gerekli Olduğu Tarih *</label>
                   <input type="date" required className="input" min={new Date().toISOString().split('T')[0]} value={gerekliTarih} onChange={e => setGerekliTarih(e.target.value)} />
                 </div>
                 <div>
-                  <label className="label">TÃ¼rÃ¼ *</label>
+                  <label className="label">Türü *</label>
                   <select className="input" value={isKulup ? 'true' : 'false'} onChange={e => setIsKulup(e.target.value === 'true')}>
-                    <option value="true">KulÃ¼p</option>
+                    <option value="true">Kulüp</option>
                     <option value="false">Topluluk</option>
                   </select>
                 </div>
@@ -545,54 +546,54 @@ export default function V4InventoryPage() {
 
               {/* V4 Material selection grid */}
               <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>Ä°stenen Malzemeler (Adet)</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>İstenen Malzemeler (Adet)</h3>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label className="label">ğŸ›ï¸Ã¯Â¸Â Bez Ã‡anta</label>
+                    <label className="label">???ï¸ Bez Çanta</label>
                     <input type="number" min={0} className="input" value={materials.bezCanta} onChange={e => setMaterials({...materials, bezCanta: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">ğŸ·ï¸Ã¯Â¸Â Etiket</label>
+                    <label className="label">???ï¸ Etiket</label>
                     <input type="number" min={0} className="input" value={materials.etiket} onChange={e => setMaterials({...materials, etiket: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">ğŸ–ï¸ Rozet</label>
+                    <label className="label">??? Rozet</label>
                     <input type="number" min={0} className="input" value={materials.rozet} onChange={e => setMaterials({...materials, rozet: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">ğŸ“ Cepli Dosya</label>
+                    <label className="label">?? Cepli Dosya</label>
                     <input type="number" min={0} className="input" value={materials.cepliDosya} onChange={e => setMaterials({...materials, cepliDosya: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">ğŸ““ Defter</label>
+                    <label className="label">?? Defter</label>
                     <input type="number" min={0} className="input" value={materials.defter} onChange={e => setMaterials({...materials, defter: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">ğŸ–Šï¸Ã¯Â¸Â Kalem</label>
+                    <label className="label">???ï¸ Kalem</label>
                     <input type="number" min={0} className="input" value={materials.kalem} onChange={e => setMaterials({...materials, kalem: parseInt(e.target.value) || 0})} />
                   </div>
                   <div style={{ gridColumn: 'span 3' }}>
-                    <label className="label">ğŸ“„ GÃ¶nÃ¼llÃ¼lÃ¼k BroÅŸÃ¼rÃ¼</label>
+                    <label className="label">?? Gönüllülük Broşürü</label>
                     <input type="number" min={0} className="input" value={materials.brosur} onChange={e => setMaterials({...materials, brosur: parseInt(e.target.value) || 0})} />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="label">KullanÄ±m AmacÄ± / Ã–zel Ä°stekler</label>
+                <label className="label">Kullanım Amacı / Özel İstekler</label>
                 <textarea 
                   className="input" 
                   rows={3} 
                   value={notes} 
                   onChange={e => setNotes(e.target.value)} 
-                  placeholder="Hangi etkinlikte kullanacaÄŸÄ±nÄ±zÄ± ve varsa diÄŸer Ã¶zel malzeme isteklerinizi yazÄ±n..."
+                  placeholder="Hangi etkinlikte kullanacağınızı ve varsa diğer özel malzeme isteklerinizi yazın..."
                 />
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn btn-outline">Ä°ptal</button>
-                <button type="submit" className="btn btn-primary">Talebi GÃ¶nder</button>
+                <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn btn-outline">İptal</button>
+                <button type="submit" className="btn btn-primary">Talebi Gönder</button>
               </div>
 
             </form>
@@ -607,7 +608,7 @@ export default function V4InventoryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Ä°nceleme: {activeRequest.requester_user?.full_name}</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>İnceleme: {activeRequest.requester_user?.full_name}</h2>
               <button onClick={() => setIsReviewModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -616,7 +617,7 @@ export default function V4InventoryPage() {
               <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.85rem' }}>
                 <strong>Talep Edilen Malzemeler:</strong>
                 <ul style={{ paddingLeft: '1.25rem', marginTop: '0.25rem' }}>
-                  {activeRequest.bez_canta > 0 && <li>Bez Ã‡anta: {activeRequest.bez_canta} Adet</li>}
+                  {activeRequest.bez_canta > 0 && <li>Bez Çanta: {activeRequest.bez_canta} Adet</li>}
                   {activeRequest.rozet > 0 && <li>Rozet: {activeRequest.rozet} Adet</li>}
                   {activeRequest.etiket > 0 && <li>Etiket: {activeRequest.etiket} Adet</li>}
                   {activeRequest.defter > 0 && <li>Defter: {activeRequest.defter} Adet</li>}
@@ -627,13 +628,13 @@ export default function V4InventoryPage() {
               <div>
                 <label className="label">Karar / Durum *</label>
                 <select className="input" value={reviewStatus} onChange={e => setReviewStatus(e.target.value)}>
-                  <option value="OnaylandÄ±">Talebi Onayla (GÃ¶nderim AÅŸamasÄ±)</option>
+                  <option value="Onaylandı">Talebi Onayla (Gönderim Aşaması)</option>
                   <option value="Reddedildi">Talebi Reddet</option>
                 </select>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsReviewModalOpen(false)} className="btn btn-outline">VazgeÃ§</button>
+                <button type="button" onClick={() => setIsReviewModalOpen(false)} className="btn btn-outline">Vazgeç</button>
                 <button type="submit" className="btn btn-primary">Kaydet</button>
               </div>
 
@@ -649,7 +650,7 @@ export default function V4InventoryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>ğŸ“Š Envanter KullanÄ±m Raporu</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Envanter Kullanım Raporu</h2>
               <button onClick={() => setIsReportModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -657,43 +658,43 @@ export default function V4InventoryPage() {
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label className="label">Ä°lgili Etkinlik *</label>
+                  <label className="label">İlgili Etkinlik *</label>
                   <select className="input" required value={selectedEventId} onChange={e => setSelectedEventId(e.target.value)}>
-                    <option value="">SeÃ§iniz...</option>
+                    <option value="">Seçiniz...</option>
                     {events.map(ev => (
                       <option key={ev.id} value={ev.id}>{ev.event_name} ({new Date(ev.event_date).toLocaleDateString('tr-TR')})</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="label">GerÃ§ekleÅŸen KatÄ±lÄ±mcÄ± SayÄ±sÄ± *</label>
+                  <label className="label">Gerçekleşen Katılımcı Sayısı *</label>
                   <input type="number" min={0} required className="input" value={participantCount} onChange={e => setParticipantCount(parseInt(e.target.value) || 0)} />
                 </div>
               </div>
 
               {/* Usage tables */}
               <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>Malzeme DaÄŸÄ±tÄ±m/KullanÄ±m DetaylarÄ±</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>Malzeme Dağıtım/Kullanım Detayları</h3>
                 
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
                       <th>Malzeme</th>
-                      <th>Teslim AlÄ±nan</th>
-                      <th>KullanÄ±lan (DaÄŸÄ±tÄ±lan)</th>
+                      <th>Teslim Alınan</th>
+                      <th>Kullanılan (Dağıtılan)</th>
                       <th>Kalan</th>
-                      <th>AÃ§Ä±klama / Not</th>
+                      <th>Açıklama / Not</th>
                     </tr>
                   </thead>
                   <tbody>
                     {[
-                      { key: 'bezCanta', label: 'Bez Ã‡anta', max: activeRequest.bez_canta },
+                      { key: 'bezCanta', label: 'Bez Çanta', max: activeRequest.bez_canta },
                       { key: 'etiket', label: 'Etiket', max: activeRequest.etiket },
                       { key: 'rozet', label: 'Rozet', max: activeRequest.rozet },
                       { key: 'cepliDosya', label: 'Cepli Dosya', max: activeRequest.cepli_dosya },
                       { key: 'defter', label: 'Defter', max: activeRequest.defter },
                       { key: 'kalem', label: 'Kalem', max: activeRequest.kalem },
-                      { key: 'brosur', label: 'BroÅŸÃ¼r', max: activeRequest.brosur }
+                      { key: 'brosur', label: 'Broşür', max: activeRequest.brosur }
                     ].filter(m => m.max > 0).map(m => {
                       const current = usageStats[m.key] || { used: 0, remaining: m.max, notes: '' };
 
@@ -726,7 +727,7 @@ export default function V4InventoryPage() {
                               type="text" 
                               className="input" 
                               style={{ padding: '0.25rem 0.5rem' }}
-                              placeholder="Ã–rn: 2 adet hasarlÄ±"
+                              placeholder="Örn: 2 adet hasarlı"
                               value={current.notes}
                               onChange={e => {
                                 setUsageStats({
@@ -744,7 +745,7 @@ export default function V4InventoryPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsReportModalOpen(false)} className="btn btn-outline">Ä°ptal</button>
+                <button type="button" onClick={() => setIsReportModalOpen(false)} className="btn btn-outline">İptal</button>
                 <button type="submit" className="btn btn-primary">Raporu Kaydet & Tamamla</button>
               </div>
 
@@ -757,4 +758,6 @@ export default function V4InventoryPage() {
     </div>
   );
 }
+
+
 

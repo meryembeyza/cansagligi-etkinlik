@@ -3,7 +3,8 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
 import { Package, Truck, Info, Settings2 } from 'lucide-react';
 import Link from 'next/link';
@@ -40,7 +41,7 @@ export default function LogisticsPage() {
 
       if (error) throw error;
 
-      const parsedData: any[] = [];
+      const parsedData: Record<string, unknown>[] = [];
 
       data?.forEach(event => {
         try {
@@ -63,7 +64,7 @@ export default function LogisticsPage() {
 
           // Aromaterapi Talebi
           if (logData.hasAroma && logData.aroma && logData.aroma.length > 0) {
-            logData.aroma.forEach((a: any, idx: number) => {
+            logData.aroma.forEach((a: string, idx: number) => {
               parsedData.push({
                 eventId: event.id,
                 eventName: event.event_name,
@@ -121,7 +122,7 @@ export default function LogisticsPage() {
 
           // Özel Talepler
           if (logData.customRequests && logData.customRequests.length > 0) {
-            logData.customRequests.forEach((cr: any) => {
+            logData.customRequests.forEach((cr: string) => {
               parsedData.push({
                 eventId: event.id,
                 eventName: event.event_name,
@@ -141,8 +142,8 @@ export default function LogisticsPage() {
       });
 
       setLogisticsData(parsedData);
-    } catch (err: any) {
-      console.error('Lojistik verisi çekilemedi:', err.message);
+    } catch (err) {
+      console.error('Lojistik verisi çekilemedi:', (err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -244,3 +245,7 @@ export default function LogisticsPage() {
     </div>
   );
 }
+
+
+
+

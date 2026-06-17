@@ -1,10 +1,11 @@
-ï»¿'use client';
+'use client';
 import { toast } from 'react-hot-toast';
 
 import { useState, useEffect } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
 import LoadingState from '@/components/ui/LoadingState';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Loader2, Search, Filter, Download, AlertTriangle, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import ExcelJS from 'exceljs';
@@ -13,7 +14,7 @@ export default function GeneralAdminPanel() {
   const [events, setEvents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Ä°statistikler
+  // Ýstatistikler
   const [stats, setStats] = useState({
     total: 0,
     completed: 0,
@@ -43,21 +44,21 @@ export default function GeneralAdminPanel() {
 
       setEvents(data || []);
 
-      // Ä°statistikleri sadece ilk yÃ¼klemede veya filtresizken genel hesaplamak daha mantÄ±klÄ±dÄ±r,
-      // ama ÅŸimdilik mevcut filtrelenmiÅŸ verinin veya tÃ¼m verinin istatistiÄŸini gÃ¶sterebiliriz.
-      // TÃ¼m veriyi Ã§ekip istatistikleri genel tutalÄ±m:
+      // Ýstatistikleri sadece ilk yüklemede veya filtresizken genel hesaplamak daha mantýklýdýr,
+      // ama þimdilik mevcut filtrelenmiþ verinin veya tüm verinin istatistiðini gösterebiliriz.
+      // Tüm veriyi çekip istatistikleri genel tutalým:
       if (!filterRegion && !filterStatus && !searchQuery && data) {
-        const completedEvents = data.filter(e => e.status === 'GerÃ§ekleÅŸti');
+        const completedEvents = data.filter(e => e.status === 'Gerçekleþti');
         
         setStats({
           total: data.length,
           completed: completedEvents.length,
           pending: data.filter(e => ['Onay Bekliyor', 'Yeniden Onay Bekliyor'].includes(e.status)).length,
-          cancelled: data.filter(e => e.status === 'Ä°ptal Edildi').length,
+          cancelled: data.filter(e => e.status === 'Ýptal Edildi').length,
           participants: completedEvents.reduce((acc, curr) => acc + (curr.expected_participants || 0), 0)
         });
 
-        // 3 gÃ¼nden uzun sÃ¼redir onay bekleyenleri bul
+        // 3 günden uzun süredir onay bekleyenleri bul
         const threeDaysAgo = new Date();
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
         const delayed = data.filter(e => 
@@ -68,7 +69,7 @@ export default function GeneralAdminPanel() {
       }
 
     } catch (error) {
-      console.error('Etkinlikler Ã§ekilemedi:', error);
+      console.error('Etkinlikler çekilemedi:', error);
     } finally {
       setIsLoading(false);
     }
@@ -76,18 +77,18 @@ export default function GeneralAdminPanel() {
 
   const exportToExcel = async () => {
     if (events.length === 0) {
-      toast.error('Ä°ndirilecek etkinlik bulunamadÄ±.');
+      toast.error('Ýndirilecek etkinlik bulunamadý.');
       return;
     }
     
     const excelData = events.map(e => ({
-      'Etkinlik AdÄ±': e.event_name,
-      'TÃ¼r': e.event_type,
-      'BÃ¶lge': e.region,
-      'Ãœniversite': e.university,
+      'Etkinlik Adý': e.event_name,
+      'Tür': e.event_type,
+      'Bölge': e.region,
+      'Üniversite': e.university,
       'Tarih': new Date(e.event_date).toLocaleString('tr-TR'),
       'Durum': e.status,
-      'KatÄ±lÄ±mcÄ± SayÄ±sÄ±': e.expected_participants || 0
+      'Katýlýmcý Sayýsý': e.expected_participants || 0
     }));
 
     const workbook = new ExcelJS.Workbook();
@@ -115,7 +116,7 @@ export default function GeneralAdminPanel() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
-      {/* Ä°statistik KartlarÄ± */}
+      {/* Ýstatistik Kartlarý */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>{stats.total}</div>
@@ -123,7 +124,7 @@ export default function GeneralAdminPanel() {
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--status-success)' }}>{stats.completed}</div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>GerÃ§ekleÅŸen</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Gerçekleþen</div>
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--status-pending)' }}>{stats.pending}</div>
@@ -131,20 +132,20 @@ export default function GeneralAdminPanel() {
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--status-danger)' }}>{stats.cancelled}</div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Ä°ptal Edilen</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Ýptal Edilen</div>
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>{stats.participants}</div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Toplam KatÄ±lÄ±mcÄ±</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Toplam Katýlýmcý</div>
         </div>
       </div>
 
-      {/* GecikmiÅŸ Onay UyarÄ±larÄ± */}
+      {/* Gecikmiþ Onay Uyarýlarý */}
       {delayedEvents.length > 0 && (
         <div style={{ backgroundColor: 'var(--bg-danger-light)', border: '1px solid #fca5a5', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#991b1b', fontWeight: 600, marginBottom: '0.5rem' }}>
             <AlertTriangle size={20} />
-            Dikkat: {delayedEvents.length} etkinlik 3 gÃ¼nden uzun sÃ¼redir onay bekliyor!
+            Dikkat: {delayedEvents.length} etkinlik 3 günden uzun süredir onay bekliyor!
           </div>
           <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#7f1d1d', fontSize: '0.875rem' }}>
             {delayedEvents.map(e => (
@@ -160,7 +161,7 @@ export default function GeneralAdminPanel() {
           <Search size={18} color="var(--text-muted)" />
           <input 
             type="text" 
-            placeholder="Etkinlik AdÄ± Ara..." 
+            placeholder="Etkinlik Adý Ara..." 
             style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -168,41 +169,41 @@ export default function GeneralAdminPanel() {
         </div>
         
         <select className="input" style={{ flex: '1 1 200px' }} value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)}>
-          <option value="">TÃ¼m BÃ¶lgeler</option>
-          <option value="Ä°stanbul Anadolu">Ä°stanbul Anadolu</option>
-          <option value="Ä°stanbul Avrupa">Ä°stanbul Avrupa</option>
+          <option value="">Tüm Bölgeler</option>
+          <option value="Ýstanbul Anadolu">Ýstanbul Anadolu</option>
+          <option value="Ýstanbul Avrupa">Ýstanbul Avrupa</option>
           <option value="Marmara">Marmara</option>
           <option value="Ege">Ege</option>
-          <option value="Ä°Ã§ Anadolu">Ä°Ã§ Anadolu</option>
+          <option value="Ýç Anadolu">Ýç Anadolu</option>
           <option value="Ankara">Ankara</option>
           <option value="Akdeniz">Akdeniz</option>
           <option value="Karadeniz">Karadeniz</option>
-          <option value="DoÄŸu Anadolu">DoÄŸu Anadolu</option>
-          <option value="GÃ¼neydoÄŸu Anadolu">GÃ¼neydoÄŸu Anadolu</option>
+          <option value="Doðu Anadolu">Doðu Anadolu</option>
+          <option value="Güneydoðu Anadolu">Güneydoðu Anadolu</option>
         </select>
 
         <select className="input" style={{ flex: '1 1 200px' }} value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value="">TÃ¼m Durumlar</option>
+          <option value="">Tüm Durumlar</option>
           <option value="Onay Bekliyor">Onay Bekliyor</option>
-          <option value="OnaylandÄ±">OnaylandÄ±</option>
-          <option value="GerÃ§ekleÅŸti">GerÃ§ekleÅŸti</option>
-          <option value="Ä°ptal Edildi">Ä°ptal Edildi</option>
+          <option value="Onaylandý">Onaylandý</option>
+          <option value="Gerçekleþti">Gerçekleþti</option>
+          <option value="Ýptal Edildi">Ýptal Edildi</option>
         </select>
 
         <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={exportToExcel}>
-          <Download size={16} /> Excel Ä°ndir
+          <Download size={16} /> Excel Ýndir
         </button>
       </div>
 
       {/* Etkinlik Listesi */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {isLoading ? (
-          <LoadingState message="Etkinlikler yÃ¼kleniyor..." minHeight="300px" />
+          <LoadingState message="Etkinlikler yükleniyor..." minHeight="300px" />
         ) : events.length === 0 ? (
           <EmptyState 
             icon={Calendar} 
-            title="Etkinlik BulunamadÄ±" 
-            description="Filtrelerinize uygun bir etkinlik bulunmamaktadÄ±r." 
+            title="Etkinlik Bulunamadý" 
+            description="Filtrelerinize uygun bir etkinlik bulunmamaktadýr." 
             minHeight="300px" 
           />
         ) : (
@@ -210,11 +211,11 @@ export default function GeneralAdminPanel() {
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #eaeaea', backgroundColor: 'var(--bg-main)' }}>
-                  <th style={{ padding: '1rem' }}>Etkinlik AdÄ±</th>
-                  <th style={{ padding: '1rem' }}>Ãœniversite / BÃ¶lge</th>
+                  <th style={{ padding: '1rem' }}>Etkinlik Adý</th>
+                  <th style={{ padding: '1rem' }}>Üniversite / Bölge</th>
                   <th style={{ padding: '1rem' }}>Tarih</th>
                   <th style={{ padding: '1rem' }}>Durum</th>
-                  <th style={{ padding: '1rem' }}>Ä°ÅŸlem</th>
+                  <th style={{ padding: '1rem' }}>Ýþlem</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,8 +234,8 @@ export default function GeneralAdminPanel() {
                     </td>
                     <td style={{ padding: '1rem' }}>
                       <span className={`badge ${
-                        event.status.includes('Onay') ? (event.status === 'OnaylandÄ±' ? 'badge-success' : 'badge-pending') :
-                        event.status.includes('Ä°ptal') || event.status.includes('Red') ? 'badge-danger' : ''
+                        event.status.includes('Onay') ? (event.status === 'Onaylandý' ? 'badge-success' : 'badge-pending') :
+                        event.status.includes('Ýptal') || event.status.includes('Red') ? 'badge-danger' : ''
                       }`}>
                         {event.status}
                       </span>
@@ -255,4 +256,5 @@ export default function GeneralAdminPanel() {
     </div>
   );
 }
+
 

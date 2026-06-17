@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
 import { Search, MapPin, Calendar, Link as LinkIcon, Users, Mail, Phone, Loader2, Filter, ChevronDown, Check } from 'lucide-react';
 import universitiesData from '@/data/universities.json';
@@ -41,7 +42,7 @@ export default function SpeakersArchivePage() {
       if (error) throw error;
 
       // Map to flat structure for UI
-      const formattedSpeakers = data?.map((item: any) => ({
+      const formattedSpeakers = data?.map((item: Record<string, unknown>) => ({
         id: item.speakers.id,
         name: item.speakers.full_name,
         title: item.speakers.title,
@@ -293,3 +294,5 @@ export default function SpeakersArchivePage() {
     </div>
   );
 }
+
+

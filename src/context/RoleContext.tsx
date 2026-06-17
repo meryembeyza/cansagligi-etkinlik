@@ -1,10 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRouter, usePathname } from 'next/navigation';
 
-import { User } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
 import { UserRole, UserData } from '@/types';
 
 interface RoleContextType {
@@ -28,7 +29,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    const handleSession = async (session: any) => {
+    const handleSession = async (session: { user: User } | null) => {
       if (session?.user) {
         const { data, error } = await supabase
           .from('users')
@@ -89,7 +90,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
       try {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
-        if (userError && userError.name !== 'AuthSessionMissingError' && !userError.message.includes('missing')) {
+        if (userError && userError.name !== 'AuthSessionMissingError' && !user(error as Error).message.includes('missing')) {
           console.error("getUser error:", userError);
         }
 
@@ -162,3 +163,6 @@ export function useRole() {
   }
   return context;
 }
+
+
+

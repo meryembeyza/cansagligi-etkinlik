@@ -27,7 +27,7 @@ DROP TYPE IF EXISTS region_enum CASCADE;
 DROP TYPE IF EXISTS user_role CASCADE;
 
 -- ENUMLAR (Veri Tipleri)
-CREATE TYPE user_role AS ENUM ('unit_head', 'region_manager', 'general_admin', 'design_team', 'resource_manager', 'rep_head', 'rep_region_manager', 'rep_coordinator', 'representative');
+CREATE TYPE user_role AS ENUM ('unit_head', 'region_manager', 'general_admin', 'design_team', 'resource_manager', 'rep_head', 'rep_region_manager', 'rep_coordinator', 'representative', 'bursary_student');
 CREATE TYPE region_enum AS ENUM ('İstanbul Anadolu', 'İstanbul Avrupa', 'Marmara', 'Ege', 'İç Anadolu', 'Ankara', 'Doğu Anadolu', 'Güneydoğu Anadolu', 'Akdeniz', 'Karadeniz');
 CREATE TYPE event_status AS ENUM ('Taslak', 'Onay Bekliyor', 'Onaylandı', 'Reddedildi', 'Yeniden Onay Bekliyor', 'Revizyon Bekleniyor', 'Ertelendi', 'İptal Edildi', 'Gerçekleşti');
 CREATE TYPE resource_type AS ENUM ('Maket', 'Projeksiyon', 'Araç', 'Eşantiyon', 'Serbest');
@@ -354,11 +354,15 @@ CREATE POLICY "Everyone can update speakers" ON public.speakers
 CREATE POLICY "Everyone can view event_speakers" ON public.event_speakers
     FOR SELECT USING (true);
 
-CREATE POLICY "Everyone can insert event_speakers" ON public.event_speakers
-    FOR INSERT WITH CHECK (true);
+CREATE POLICY "Only event owner can insert speakers" ON public.event_speakers
+    FOR INSERT WITH CHECK (
+        EXISTS (SELECT 1 FROM public.events WHERE id = event_id AND created_by = auth.uid())
+    );
 
-CREATE POLICY "Everyone can update event_speakers" ON public.event_speakers
-    FOR UPDATE USING (true);
+CREATE POLICY "Only event owner can update speakers" ON public.event_speakers
+    FOR UPDATE USING (
+        EXISTS (SELECT 1 FROM public.events WHERE id = event_id AND created_by = auth.uid())
+    );
 
 
 -- 5. RESOURCE RESERVATIONS (KAYNAK REZERVASYONLARI)

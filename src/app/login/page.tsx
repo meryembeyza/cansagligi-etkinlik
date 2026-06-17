@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import styles from './page.module.css';
 
@@ -50,8 +51,8 @@ export default function LoginPage() {
         // ancak bazı durumlarda tetiklenmediği için manuel olarak dashboard'a yönlendiriyoruz.
         router.push('/dashboard');
       }
-    } catch (err: any) {
-      setError(err.message || 'Giriş yapılamadı. E-posta ve şifrenizi kontrol edin.');
+    } catch (err) {
+      setError((err as Error).message || 'Giriş yapılamadı. E-posta ve şifrenizi kontrol edin.');
     } finally {
       setIsLoading(false);
     }
@@ -71,8 +72,8 @@ export default function LoginPage() {
       });
       if (resetError) throw resetError;
       setResetMessage('Şifre sıfırlama linki e-posta adresinize gönderildi.');
-    } catch (err: any) {
-      setResetMessage('Bir hata oluştu: ' + (err.message || 'Lütfen tekrar deneyin.'));
+    } catch (err) {
+      setResetMessage('Bir hata oluştu: ' + ((err as Error).message || 'Lütfen tekrar deneyin.'));
     } finally {
       setResetLoading(false);
     }
@@ -182,3 +183,6 @@ export default function LoginPage() {
     </div>
   );
 }
+
+
+

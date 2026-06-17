@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
 import { Loader2, ArrowLeft, Download, Check, X, MapPin, Calendar, Users, AlertTriangle, Clock, Edit, FileText, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
@@ -122,9 +123,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       setShowAdminNoteModal(false);
       setAdminNote('');
       toast.success(`Etkinlik durumu "${pendingStatus}" olarak güncellendi.`);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error('İşlem başarısız: ' + (err.message || 'Bilinmeyen Hata'));
+      toast.error('İşlem başarısız: ' + ((err as Error).message || 'Bilinmeyen Hata'));
     } finally {
       setProcessing(false);
     }
@@ -270,9 +271,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
       setEvent({ ...event, status: 'İptal Edildi' });
       toast.success("Etkinlik başarıyla 'İptal Edildi' olarak güncellendi.");
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error("İptal işlemi sırasında bir hata oluştu: " + (err.message || err));
+      toast.error("İptal işlemi sırasında bir hata oluştu: " + ((err as Error).message || err));
     } finally {
       setProcessing(false);
     }
@@ -284,7 +285,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   const canApprove = currentRole === 'general_admin' || currentRole === 'region_manager' || currentRole === 'rep_region_manager';
   const isCreator = user?.id === event.created_by;
 
-  let logistics: any = null;
+  let logistics: Record<string, unknown> | null = null;
   if (event.budget_request) {
     try { logistics = JSON.parse(event.budget_request); } catch(e) {}
   }
@@ -554,7 +555,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                 <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>🌿 Aromaterapi Yağ Talebi</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
-                    {(logistics.aroma || []).map((a: any, i: number) => (
+                    {(logistics.aroma || []).map((a: string, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
                         <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{i + 1}. Formülasyon</div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.5rem' }}>
@@ -668,7 +669,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                 <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>⭐ Özel Talepler</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
-                    {(logistics.customRequests || []).map((req: any, i: number) => (
+                    {(logistics.customRequests || []).map((req: string, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
                         <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{req.name || 'İsimsiz Talep'}</div>
                         <div style={{ color: 'var(--text-muted)' }}>{req.note || '-'}</div>
@@ -763,4 +764,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     </div>
   );
 }
+
+
+
+
 

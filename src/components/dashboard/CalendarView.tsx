@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { ChevronLeft, ChevronRight, MapPin, Filter } from 'lucide-react';
 import Link from 'next/link';
 
@@ -512,3 +513,4 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
     </React.Fragment>
   );
 }
+

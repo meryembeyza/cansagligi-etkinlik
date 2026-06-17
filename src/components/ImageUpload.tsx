@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Upload, X, Loader2 } from 'lucide-react';
 
 interface ImageUploadProps {
@@ -32,6 +33,11 @@ export default function ImageUpload({
       const file = e.target.files?.[0];
       if (!file) return;
 
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error('Dosya boyutu en fazla 5MB olabilir.');
+      }
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         throw new Error('Lütfen sadece görsel dosyaları yükleyin.');
@@ -56,9 +62,9 @@ export default function ImageUpload({
         .getPublicUrl(filePath);
 
       onChange(publicUrl);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error uploading image:', err);
-      setError(err.message || 'Görsel yüklenirken bir hata oluştu.');
+      setError((err as Error).message || 'Görsel yüklenirken bir hata oluştu.');
     } finally {
       setIsUploading(false);
     }
@@ -150,3 +156,6 @@ export default function ImageUpload({
     </div>
   );
 }
+
+
+

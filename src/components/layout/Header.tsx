@@ -5,7 +5,8 @@ import { Bell, CheckCircle2, Menu } from 'lucide-react';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useRole } from '@/context/RoleContext';
 import { UserRole } from '@/types';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 
 export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const { currentRole, user, logout } = useRole();
@@ -150,3 +151,4 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
     </header>
   );
 }
+

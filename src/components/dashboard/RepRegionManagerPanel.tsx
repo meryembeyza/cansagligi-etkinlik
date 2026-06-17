@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Users, Calendar, Briefcase, Award, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
@@ -170,3 +171,4 @@ export default function RepRegionManagerPanel() {
     </div>
   );
 }
+

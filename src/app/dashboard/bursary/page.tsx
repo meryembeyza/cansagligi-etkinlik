@@ -1,11 +1,12 @@
-ï»¿'use client';
+'use client';
 import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Users, Plus, Award, Calendar, Phone, Mail, Trash2, Edit2, Search, Filter, BookOpen } from 'lucide-react';
 
 interface Candidate {
@@ -17,13 +18,13 @@ interface Candidate {
   department: string;
   grade: string;
   region: string;
-  status: string; // 'Aday', 'MÃ¼lakat PlanlandÄ±', 'MÃ¼lakat TamamlandÄ±', 'Bursiyer', 'Reddedildi'
+  status: string; // 'Aday', 'Mülakat Planlandý', 'Mülakat Tamamlandý', 'Bursiyer', 'Reddedildi'
   interview_date: string | null;
   evaluation_notes: string | null;
 }
 
 const REGIONS = [
-  'Akdeniz', 'DoÄŸu Anadolu', 'Ege', 'GÃ¼neydoÄŸu Anadolu', 'Ankara', 'Ä°Ã§ Anadolu', 'Karadeniz', 'Ä°stanbul Anadolu', 'Ä°stanbul Avrupa', 'Marmara'
+  'Akdeniz', 'Doðu Anadolu', 'Ege', 'Güneydoðu Anadolu', 'Ankara', 'Ýç Anadolu', 'Karadeniz', 'Ýstanbul Anadolu', 'Ýstanbul Avrupa', 'Marmara'
 ];
 
 export default function BursaryPage() {
@@ -49,7 +50,7 @@ export default function BursaryPage() {
     phone: '',
     university: '',
     department: '',
-    grade: '1. SÄ±nÄ±f',
+    grade: '1. Sýnýf',
     region: 'Marmara'
   });
 
@@ -57,7 +58,7 @@ export default function BursaryPage() {
   const [interviewDate, setInterviewDate] = useState('');
   const [interviewTime, setInterviewTime] = useState('');
   const [evaluationNotes, setEvaluationNotes] = useState('');
-  const [candidateStatus, setCandidateStatus] = useState('MÃ¼lakat PlanlandÄ±');
+  const [candidateStatus, setCandidateStatus] = useState('Mülakat Planlandý');
 
   const isRegionManager = currentRole === 'rep_region_manager';
   const canModify = currentRole === 'rep_head' || currentRole === 'rep_coordinator' || currentRole === 'general_admin';
@@ -139,18 +140,18 @@ export default function BursaryPage() {
 
       setIsAddModalOpen(false);
       fetchCandidates();
-      setAddFormData({ fullName: '', email: '', phone: '', university: '', department: '', grade: '1. SÄ±nÄ±f', region: 'Marmara' });
-      toast.success('Bursiyer adayÄ± baÅŸarÄ±yla kaydedildi!');
+      setAddFormData({ fullName: '', email: '', phone: '', university: '', department: '', grade: '1. Sýnýf', region: 'Marmara' });
+      toast.success('Bursiyer adayý baþarýyla kaydedildi!');
     } catch (err) {
       console.error("Add candidate error:", err);
-      toast.error('Aday eklenirken hata oluÅŸtu.');
+      toast.error('Aday eklenirken hata oluþtu.');
     }
   };
 
   // Open Interview scheduling modal
   const openInterviewModal = (candidate: Candidate) => {
     setActiveCandidate(candidate);
-    setCandidateStatus(candidate.status || 'MÃ¼lakat PlanlandÄ±');
+    setCandidateStatus(candidate.status || 'Mülakat Planlandý');
     setEvaluationNotes(candidate.evaluation_notes || '');
     
     if (candidate.interview_date) {
@@ -189,16 +190,16 @@ export default function BursaryPage() {
 
       setIsInterviewModalOpen(false);
       fetchCandidates();
-      toast.success('MÃ¼lakat ve deÄŸerlendirme verileri baÅŸarÄ±yla kaydedildi!');
+      toast.success('Mülakat ve deðerlendirme verileri baþarýyla kaydedildi!');
     } catch (err) {
       console.error("Save interview error:", err);
-      toast.error('Kaydedilirken hata oluÅŸtu.');
+      toast.error('Kaydedilirken hata oluþtu.');
     }
   };
 
   // Delete candidate
   const handleDeleteCandidate = async (id: string) => {
-    if (!window.confirm('Bu bursiyer adayÄ±nÄ± tamamen silmek istediÄŸinizden emin misiniz?')) return;
+    if (!window.confirm('Bu bursiyer adayýný tamamen silmek istediðinizden emin misiniz?')) return;
 
     try {
       const { error } = await supabase
@@ -208,16 +209,16 @@ export default function BursaryPage() {
 
       if (error) throw error;
       fetchCandidates();
-      toast.success('Aday kaydÄ± baÅŸarÄ±yla silindi.');
+      toast.success('Aday kaydý baþarýyla silindi.');
     } catch (err) {
       console.error("Delete candidate error:", err);
-      toast.error('Silme iÅŸlemi baÅŸarÄ±sÄ±z oldu.');
+      toast.error('Silme iþlemi baþarýsýz oldu.');
     }
   };
 
   // Count stats
   const totalCount = candidates.length;
-  const interviewScheduledCount = candidates.filter(c => c.status === 'MÃ¼lakat PlanlandÄ±').length;
+  const interviewScheduledCount = candidates.filter(c => c.status === 'Mülakat Planlandý').length;
   const bursaryAwardedCount = candidates.filter(c => c.status === 'Bursiyer').length;
 
   return (
@@ -227,9 +228,9 @@ export default function BursaryPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            ðŸŽ“ Bursiyer ve MÃ¼lakat Sistemi
+            ?? Bursiyer ve Mülakat Sistemi
           </h1>
-          <p style={{ color: 'var(--text-muted)' }}>CansaÄŸlÄ±ÄŸÄ± VakfÄ± bursiyer adaylarÄ± mÃ¼lakat planlama ve deÄŸerlendirme modÃ¼lÃ¼</p>
+          <p style={{ color: 'var(--text-muted)' }}>Cansaðlýðý Vakfý bursiyer adaylarý mülakat planlama ve deðerlendirme modülü</p>
         </div>
         {canModify && (
           <button onClick={() => setIsAddModalOpen(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -245,7 +246,7 @@ export default function BursaryPage() {
             <Users size={20} color="var(--color-primary)" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Toplam Aday KaydÄ±</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Toplam Aday Kaydý</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{totalCount} Aday</div>
           </div>
         </div>
@@ -255,7 +256,7 @@ export default function BursaryPage() {
             <Calendar size={20} color="#f59e0b" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>MÃ¼lakat Planlananlar</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Mülakat Planlananlar</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f59e0b' }}>{interviewScheduledCount} Aday</div>
           </div>
         </div>
@@ -282,7 +283,7 @@ export default function BursaryPage() {
             <input 
               type="text" 
               className="input" 
-              placeholder="AdÄ±, okul veya e-posta..." 
+              placeholder="Adý, okul veya e-posta..." 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               style={{ paddingLeft: '2.25rem' }}
@@ -293,9 +294,9 @@ export default function BursaryPage() {
         {/* Region Filter */}
         {!isRegionManager && (
           <div>
-            <label className="label">BÃ¶lge SeÃ§imi</label>
+            <label className="label">Bölge Seçimi</label>
             <select className="input" value={selectedRegion} onChange={e => setSelectedRegion(e.target.value)}>
-              <option value="">TÃ¼m BÃ¶lgeler</option>
+              <option value="">Tüm Bölgeler</option>
               {REGIONS.map(reg => (
                 <option key={reg} value={reg}>{reg.toUpperCase()}</option>
               ))}
@@ -305,19 +306,19 @@ export default function BursaryPage() {
 
         {isRegionManager && (
           <div>
-            <label className="label">BÃ¶lge</label>
-            <input type="text" className="input" disabled value={`ðŸ“ ${userRegion.toUpperCase()}`} />
+            <label className="label">Bölge</label>
+            <input type="text" className="input" disabled value={`?? ${userRegion.toUpperCase()}`} />
           </div>
         )}
 
         {/* Status Filter */}
         <div>
-          <label className="label">MÃ¼lakat Durumu</label>
+          <label className="label">Mülakat Durumu</label>
           <select className="input" value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)}>
-            <option value="">TÃ¼mÃ¼</option>
+            <option value="">Tümü</option>
             <option value="Aday">Aday</option>
-            <option value="MÃ¼lakat PlanlandÄ±">MÃ¼lakat PlanlandÄ±</option>
-            <option value="MÃ¼lakat TamamlandÄ±">MÃ¼lakat TamamlandÄ±</option>
+            <option value="Mülakat Planlandý">Mülakat Planlandý</option>
+            <option value="Mülakat Tamamlandý">Mülakat Tamamlandý</option>
             <option value="Bursiyer">Bursiyer</option>
             <option value="Reddedildi">Reddedildi</option>
           </select>
@@ -328,14 +329,14 @@ export default function BursaryPage() {
       {/* Main Table area */}
       <div className="card" style={{ padding: '2rem' }}>
         <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          ðŸ“‹ MÃ¼lakat Randevu ve Takip Havuzu
+          ?? Mülakat Randevu ve Takip Havuzu
         </h3>
 
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>YÃ¼kleniyor...</div>
+          <div style={{ textAlign: 'center', padding: '3rem' }}>Yükleniyor...</div>
         ) : filteredCandidates.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-            GÃ¶rÃ¼ntÃ¼lenecek bursiyer adayÄ± kaydÄ± bulunamadÄ±.
+            Görüntülenecek bursiyer adayý kaydý bulunamadý.
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
@@ -343,11 +344,11 @@ export default function BursaryPage() {
               <thead>
                 <tr style={{ borderBottom: '2px solid #eaeaea' }}>
                   <th style={{ padding: '1rem 0.5rem' }}>Aday Ad Soyad</th>
-                  <th style={{ padding: '1rem 0.5rem' }}>Ãœniversite / BÃ¶lÃ¼m</th>
-                  <th style={{ padding: '1rem 0.5rem' }}>BÃ¶lge</th>
-                  <th style={{ padding: '1rem 0.5rem' }}>MÃ¼lakat Tarihi</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Üniversite / Bölüm</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Bölge</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Mülakat Tarihi</th>
                   <th style={{ padding: '1rem 0.5rem' }}>Durum</th>
-                  <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Ä°ÅŸlemler</th>
+                  <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Ýþlemler</th>
                 </tr>
               </thead>
               <tbody>
@@ -371,17 +372,17 @@ export default function BursaryPage() {
                     <td style={{ padding: '1rem 0.5rem' }}>
                       {cand.interview_date ? (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
-                          ðŸ“… {new Date(cand.interview_date).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' })}
+                          ?? {new Date(cand.interview_date).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       ) : (
-                        <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>PlanlanmadÄ±</span>
+                        <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Planlanmadý</span>
                       )}
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <span className={`badge ${
                         cand.status === 'Bursiyer' ? 'badge-success' :
-                        cand.status === 'MÃ¼lakat PlanlandÄ±' ? 'badge-warning' :
-                        cand.status === 'MÃ¼lakat TamamlandÄ±' ? 'badge-info' :
+                        cand.status === 'Mülakat Planlandý' ? 'badge-warning' :
+                        cand.status === 'Mülakat Tamamlandý' ? 'badge-info' :
                         cand.status === 'Reddedildi' ? 'badge-danger' : 'badge-neutral'
                       }`}>
                         {cand.status}
@@ -394,7 +395,7 @@ export default function BursaryPage() {
                           target="_blank" 
                           rel="noreferrer"
                           className="btn btn-outline"
-                          title="WhatsApp Ä°letiÅŸim"
+                          title="WhatsApp Ýletiþim"
                           style={{ padding: '0.35rem', color: '#25d366', borderColor: '#bbf7d0' }}
                         >
                           <Phone size={16} />
@@ -402,7 +403,7 @@ export default function BursaryPage() {
                         <button 
                           onClick={() => openInterviewModal(cand)}
                           className="btn btn-outline" 
-                          title="MÃ¼lakat ve DeÄŸerlendirme Planla"
+                          title="Mülakat ve Deðerlendirme Planla"
                           style={{ padding: '0.35rem', color: 'var(--color-primary)', borderColor: 'var(--color-primary-light)' }}
                         >
                           <Edit2 size={16} />
@@ -411,7 +412,7 @@ export default function BursaryPage() {
                           <button 
                             onClick={() => handleDeleteCandidate(cand.id)}
                             className="btn btn-outline" 
-                            title="KaydÄ± Sil"
+                            title="Kaydý Sil"
                             style={{ padding: '0.35rem', color: 'var(--status-danger)', borderColor: 'var(--status-danger)' }}
                           >
                             <Trash2 size={16} />
@@ -433,7 +434,7 @@ export default function BursaryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Ã¢Âžâ€¢ Yeni Bursiyer AdayÄ± Ekle</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>âž• Yeni Bursiyer Adayý Ekle</h2>
               <button onClick={() => setIsAddModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -441,39 +442,39 @@ export default function BursaryPage() {
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label className="label">AdÄ± SoyadÄ± *</label>
-                  <input type="text" className="input" required value={addFormData.fullName} onChange={e => setAddFormData({...addFormData, fullName: e.target.value})} placeholder="Ã–rn: Mehmet Ã–z" />
+                  <label className="label">Adý Soyadý *</label>
+                  <input type="text" className="input" required value={addFormData.fullName} onChange={e => setAddFormData({...addFormData, fullName: e.target.value})} placeholder="Örn: Mehmet Öz" />
                 </div>
                 <div>
-                  <label className="label">Telefon NumarasÄ± *</label>
-                  <input type="text" className="input" required value={addFormData.phone} onChange={e => setAddFormData({...addFormData, phone: e.target.value})} placeholder="Ã–rn: +90 5XX XXX XX XX" />
+                  <label className="label">Telefon Numarasý *</label>
+                  <input type="text" className="input" required value={addFormData.phone} onChange={e => setAddFormData({...addFormData, phone: e.target.value})} placeholder="Örn: +90 5XX XXX XX XX" />
                 </div>
                 <div>
                   <label className="label">E-posta Adresi *</label>
-                  <input type="email" className="input" required value={addFormData.email} onChange={e => setAddFormData({...addFormData, email: e.target.value})} placeholder="Ã–rn: mehmet@mail.com" />
+                  <input type="email" className="input" required value={addFormData.email} onChange={e => setAddFormData({...addFormData, email: e.target.value})} placeholder="Örn: mehmet@mail.com" />
                 </div>
                 <div>
-                  <label className="label">Ãœniversite *</label>
-                  <input type="text" className="input" required value={addFormData.university} onChange={e => setAddFormData({...addFormData, university: e.target.value})} placeholder="Ã–rn: Ege Ãœniversitesi" />
+                  <label className="label">Üniversite *</label>
+                  <input type="text" className="input" required value={addFormData.university} onChange={e => setAddFormData({...addFormData, university: e.target.value})} placeholder="Örn: Ege Üniversitesi" />
                 </div>
                 <div>
-                  <label className="label">BÃ¶lÃ¼m *</label>
-                  <input type="text" className="input" required value={addFormData.department} onChange={e => setAddFormData({...addFormData, department: e.target.value})} placeholder="Ã–rn: TÄ±p FakÃ¼ltesi" />
+                  <label className="label">Bölüm *</label>
+                  <input type="text" className="input" required value={addFormData.department} onChange={e => setAddFormData({...addFormData, department: e.target.value})} placeholder="Örn: Týp Fakültesi" />
                 </div>
                 <div>
-                  <label className="label">SÄ±nÄ±f *</label>
+                  <label className="label">Sýnýf *</label>
                   <select className="input" required value={addFormData.grade} onChange={e => setAddFormData({...addFormData, grade: e.target.value})}>
-                    <option value="HazÄ±rlÄ±k">HazÄ±rlÄ±k</option>
-                    <option value="1. SÄ±nÄ±f">1. SÄ±nÄ±f</option>
-                    <option value="2. SÄ±nÄ±f">2. SÄ±nÄ±f</option>
-                    <option value="3. SÄ±nÄ±f">3. SÄ±nÄ±f</option>
-                    <option value="4. SÄ±nÄ±f">4. SÄ±nÄ±f</option>
+                    <option value="Hazýrlýk">Hazýrlýk</option>
+                    <option value="1. Sýnýf">1. Sýnýf</option>
+                    <option value="2. Sýnýf">2. Sýnýf</option>
+                    <option value="3. Sýnýf">3. Sýnýf</option>
+                    <option value="4. Sýnýf">4. Sýnýf</option>
                     <option value="Mezun">Mezun</option>
                   </select>
                 </div>
                 {!isRegionManager && (
                   <div>
-                    <label className="label">BÃ¶lgesi *</label>
+                    <label className="label">Bölgesi *</label>
                     <select className="input" required value={addFormData.region} onChange={e => setAddFormData({...addFormData, region: e.target.value})}>
                       {REGIONS.map(reg => (
                         <option key={reg} value={reg}>{reg.toUpperCase()}</option>
@@ -484,8 +485,8 @@ export default function BursaryPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn btn-outline">Ä°ptal</button>
-                <button type="submit" className="btn btn-primary">Kaydet & OluÅŸtur</button>
+                <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn btn-outline">Ýptal</button>
+                <button type="submit" className="btn btn-primary">Kaydet & Oluþtur</button>
               </div>
 
             </form>
@@ -500,7 +501,7 @@ export default function BursaryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>ðŸ“… MÃ¼lakat & DeÄŸerlendirme: {activeCandidate.full_name}</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Mülakat & Deðerlendirme: {activeCandidate.full_name}</h2>
               <button onClick={() => setIsInterviewModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -508,39 +509,39 @@ export default function BursaryPage() {
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label className="label">MÃ¼lakat Tarihi</label>
+                  <label className="label">Mülakat Tarihi</label>
                   <input type="date" className="input" value={interviewDate} onChange={e => setInterviewDate(e.target.value)} />
                 </div>
                 <div>
-                  <label className="label">MÃ¼lakat Saati</label>
+                  <label className="label">Mülakat Saati</label>
                   <input type="time" className="input" value={interviewTime} onChange={e => setInterviewTime(e.target.value)} />
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
-                  <label className="label">Aday MÃ¼lakat Durumu *</label>
+                  <label className="label">Aday Mülakat Durumu *</label>
                   <select className="input" required value={candidateStatus} onChange={e => setCandidateStatus(e.target.value)}>
                     <option value="Aday">Aday</option>
-                    <option value="MÃ¼lakat PlanlandÄ±">MÃ¼lakat PlanlandÄ±</option>
-                    <option value="MÃ¼lakat TamamlandÄ±">MÃ¼lakat TamamlandÄ±</option>
-                    <option value="Bursiyer">OnaylandÄ± / Bursiyer</option>
+                    <option value="Mülakat Planlandý">Mülakat Planlandý</option>
+                    <option value="Mülakat Tamamlandý">Mülakat Tamamlandý</option>
+                    <option value="Bursiyer">Onaylandý / Bursiyer</option>
                     <option value="Reddedildi">Reddedildi</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="label">DeÄŸerlendirme ve MÃ¼lakat NotlarÄ±</label>
+                <label className="label">Deðerlendirme ve Mülakat Notlarý</label>
                 <textarea 
                   className="input" 
                   rows={4} 
                   value={evaluationNotes} 
                   onChange={e => setEvaluationNotes(e.target.value)} 
-                  placeholder="MÃ¼lakat deÄŸerlendirme kriterlerini, adayÄ±n sunumunu, katÄ±lÄ±m hevesini veya genel izlenimleri buraya not alÄ±n..."
+                  placeholder="Mülakat deðerlendirme kriterlerini, adayýn sunumunu, katýlým hevesini veya genel izlenimleri buraya not alýn..."
                 />
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsInterviewModalOpen(false)} className="btn btn-outline">Ä°ptal</button>
-                <button type="submit" className="btn btn-primary">Bilgileri GÃ¼ncelle</button>
+                <button type="button" onClick={() => setIsInterviewModalOpen(false)} className="btn btn-outline">Ýptal</button>
+                <button type="submit" className="btn btn-primary">Bilgileri Güncelle</button>
               </div>
 
             </form>
@@ -552,4 +553,5 @@ export default function BursaryPage() {
     </div>
   );
 }
+
 

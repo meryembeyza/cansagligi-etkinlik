@@ -1,11 +1,12 @@
-ï»¿'use client';
+'use client';
 import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import { useRole } from '@/context/RoleContext';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
+const supabase = createClient();
 import { Calendar, Plus, Users, Eye, CheckCircle, XCircle, Clock, BookOpen } from 'lucide-react';
 
 interface BursaryEvent {
@@ -64,8 +65,8 @@ export default function BursaryAdminPage() {
 
       if (error) throw error;
       setEvents(data || []);
-    } catch (err: any) {
-      console.error('Events load error:', err.message);
+    } catch (err) {
+      console.error('Events load error:', (err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +92,7 @@ export default function BursaryAdminPage() {
 
       if (error) throw error;
 
-      // Bildirim E-postasÄ± GÃ¶nderme (Bursiyerlere)
+      // Bildirim E-postasý Gönderme (Bursiyerlere)
       try {
         const { data: bursaryUsers } = await supabase
           .from('users')
@@ -103,7 +104,7 @@ export default function BursaryAdminPage() {
           
           if (emails.length > 0) {
             const { data: { session } } = await supabase.auth.getSession();
-            // Asenkron gÃ¶nder (Fire and forget)
+            // Asenkron gönder (Fire and forget)
             fetch('/api/send-email', {
               method: 'POST',
               headers: { 
@@ -112,32 +113,32 @@ export default function BursaryAdminPage() {
               },
               body: JSON.stringify({
                 to: emails.join(','),
-                subject: `YENÄ° BURSÄ°YER ETKÄ°NLÄ°Ã„ÂžÄ°: ${formData.title}`,
+                subject: `YENÝ BURSÝYER ETKÝNLÝÄžÝ: ${formData.title}`,
                 html: `
                   <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
-                    <h2>Yeni Bursiyer EtkinliÄŸi: ${formData.title}</h2>
+                    <h2>Yeni Bursiyer Etkinliði: ${formData.title}</h2>
                     <p><strong>Tarih:</strong> ${new Date(combinedDate).toLocaleString('tr-TR')}</p>
                     <p><strong>Mekan:</strong> ${formData.location}</p>
-                    <p><strong>AÃ§Ä±klama:</strong><br/>${formData.description}</p>
+                    <p><strong>Açýklama:</strong><br/>${formData.description}</p>
                     <br/>
-                    <p>LÃ¼tfen sisteme giriÅŸ yaparak etkinliÄŸe katÄ±lÄ±m durumunuzu (RSVP) ve mazeretiniz varsa mazeret beyanÄ±nÄ±zÄ± gerÃ§ekleÅŸtiriniz.</p>
-                    <p><a href="https://cansagligi-etkinlik.vercel.app/dashboard/bursary-panel" style="background: #16a34a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Sisteme GiriÅŸ Yap</a></p>
+                    <p>Lütfen sisteme giriþ yaparak etkinliðe katýlým durumunuzu (RSVP) ve mazeretiniz varsa mazeret beyanýnýzý gerçekleþtiriniz.</p>
+                    <p><a href="https://cansagligi-etkinlik.vercel.app/dashboard/bursary-panel" style="background: #16a34a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Sisteme Giriþ Yap</a></p>
                   </div>
                 `
               })
-            }).catch(e => console.error("Email API HatasÄ±:", e));
+            }).catch(e => console.error("Email API Hatasý:", e));
           }
         }
       } catch (emailErr) {
-        console.error("Email hazÄ±rlÄ±k hatasÄ±:", emailErr);
+        console.error("Email hazýrlýk hatasý:", emailErr);
       }
 
       setIsCreateModalOpen(false);
       setFormData({ title: '', description: '', event_date: '', event_time: '', location: '' });
       fetchEvents();
-      toast.success('Etkinlik baÅŸarÄ±yla oluÅŸturuldu ve bursiyerlere e-posta bildirimi kuyruÄŸa alÄ±ndÄ±.');
-    } catch (err: any) {
-      toast.error('Hata: ' + err.message);
+      toast.success('Etkinlik baþarýyla oluþturuldu ve bursiyerlere e-posta bildirimi kuyruða alýndý.');
+    } catch (err) {
+      toast.error('Hata: ' + (err as Error).message);
     } finally {
       setIsSubmitting(false);
     }
@@ -155,7 +156,7 @@ export default function BursaryAdminPage() {
 
       if (error) throw error;
 
-      // TÃ¼m bursiyerleri de Ã§ekip RSVP yapmayanlarÄ± 'pending' olarak gÃ¶sterebiliriz
+      // Tüm bursiyerleri de çekip RSVP yapmayanlarý 'pending' olarak gösterebiliriz
       const { data: allBursary } = await supabase
         .from('users')
         .select('id, full_name, club_role')
@@ -188,16 +189,16 @@ export default function BursaryAdminPage() {
       });
 
       setAttendances(finalAttendances);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error('Detaylar yÃ¼klenirken hata oluÅŸtu.');
+      toast.error('Detaylar yüklenirken hata oluþtu.');
     } finally {
       setIsLoadingDetails(false);
     }
   };
 
   if (currentRole !== 'general_admin' && currentRole !== 'rep_head') {
-    return <div style={{ padding: '2rem' }}>Bu sayfayÄ± gÃ¶rÃ¼ntÃ¼leme yetkiniz yok.</div>;
+    return <div style={{ padding: '2rem' }}>Bu sayfayý görüntüleme yetkiniz yok.</div>;
   }
 
   return (
@@ -207,7 +208,7 @@ export default function BursaryAdminPage() {
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <BookOpen size={28} /> Bursiyer Takip (Admin)
           </h1>
-          <p style={{ color: 'var(--text-muted)' }}>Bursiyerlere Ã¶zel zorunlu etkinlikler oluÅŸturun ve katÄ±lÄ±mlarÄ±nÄ± takip edin.</p>
+          <p style={{ color: 'var(--text-muted)' }}>Bursiyerlere özel zorunlu etkinlikler oluþturun ve katýlýmlarýný takip edin.</p>
         </div>
         <button onClick={() => setIsCreateModalOpen(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Plus size={18} /> Yeni Etkinlik
@@ -215,21 +216,21 @@ export default function BursaryAdminPage() {
       </div>
 
       <div className="card" style={{ padding: '2rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem' }}>OluÅŸturulan Etkinlikler</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem' }}>Oluþturulan Etkinlikler</h3>
         
         {isLoading ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>YÃ¼kleniyor...</div>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>Yükleniyor...</div>
         ) : events.length === 0 ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>HenÃ¼z hiÃ§bir etkinlik oluÅŸturulmamÄ±ÅŸ.</div>
+          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>Henüz hiçbir etkinlik oluþturulmamýþ.</div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="table" style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #eaeaea' }}>
-                  <th style={{ padding: '1rem 0.5rem' }}>Etkinlik AdÄ±</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Etkinlik Adý</th>
                   <th style={{ padding: '1rem 0.5rem' }}>Tarih</th>
                   <th style={{ padding: '1rem 0.5rem' }}>Mekan</th>
-                  <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Ä°ÅŸlemler</th>
+                  <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Ýþlemler</th>
                 </tr>
               </thead>
               <tbody>
@@ -240,7 +241,7 @@ export default function BursaryAdminPage() {
                     <td style={{ padding: '1rem 0.5rem' }}>{ev.location}</td>
                     <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
                       <button onClick={() => openEventDetails(ev)} className="btn btn-outline" style={{ padding: '0.5rem', color: 'var(--color-primary)', borderColor: 'var(--color-primary-light)' }}>
-                        <Eye size={18} /> RaporlarÄ± GÃ¶r
+                        <Eye size={18} /> Raporlarý Gör
                       </button>
                     </td>
                   </tr>
@@ -257,17 +258,17 @@ export default function BursaryAdminPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Yeni Bursiyer EtkinliÄŸi</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Yeni Bursiyer Etkinliði</h2>
               <button onClick={() => setIsCreateModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
             <form onSubmit={handleCreateEvent} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
-                <label className="label">Etkinlik BaÅŸlÄ±ÄŸÄ± *</label>
+                <label className="label">Etkinlik Baþlýðý *</label>
                 <input type="text" required className="input" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
               </div>
               <div>
-                <label className="label">AÃ§Ä±klama (Zorunlu Ä°Ã§erik vb.)</label>
+                <label className="label">Açýklama (Zorunlu Ýçerik vb.)</label>
                 <textarea className="input" rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -282,12 +283,12 @@ export default function BursaryAdminPage() {
               </div>
               <div>
                 <label className="label">Mekan *</label>
-                <input type="text" required className="input" placeholder="Ã–rn: VakÄ±f Merkezi" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} />
+                <input type="text" required className="input" placeholder="Örn: Vakýf Merkezi" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} />
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="btn btn-outline">Ä°ptal</button>
-                <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Kaydediliyor...' : 'OluÅŸtur ve Bildirim GÃ¶nder'}</button>
+                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="btn btn-outline">Ýptal</button>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Kaydediliyor...' : 'Oluþtur ve Bildirim Gönder'}</button>
               </div>
             </form>
           </div>
@@ -302,12 +303,12 @@ export default function BursaryAdminPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Rapor: {selectedEvent.title}</h2>
-                <p style={{ color: 'var(--text-muted)' }}>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} Ã¢â‚¬Â¢ {selectedEvent.location}</p>
+                <p style={{ color: 'var(--text-muted)' }}>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} â€¢ {selectedEvent.location}</p>
               </div>
               <button onClick={() => setSelectedEvent(null)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
-            {/* Ä°statistikler */}
+            {/* Ýstatistikler */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
               <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 700 }}>{attendances.length}</div>
@@ -315,7 +316,7 @@ export default function BursaryAdminPage() {
               </div>
               <div style={{ backgroundColor: '#ecfdf5', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--status-success)' }}>{attendances.filter(a => a.rsvp_status === 'attending').length}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--status-success)' }}>KatÄ±lacaÄŸÄ±m Diyenler</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--status-success)' }}>Katýlacaðým Diyenler</div>
               </div>
               <div style={{ backgroundColor: 'var(--bg-danger-light)', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--status-danger)' }}>{attendances.filter(a => a.rsvp_status === 'not_attending').length}</div>
@@ -323,7 +324,7 @@ export default function BursaryAdminPage() {
               </div>
               <div style={{ backgroundColor: 'var(--bg-info-light)', padding: '1rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 700, color: '#3b82f6' }}>{attendances.filter(a => a.has_attended).length}</div>
-                <div style={{ fontSize: '0.75rem', color: '#3b82f6' }}>Fiilen KatÄ±lanlar</div>
+                <div style={{ fontSize: '0.75rem', color: '#3b82f6' }}>Fiilen Katýlanlar</div>
               </div>
             </div>
 
@@ -332,25 +333,25 @@ export default function BursaryAdminPage() {
                 <thead>
                   <tr style={{ borderBottom: '2px solid #eaeaea' }}>
                     <th style={{ padding: '1rem 0.5rem' }}>Bursiyer</th>
-                    <th style={{ padding: '1rem 0.5rem' }}>KulÃ¼p GÃ¶revi</th>
+                    <th style={{ padding: '1rem 0.5rem' }}>Kulüp Görevi</th>
                     <th style={{ padding: '1rem 0.5rem' }}>RSVP Durumu</th>
                     <th style={{ padding: '1rem 0.5rem', width: '30%' }}>Mazeret (Varsa)</th>
-                    <th style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>Fiili KatÄ±lÄ±m YoklamasÄ±</th>
+                    <th style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>Fiili Katýlým Yoklamasý</th>
                   </tr>
                 </thead>
                 <tbody>
                   {isLoadingDetails ? (
-                    <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center' }}>YÃ¼kleniyor...</td></tr>
+                    <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center' }}>Yükleniyor...</td></tr>
                   ) : attendances.length === 0 ? (
-                    <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center' }}>Sistemde bursiyer bulunamadÄ±.</td></tr>
+                    <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center' }}>Sistemde bursiyer bulunamadý.</td></tr>
                   ) : (
                     attendances.map(a => (
                       <tr key={a.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
                         <td style={{ padding: '1rem 0.5rem', fontWeight: 600 }}>{a.users?.full_name}</td>
                         <td style={{ padding: '1rem 0.5rem' }}>{a.users?.club_role || '-'}</td>
                         <td style={{ padding: '1rem 0.5rem' }}>
-                          {a.rsvp_status === 'attending' && <span className="badge badge-success"><CheckCircle size={14} style={{display:'inline', marginRight:'4px'}}/> KatÄ±lacak</span>}
-                          {a.rsvp_status === 'not_attending' && <span className="badge badge-danger"><XCircle size={14} style={{display:'inline', marginRight:'4px'}}/> KatÄ±lmayacak</span>}
+                          {a.rsvp_status === 'attending' && <span className="badge badge-success"><CheckCircle size={14} style={{display:'inline', marginRight:'4px'}}/> Katýlacak</span>}
+                          {a.rsvp_status === 'not_attending' && <span className="badge badge-danger"><XCircle size={14} style={{display:'inline', marginRight:'4px'}}/> Katýlmayacak</span>}
                           {a.rsvp_status === 'pending' && <span className="badge badge-warning"><Clock size={14} style={{display:'inline', marginRight:'4px'}}/> Bekleniyor</span>}
                         </td>
                         <td style={{ padding: '1rem 0.5rem', fontStyle: 'italic', color: 'var(--text-muted)' }}>
@@ -359,7 +360,7 @@ export default function BursaryAdminPage() {
                         <td style={{ padding: '1rem 0.5rem', textAlign: 'center' }}>
                           {a.has_attended ? (
                             <span style={{ color: 'var(--status-success)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                              <CheckCircle size={16} /> KatÄ±ldÄ±
+                              <CheckCircle size={16} /> Katýldý
                             </span>
                           ) : (
                             <span style={{ color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -380,4 +381,7 @@ export default function BursaryAdminPage() {
     </div>
   );
 }
+
+
+
 
