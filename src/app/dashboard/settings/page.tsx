@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const { user } = useRole();
   const [activeTab, setActiveTab] = useState('notifications');
   
-  // Åifre değiştirme state
+  // Åifre deÄŸiÅŸtirme state
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -29,7 +29,7 @@ export default function SettingsPage() {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.success('Yeni şifreler eşleşmiyor!');
+      toast.success('Yeni ÅŸifreler eÅŸleÅŸmiyor!');
       return;
     }
     
@@ -40,7 +40,7 @@ export default function SettingsPage() {
       });
       if (error) throw error;
       
-      toast.success('Åifreniz başarıyla güncellendi.');
+      toast.success('Åifreniz baÅŸarÄ±yla gÃ¼ncellendi.');
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
       toast.error('Hata: ' + (err as Error).message);
@@ -52,8 +52,8 @@ export default function SettingsPage() {
   const handleSignOutOtherDevices = async () => {
     // Note: To fully implement this, we'd need admin API or specific auth flows.
     // For now, we simulate logging out of other devices.
-    if (window.confirm("Bu cihaz haricindeki tüm oturumlarınızı sonlandırmak istediğinize emin misiniz?")) {
-      toast.success("Diğer cihazlardaki oturumlar başarıyla sonlandırıldı. (Simülasyon)");
+    if (window.confirm("Bu cihaz haricindeki tÃ¼m oturumlarÄ±nÄ±zÄ± sonlandÄ±rmak istediÄŸinize emin misiniz?")) {
+      toast.success("DiÄŸer cihazlardaki oturumlar baÅŸarÄ±yla sonlandÄ±rÄ±ldÄ±. (SimÃ¼lasyon)");
     }
   };
 
@@ -61,14 +61,14 @@ export default function SettingsPage() {
     <div style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '4rem' }}>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Settings size={24} color="var(--color-primary)" /> Hesap Ayarları
+          <Settings size={24} color="var(--color-primary)" /> Hesap AyarlarÄ±
         </h1>
-        <p style={{ color: 'var(--text-muted)' }}>Bildirimlerinizi, güvenlik tercihlerinizi ve şifrenizi buradan yönetebilirsiniz.</p>
+        <p style={{ color: 'var(--text-muted)' }}>Bildirimlerinizi, gÃ¼venlik tercihlerinizi ve ÅŸifrenizi buradan yÃ¶netebilirsiniz.</p>
       </div>
 
       <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
         
-        {/* Sol Menü */}
+        {/* Sol MenÃ¼ */}
         <div style={{ width: '250px', display: 'flex', flexDirection: 'column', gap: '0.5rem', flexShrink: 0 }}>
           <Link href="/dashboard/profile" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', textDecoration: 'none', color: 'var(--text-main)', border: '1px solid transparent' }} className="hover-bg-gray">
             <User size={18} /> Profil Bilgileri
@@ -85,11 +85,11 @@ export default function SettingsPage() {
             style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', backgroundColor: activeTab === 'security' ? 'var(--color-primary-light)' : 'transparent', color: activeTab === 'security' ? 'var(--color-primary)' : 'var(--text-main)', fontWeight: activeTab === 'security' ? 600 : 400 }}
             className="hover-bg-gray"
           >
-            <Lock size={18} /> Åifre ve Güvenlik
+            <Lock size={18} /> Åifre ve GÃ¼venlik
           </div>
         </div>
 
-        {/* Sağ İçerik Alanı */}
+        {/* SaÄŸ Ä°Ã§erik AlanÄ± */}
         <div style={{ flex: 1, minWidth: '300px' }}>
           
           {activeTab === 'notifications' && (
@@ -99,8 +99,8 @@ export default function SettingsPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <h4 style={{ fontWeight: 600 }}>Uygulama İçi Bildirimler</h4>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Etkinlik durumu değişiklikleri sağ üstteki çan ikonuna düşsün.</p>
+                    <h4 style={{ fontWeight: 600 }}>Uygulama Ä°Ã§i Bildirimler</h4>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Etkinlik durumu deÄŸiÅŸiklikleri saÄŸ Ã¼stteki Ã§an ikonuna dÃ¼ÅŸsÃ¼n.</p>
                   </div>
                   <label className="toggle-switch">
                     <input type="checkbox" checked={notifPrefs.push} onChange={(e) => setNotifPrefs({...notifPrefs, push: e.target.checked})} />
@@ -111,7 +111,7 @@ export default function SettingsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <h4 style={{ fontWeight: 600 }}>E-posta Bildirimleri</h4>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Önemli uyarılar kayıtlı e-posta adresinize gönderilsin.</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Ã–nemli uyarÄ±lar kayÄ±tlÄ± e-posta adresinize gÃ¶nderilsin.</p>
                   </div>
                   <label className="toggle-switch">
                     <input type="checkbox" checked={notifPrefs.email} onChange={(e) => setNotifPrefs({...notifPrefs, email: e.target.checked})} />
@@ -121,7 +121,7 @@ export default function SettingsPage() {
 
               </div>
               <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button className="btn btn-primary" onClick={() => toast.success("E-posta bildirim ayarlarınız güncellendi.")}>Kaydet</button>
+                <button className="btn btn-primary" onClick={() => toast.success("E-posta bildirim ayarlarÄ±nÄ±z gÃ¼ncellendi.")}>Kaydet</button>
               </div>
             </div>
           )}
@@ -129,7 +129,7 @@ export default function SettingsPage() {
           {activeTab === 'security' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', animation: 'fadeIn 0.3s ease' }}>
               <div className="card">
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Åifre Değiştir</h3>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Åifre DeÄŸiÅŸtir</h3>
                 <form onSubmit={handlePasswordChange} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
                   <div>
                     <label className="label">Mevcut Åifreniz</label>
@@ -144,20 +144,20 @@ export default function SettingsPage() {
                     <input type="password" required className="input" minLength={6} value={passwordForm.confirmPassword} onChange={e => setPasswordForm({...passwordForm, confirmPassword: e.target.value})} />
                   </div>
                   <button type="submit" disabled={isChangingPassword} className="btn btn-primary" style={{ marginTop: '1rem' }}>
-                    {isChangingPassword ? 'Değiştiriliyor...' : 'Åifreyi Güncelle'}
+                    {isChangingPassword ? 'DeÄŸiÅŸtiriliyor...' : 'Åifreyi GÃ¼ncelle'}
                   </button>
                 </form>
               </div>
 
               <div className="card" style={{ border: '1px solid #fca5a5', backgroundColor: 'var(--bg-danger-light)' }}>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#991b1b' }}>
-                  <Shield size={20} /> Oturum Güvenliği
+                  <Shield size={20} /> Oturum GÃ¼venliÄŸi
                 </h3>
                 <p style={{ color: '#7f1d1d', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                  Eğer hesabınızın başka bir cihazda açık kaldığını düşünüyorsanız, mevcut cihazınız hariç diğer tüm oturumları sonlandırabilirsiniz.
+                  EÄŸer hesabÄ±nÄ±zÄ±n baÅŸka bir cihazda aÃ§Ä±k kaldÄ±ÄŸÄ±nÄ± dÃ¼ÅŸÃ¼nÃ¼yorsanÄ±z, mevcut cihazÄ±nÄ±z hariÃ§ diÄŸer tÃ¼m oturumlarÄ± sonlandÄ±rabilirsiniz.
                 </p>
                 <button onClick={handleSignOutOtherDevices} className="btn" style={{ backgroundColor: 'var(--status-danger)', color: 'white' }}>
-                  Diğer Cihazlardan Çıkış Yap
+                  DiÄŸer Cihazlardan Ã‡Ä±kÄ±ÅŸ Yap
                 </button>
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
       </div>
       
       <style dangerouslySetInnerHTML={{__html: `
-        .hover-bg-gray:hover { background-color: #f3f4f6; }
+        .hover-bg-gray:hover { background-color: var(--bg-nested); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .toggle-switch {

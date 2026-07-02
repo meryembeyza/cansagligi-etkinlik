@@ -667,7 +667,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               {/* Custom Requests */}
               {(logistics.customRequests || []).length > 0 && (
                 <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>⭐ Özel Talepler</h4>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>â­ Özel Talepler</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
                     {(logistics.customRequests || []).map((req: string, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>

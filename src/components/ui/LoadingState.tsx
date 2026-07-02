@@ -5,7 +5,7 @@ interface LoadingStateProps {
   minHeight?: string;
 }
 
-export default function LoadingState({ message = 'Yükleniyor...', minHeight = '300px' }: LoadingStateProps) {
+export default function LoadingState({ message = 'YҼkleniyor...', minHeight = '300px' }: LoadingStateProps) {
   return (
     <div style={{ 
       display: 'flex', 

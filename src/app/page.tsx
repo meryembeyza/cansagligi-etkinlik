@@ -38,7 +38,7 @@ export default function Home() {
         }
         .stat-card {
           background: white;
-          border: 1px solid #f3f4f6;
+          border: 1px solid var(--border-inner);
           border-radius: 16px;
           padding: 28px 40px;
           box-shadow: 0 2px 12px rgba(0,0,0,0.06);
@@ -122,7 +122,7 @@ export default function Home() {
           {[
             { label: 'Etkinlik', value: '248+' },
             { label: 'Katılımcı', value: '12.000+' },
-            { label: 'Üniversite', value: '34' }
+            { label: 'Üniversite', value: '154' }
           ].map((stat, idx) => (
             <div key={idx} className="stat-card">
               <span style={{ fontSize: '2.25rem', fontWeight: 700, color: '#dc2626', lineHeight: 1 }}>{stat.value}</span>

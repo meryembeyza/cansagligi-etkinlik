@@ -175,7 +175,7 @@ export default function RamadanPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            🌙 Ramazan Takip Sistemi
+            ğÅ¸Å’â„¢ Ramazan Takip Sistemi
           </h1>
           <p style={{ color: 'var(--text-muted)' }}>Cansağlığı Vakfı Ramazan ayı etkinliklerinin bölge ve üniversite bazlı takibi</p>
         </div>
@@ -252,7 +252,7 @@ export default function RamadanPage() {
         {isRegionManager && (
           <div>
             <label className="label">Bölge</label>
-            <input type="text" className="input" disabled value={`📍 ${userRegion.toUpperCase()}`} />
+            <input type="text" className="input" disabled value={`ğÅ¸â€œÂ ${userRegion.toUpperCase()}`} />
           </div>
         )}
 
@@ -311,7 +311,7 @@ export default function RamadanPage() {
               </thead>
               <tbody>
                 {filteredEvents.map(event => (
-                  <tr key={event.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  <tr key={event.id} style={{ borderBottom: '1px solid var(--border-inner)' }}>
                     <td style={{ padding: '1rem 0.5rem', fontWeight: 600 }}>{event.event_name}</td>
                     <td style={{ padding: '1rem 0.5rem' }}>{event.university}</td>
                     <td style={{ padding: '1rem 0.5rem', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 600 }}>{event.region}</td>

@@ -179,7 +179,7 @@ export default function BursaryEventDetailPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Başvuru Butonu Alanı */}
               {event.requires_registration && (
-                <div style={{ backgroundColor: isPastDeadline ? 'var(--bg-danger-light)' : '#f0fdf4', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: `1px solid ${isPastDeadline ? 'var(--border-danger)' : '#bbf7d0'}`, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                <div style={{ backgroundColor: isPastDeadline ? 'var(--bg-danger-light)' : 'var(--bg-success-light)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: `1px solid ${isPastDeadline ? 'var(--border-danger)' : 'var(--status-success)'}`, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                   
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: isPastDeadline ? '#dc2626' : '#16a34a', marginBottom: '0.5rem' }}>
                     {isPastDeadline ? 'Başvurular Kapandı' : 'Başvurular Açık'}
@@ -247,7 +247,7 @@ export default function BursaryEventDetailPage() {
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem' }}>Konuşmacılar</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {event.speakers.map((speaker: EventSpeaker, idx: number) => (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid #f3f4f6' }}>
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-inner)' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#da1c15', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 'bold', flexShrink: 0 }}>
                           {speaker.name.charAt(0).toUpperCase()}
                         </div>

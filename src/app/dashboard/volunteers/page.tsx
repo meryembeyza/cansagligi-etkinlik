@@ -128,7 +128,7 @@ export default function VolunteersPage() {
       {/* Header */}
       <div>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          🤝 Gönüllü Takip ve Üniversite Yapısı
+          ğÅ¸Â¤Â Gönüllü Takip ve Üniversite Yapısı
         </h1>
         <p style={{ color: 'var(--text-muted)' }}>Cansağlığı faaliyetlerine katılan üniversiteli aktif gönüllülerin dağılımı ve başarı sırası</p>
       </div>
@@ -156,7 +156,7 @@ export default function VolunteersPage() {
               <span style={{ color: 'var(--text-muted)' }}>Veri bulunmuyor.</span>
             ) : sortedUnis.map((u, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>🏅 {u.university}</span>
+                <span>ğÅ¸Ââ€¦ {u.university}</span>
                 <strong>{u.count} Gönüllü</strong>
               </div>
             ))}
@@ -193,7 +193,7 @@ export default function VolunteersPage() {
 
       {/* Main List */}
       <div className="card" style={{ padding: '2rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>👥 Üniversite Gönüllü Havuzu</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>ğÅ¸â€˜Â¥ Üniversite Gönüllü Havuzu</h3>
 
         {isLoading ? (
           <LoadingState message="Gönüllüler yükleniyor..." minHeight="200px" />
@@ -218,7 +218,7 @@ export default function VolunteersPage() {
               </thead>
               <tbody>
                 {filteredVolunteers.map(vol => (
-                  <tr key={vol.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  <tr key={vol.id} style={{ borderBottom: '1px solid var(--border-inner)' }}>
                     <td style={{ padding: '1rem 0.5rem', fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8rem' }}>
@@ -228,8 +228,8 @@ export default function VolunteersPage() {
                       </div>
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
-                      <div>📞 {vol.phone_number}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>✉️ {vol.email}</div>
+                      <div>ğÅ¸â€œÂ {vol.phone_number}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>âÅ“â€°Ã¯Â¸Â {vol.email}</div>
                     </td>
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><School size={14} color="var(--color-primary)" /> {vol.university}</div>
@@ -243,7 +243,7 @@ export default function VolunteersPage() {
                       </span>
                     </td>
                     <td style={{ padding: '1rem 0.5rem', fontWeight: 700, color: 'var(--color-primary)' }}>
-                      🔥 {vol.event_attendance_count} Faaliyet
+                      ğÅ¸â€Â¥ {vol.event_attendance_count} Faaliyet
                     </td>
                   </tr>
                 ))}

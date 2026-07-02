@@ -222,7 +222,7 @@ export default function RepresentativeDetailPage({ params }: { params: { id: str
             <span className="badge badge-primary" style={{ textTransform: 'uppercase' }}>📍 {profile.region} BÖLGESİ</span>
           </div>
           <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem', fontWeight: 600 }}>
-            {profile.university} — {profile.department} ({profile.grade})
+            {profile.university} â€” {profile.department} ({profile.grade})
           </p>
         </div>
 

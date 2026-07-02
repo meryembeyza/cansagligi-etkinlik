@@ -105,14 +105,14 @@ export default function BursiyerEventsPage() {
         {/* Participant Type Filter */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid var(--border-color)', paddingLeft: '1rem' }}>
           <Users size={16} color="var(--text-muted)" />
-          <div style={{ display: 'flex', backgroundColor: '#f3f4f6', borderRadius: 'var(--radius-md)', padding: '0.25rem' }}>
+          <div style={{ display: 'flex', backgroundColor: 'var(--bg-nested)', borderRadius: 'var(--radius-md)', padding: '0.25rem' }}>
             {['Tümü', 'Herkese Açık', 'Üniversiteye Özel'].map(type => (
               <button
                 key={type}
                 onClick={() => setParticipantFilter(type)}
                 style={{
                   padding: '0.25rem 0.75rem', fontSize: '0.75rem', fontWeight: 600,
-                  backgroundColor: participantFilter === type ? '#fff' : 'transparent',
+                  backgroundColor: participantFilter === type ? 'var(--bg-card)' : 'transparent',
                   color: participantFilter === type ? '#da1c15' : 'var(--text-muted)',
                   border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
                   boxShadow: participantFilter === type ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
@@ -128,14 +128,14 @@ export default function BursiyerEventsPage() {
         {/* Status Filter */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid var(--border-color)', paddingLeft: '1rem' }}>
           <Calendar size={16} color="var(--text-muted)" />
-          <div style={{ display: 'flex', backgroundColor: '#f3f4f6', borderRadius: 'var(--radius-md)', padding: '0.25rem' }}>
+          <div style={{ display: 'flex', backgroundColor: 'var(--bg-nested)', borderRadius: 'var(--radius-md)', padding: '0.25rem' }}>
             {['Tümü', 'Açık', 'Kapandı'].map(type => (
               <button
                 key={type}
                 onClick={() => setStatusFilter(type)}
                 style={{
                   padding: '0.25rem 0.75rem', fontSize: '0.75rem', fontWeight: 600,
-                  backgroundColor: statusFilter === type ? '#fff' : 'transparent',
+                  backgroundColor: statusFilter === type ? 'var(--bg-card)' : 'transparent',
                   color: statusFilter === type ? '#da1c15' : 'var(--text-muted)',
                   border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
                   boxShadow: statusFilter === type ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
@@ -154,7 +154,7 @@ export default function BursiyerEventsPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
           {[1, 2, 3, 4, 5, 6].map(i => (
             <div key={i} style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', overflow: 'hidden', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ width: '100%', paddingTop: '56.25%', backgroundColor: '#f3f4f6', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ width: '100%', paddingTop: '56.25%', backgroundColor: 'var(--bg-nested)', position: 'relative', overflow: 'hidden' }}>
                 <div className="skeleton-shimmer" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}></div>
               </div>
               <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', flexGrow: 1 }}>

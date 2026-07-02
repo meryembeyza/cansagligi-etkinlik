@@ -11,15 +11,15 @@ import LoadingState from '@/components/ui/LoadingState';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const UNIT_COLORS: Record<string, string> = {
-  'Sosyal Çalýþmalar Birimi': '#10b981',
-  'Mesleki ve Kariyer Çalýþmalarý Birimi': '#ef4444',
-  'Bilimsel ve Akademik Çalýþmalar Birimi': '#3b82f6',
+  'Sosyal Ã‡alÄ±ÅŸmalar Birimi': '#10b981',
+  'Mesleki ve Kariyer Ã‡alÄ±ÅŸmalarÄ± Birimi': '#ef4444',
+  'Bilimsel ve Akademik Ã‡alÄ±ÅŸmalar Birimi': '#3b82f6',
   'Temsilcilikler Birimi': '#eab308',
-  'Diðer': '#6b7280'
+  'DiÄŸer': '#6b7280'
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  'Onaylandý': '#10b981',
+  'OnaylandÄ±': '#10b981',
   'Onay Bekliyor': '#f59e0b',
   'Reddedildi': '#ef4444',
   'Taslak': '#6b7280'
@@ -48,7 +48,7 @@ export default function ReportsExportPage() {
         if (error) throw error;
         setEvents(data || []);
       } catch (err) {
-        console.error('Veri çekilirken hata:', err);
+        console.error('Veri Ã§ekilirken hata:', err);
       } finally {
         setIsLoading(false);
       }
@@ -66,9 +66,9 @@ export default function ReportsExportPage() {
       if (unitFilter !== 'all' && e.unit_name !== unitFilter) match = false;
       
       if (statusFilter !== 'all') {
-        if (statusFilter === 'gerceklesti' && e.status !== 'Gerçekleþti') match = false;
-        if (statusFilter === 'onaylandi' && e.status !== 'Onaylandý') match = false;
-        if (statusFilter === 'iptal' && (e.status === 'Ýptal Edildi' || e.status === 'Reddedildi')) match = false;
+        if (statusFilter === 'gerceklesti' && e.status !== 'GerÃ§ekleÅŸti') match = false;
+        if (statusFilter === 'onaylandi' && e.status !== 'OnaylandÄ±') match = false;
+        if (statusFilter === 'iptal' && (e.status === 'Ä°ptal Edildi' || e.status === 'Reddedildi')) match = false;
         if (statusFilter === 'bekliyor' && e.status === 'Onay Bekliyor') match = false;
       } else {
         if (e.status === 'Taslak') match = false;
@@ -81,9 +81,9 @@ export default function ReportsExportPage() {
   const unitStats = useMemo(() => {
     const stats: Record<string, { name: string, count: number, fill: string }> = {};
     filteredEvents.forEach(e => {
-      const u = e.unit_name || 'Diðer';
+      const u = e.unit_name || 'DiÄŸer';
       if (!stats[u]) {
-        stats[u] = { name: u, count: 0, fill: UNIT_COLORS[u] || UNIT_COLORS['Diðer'] };
+        stats[u] = { name: u, count: 0, fill: UNIT_COLORS[u] || UNIT_COLORS['DiÄŸer'] };
       }
       stats[u].count += 1;
     });
@@ -105,31 +105,46 @@ export default function ReportsExportPage() {
   const handleExport = async () => {
     setIsExporting(true);
     try {
-      const eventList = filteredEvents.map(e => ({
-        'Etkinlik Adý': e.event_name,
-        'Tarih': new Date(e.event_date).toLocaleDateString('tr-TR'),
-        'Birim': e.unit_name,
-        'Üniversite': e.university,
-        'Bölge': e.region,
-        'Durum': e.status,
-        'Beklenen Katýlýmcý': e.expected_participants || 0
-      }));
+      // 1. Etkinlikleri kronolojik sÄ±rala
+      const sortedEvents = [...filteredEvents].sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
 
-      const unitSummaryMap: Record<string, { totalEvents: number, totalParticipants: number }> = {};
-      filteredEvents.forEach(e => {
-        const u = e.unit_name || 'Diðer';
-        if (!unitSummaryMap[u]) unitSummaryMap[u] = { totalEvents: 0, totalParticipants: 0 };
-        unitSummaryMap[u].totalEvents += 1;
-        unitSummaryMap[u].totalParticipants += (e.expected_participants || 0);
+      // Tarih yardÄ±mcÄ± fonksiyonlarÄ±
+      const getMonthName = (dateStr: string) => {
+        const d = new Date(dateStr);
+        const months = ['OCAK', 'ÅžUBAT', 'MART', 'NÄ°SAN', 'MAYIS', 'HAZÄ°RAN', 'TEMMUZ', 'AÄžUSTOS', 'EYLÃœL', 'EKÄ°M', 'KASIM', 'ARALIK'];
+        return `${months[d.getMonth()]} ${d.getFullYear()}`;
+      };
+
+      const getWeekOfMonthName = (dateStr: string) => {
+        const d = new Date(dateStr);
+        const months = ['Ocak', 'Åžubat', 'Mart', 'Nisan', 'MayÄ±s', 'Haziran', 'Temmuz', 'AÄŸustos', 'EylÃ¼l', 'Ekim', 'KasÄ±m', 'AralÄ±k'];
+        return `${months[d.getMonth()]} ${Math.ceil(d.getDate() / 7)}. Hafta`;
+      };
+
+      // 2. Ã–zet Tablo verisi (Hafta bazlÄ±)
+      const weekSummaryMap: Record<string, { totalEvents: number, totalParticipants: number, label: string }> = {};
+      sortedEvents.forEach(e => {
+        const d = new Date(e.event_date);
+        const weekNum = Math.ceil(d.getDate() / 7);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-W${weekNum}`;
+        const label = getWeekOfMonthName(e.event_date);
+        
+        if (!weekSummaryMap[key]) {
+          weekSummaryMap[key] = { totalEvents: 0, totalParticipants: 0, label };
+        }
+        weekSummaryMap[key].totalEvents += 1;
+        weekSummaryMap[key].totalParticipants += (e.expected_participants || 0);
       });
-      const unitSummary = Object.keys(unitSummaryMap).map(k => ({
-        'Birim': k,
-        'Toplam Etkinlik': unitSummaryMap[k].totalEvents,
-        'Toplam Katýlýmcý': unitSummaryMap[k].totalParticipants
+
+      const weekSummary = Object.keys(weekSummaryMap).sort().map(k => ({
+        'Hafta': weekSummaryMap[k].label,
+        'Toplam Etkinlik': weekSummaryMap[k].totalEvents,
+        'Toplam KatÄ±lÄ±mcÄ±': weekSummaryMap[k].totalParticipants
       }));
 
+      // Lojistik Verisi HazÄ±rlÄ±ÄŸÄ± (Mevcut mantÄ±k korunuyor)
       const logisticsList: Record<string, unknown>[] = [];
-      filteredEvents.forEach(e => {
+      sortedEvents.forEach(e => {
         let logisticsObj: Record<string, unknown> = {};
         try {
           if (typeof e.budget_request === 'string') {
@@ -143,11 +158,11 @@ export default function ReportsExportPage() {
           const usedItems: string[] = [];
           if (logisticsObj.soundSystem) usedItems.push('Ses Sistemi');
           if (logisticsObj.projector) usedItems.push('Projeksiyon');
-          if (logisticsObj.photography) usedItems.push('Fotoðraf Çekimi');
-          if (logisticsObj.catering) usedItems.push('Ýkram: ' + (logisticsObj.cateringDetails || ''));
-          if (logisticsObj.hasBasicLifeSupport) usedItems.push('TYD Eðitimi: ' + (logisticsObj.basicLifeSupportDetails || ''));
-          if (logisticsObj.hasAdvancedLifeSupport) usedItems.push('ÝYD Eðitimi: ' + (logisticsObj.advancedLifeSupportDetails || ''));
-          if (logisticsObj.hasSutureTraining) usedItems.push('Sütür Eðitimi: ' + (logisticsObj.sutureTrainingDetails || ''));
+          if (logisticsObj.photography) usedItems.push('FotoÄŸraf Ã‡ekimi');
+          if (logisticsObj.catering) usedItems.push('Ä°kram: ' + (logisticsObj.cateringDetails || ''));
+          if (logisticsObj.hasBasicLifeSupport) usedItems.push('TYD EÄŸitimi: ' + (logisticsObj.basicLifeSupportDetails || ''));
+          if (logisticsObj.hasAdvancedLifeSupport) usedItems.push('Ä°YD EÄŸitimi: ' + (logisticsObj.advancedLifeSupportDetails || ''));
+          if (logisticsObj.hasSutureTraining) usedItems.push('SÃ¼tÃ¼r EÄŸitimi: ' + (logisticsObj.sutureTrainingDetails || ''));
           
           if (logisticsObj.customRequests && Array.isArray(logisticsObj.customRequests)) {
             logisticsObj.customRequests.forEach((req: string) => {
@@ -157,11 +172,11 @@ export default function ReportsExportPage() {
 
           if (usedItems.length > 0) {
             logisticsList.push({
-              'Etkinlik Adý': e.event_name,
+              'Etkinlik AdÄ±': e.event_name,
               'Birim': e.unit_name,
-              'Bölge': e.region,
+              'BÃ¶lge': e.region,
               'Durum': e.status,
-              'Kullanýlan Malzemeler/Hizmetler': usedItems.join(' | '),
+              'KullanÄ±lan Malzemeler/Hizmetler': usedItems.join(' | '),
               'Ek Notlar': logisticsObj.extraNotes || ''
             });
           }
@@ -170,24 +185,114 @@ export default function ReportsExportPage() {
 
       const workbook = new ExcelJS.Workbook();
       
-      const ws1 = workbook.addWorksheet('Etkinlikler');
-      if (eventList.length > 0) {
-        ws1.columns = Object.keys(eventList[0]).map(key => ({ header: key, key: key, width: 20 }));
-        ws1.addRows(eventList);
-      }
+      // --- SEKME 1: Ã–ZET TABLO ---
+      const wsSummary = workbook.addWorksheet('Ã–zet Tablo');
+      wsSummary.columns = [
+        { header: 'Hafta', key: 'Hafta', width: 30 },
+        { header: 'Toplam Etkinlik', key: 'Toplam Etkinlik', width: 20 },
+        { header: 'Toplam KatÄ±lÄ±mcÄ±', key: 'Toplam KatÄ±lÄ±mcÄ±', width: 20 }
+      ];
+      if (weekSummary.length > 0) wsSummary.addRows(weekSummary);
       
-      const ws2 = workbook.addWorksheet('Birim Özetleri');
-      if (unitSummary.length > 0) {
-        ws2.columns = Object.keys(unitSummary[0]).map(key => ({ header: key, key: key, width: 20 }));
-        ws2.addRows(unitSummary);
-      }
-      
-      const ws3 = workbook.addWorksheet('Lojistik Raporu');
-      if (logisticsList.length > 0) {
-        ws3.columns = Object.keys(logisticsList[0]).map(key => ({ header: key, key: key, width: 25 }));
-        ws3.addRows(logisticsList);
-      }
+      // Ã–zet Tablo Stilleri
+      wsSummary.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      wsSummary.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+      wsSummary.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+      wsSummary.autoFilter = 'A1:C1';
+      wsSummary.eachRow((row) => {
+        row.eachCell((cell) => {
+          cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+      });
 
+      // --- SEKME 2: ETKÄ°NLÄ°KLER (AylÄ±k Gruplu & Renkli) ---
+      const wsEvents = workbook.addWorksheet('Etkinlikler');
+      wsEvents.columns = [
+        { header: 'Tarih', key: 'Tarih', width: 15 },
+        { header: 'Etkinlik AdÄ±', key: 'Etkinlik AdÄ±', width: 45 },
+        { header: 'Birim', key: 'Birim', width: 25 },
+        { header: 'Ãœniversite', key: 'Ãœniversite', width: 35 },
+        { header: 'BÃ¶lge', key: 'BÃ¶lge', width: 20 },
+        { header: 'Durum', key: 'Durum', width: 15 },
+        { header: 'Beklenen KatÄ±lÄ±mcÄ±', key: 'Beklenen KatÄ±lÄ±mcÄ±', width: 20 }
+      ];
+      
+      // Etkinlikler BaÅŸlÄ±k Stilleri
+      wsEvents.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      wsEvents.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+      wsEvents.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+      wsEvents.autoFilter = 'A1:G1';
+      wsEvents.views = [{ state: 'frozen', ySplit: 1 }];
+
+      let currentMonth = '';
+      sortedEvents.forEach(e => {
+        const monthStr = getMonthName(e.event_date);
+        
+        // Ay deÄŸiÅŸtiÄŸinde ara baÅŸlÄ±k ekle
+        if (monthStr !== currentMonth) {
+          currentMonth = monthStr;
+          const headerRow = wsEvents.addRow([monthStr]);
+          wsEvents.mergeCells(`A${headerRow.number}:G${headerRow.number}`);
+          headerRow.font = { bold: true, size: 14, color: { argb: 'FF000000' } };
+          headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD1D5DB' } }; // Gri arka plan
+          headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
+          headerRow.eachCell((cell) => {
+            cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+          });
+        }
+
+        // Veri satÄ±rÄ± ekle
+        const row = wsEvents.addRow([
+          new Date(e.event_date).toLocaleDateString('tr-TR'),
+          e.event_name,
+          e.unit_name,
+          e.university,
+          e.region,
+          e.status,
+          e.expected_participants || 0
+        ]);
+
+        // BÃ¶lgeye gÃ¶re satÄ±r renklendirme
+        let bgColor = 'FFFFFFFF'; // Beyaz
+        if (e.region === 'Ä°stanbul Avrupa') bgColor = 'FFE0F2FE'; // AÃ§Ä±k Mavi
+        else if (e.region === 'Ä°stanbul Anadolu') bgColor = 'FFFEF08A'; // AÃ§Ä±k SarÄ±
+        else if (e.region === 'Marmara') bgColor = 'FFDCFCE7'; // AÃ§Ä±k YeÅŸil
+        else if (e.region === 'Ä°Ã§ Anadolu') bgColor = 'FFFFEDD5'; // AÃ§Ä±k Turuncu
+        else if (e.region === 'Ege') bgColor = 'FFFAE8FF'; // AÃ§Ä±k Pembe
+        else if (e.region) bgColor = 'FFF3E8FF'; // DiÄŸerleri iÃ§in soft mor
+
+        row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bgColor } };
+        row.font = { color: { argb: 'FF000000' } }; // Force black font
+        
+        row.eachCell((cell) => {
+          cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+      });
+
+      // --- SEKME 3: LOJÄ°STÄ°K RAPORU ---
+      const wsLogistics = workbook.addWorksheet('Lojistik Raporu');
+      wsLogistics.columns = [
+        { header: 'Etkinlik AdÄ±', key: 'Etkinlik AdÄ±', width: 35 },
+        { header: 'Birim', key: 'Birim', width: 20 },
+        { header: 'BÃ¶lge', key: 'BÃ¶lge', width: 15 },
+        { header: 'Durum', key: 'Durum', width: 15 },
+        { header: 'KullanÄ±lan Malzemeler/Hizmetler', key: 'KullanÄ±lan Malzemeler/Hizmetler', width: 50 },
+        { header: 'Ek Notlar', key: 'Ek Notlar', width: 30 }
+      ];
+      if (logisticsList.length > 0) wsLogistics.addRows(logisticsList);
+
+      wsLogistics.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      wsLogistics.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+      wsLogistics.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+      wsLogistics.autoFilter = 'A1:F1';
+      wsLogistics.views = [{ state: 'frozen', ySplit: 1 }];
+      wsLogistics.eachRow((row) => {
+        row.eachCell((cell) => {
+          cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+      });
+
+      // Ä°ndirme Ä°ÅŸlemi
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
@@ -199,10 +304,9 @@ export default function ReportsExportPage() {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-
     } catch (err) {
       console.error(err);
-      toast.error('Excel dosyasý oluþturulurken bir hata oluþtu.');
+      toast.error('Excel dosyasÄ± oluÅŸturulurken bir hata oluÅŸtu.');
     } finally {
       setIsExporting(false);
     }
@@ -211,8 +315,8 @@ export default function ReportsExportPage() {
   if (currentRole === 'unit_head' || currentRole === 'design_team' || currentRole === 'resource_manager' || currentRole === 'representative') {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Yetkisiz Eriþim</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Ýstatistik ve raporlarý yalnýzca Bölge Sorumlularý ve Genel Yetkililer görebilir.</p>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Yetkisiz EriÅŸim</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Ä°statistik ve raporlarÄ± yalnÄ±zca BÃ¶lge SorumlularÄ± ve Genel Yetkililer gÃ¶rebilir.</p>
       </div>
     );
   }
@@ -220,12 +324,12 @@ export default function ReportsExportPage() {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '4rem' }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Raporlar ve Ýstatistikler</h1>
-        <p style={{ color: 'var(--text-muted)' }}>Sistemdeki etkinlik verilerini analiz edin ve Excel formatýnda indirin.</p>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Raporlar ve Ä°statistikler</h1>
+        <p style={{ color: 'var(--text-muted)' }}>Sistemdeki etkinlik verilerini analiz edin ve Excel formatÄ±nda indirin.</p>
       </div>
 
       {isLoading ? (
-        <LoadingState message="Raporlar yükleniyor..." />
+        <LoadingState message="Raporlar yÃ¼kleniyor..." />
       ) : (
         <>
           <div className="card" style={{ marginBottom: '2rem' }}>
@@ -236,22 +340,22 @@ export default function ReportsExportPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
               <div>
-                <label className="label">Baþlangýç Tarihi</label>
+                <label className="label">BaÅŸlangÄ±Ã§ Tarihi</label>
                 <input type="date" className="input" value={startDate} onChange={e => setStartDate(e.target.value)} />
               </div>
               <div>
-                <label className="label">Bitiþ Tarihi</label>
+                <label className="label">BitiÅŸ Tarihi</label>
                 <input type="date" className="input" value={endDate} onChange={e => setEndDate(e.target.value)} />
               </div>
               
               <div>
                 <label className="label">Birim Tipi</label>
                 <select className="input" value={unitFilter} onChange={e => setUnitFilter(e.target.value)}>
-                  <option value="all">Tüm Birimler</option>
-                  <option value="Sosyal Çalýþmalar Birimi">Sosyal Çalýþmalar Birimi</option>
-                  <option value="Bilimsel ve Akademik Çalýþmalar Birimi">Bilimsel ve Akademik Çalýþmalar Birimi</option>
-                  <option value="Mesleki ve Kariyer Çalýþmalarý Birimi">Mesleki ve Kariyer Çalýþmalarý Birimi</option>
-                  <option value="Ýletiþim ve Tasarým Birimi">Ýletiþim ve Tasarým Birimi</option>
+                  <option value="all">TÃ¼m Birimler</option>
+                  <option value="Sosyal Ã‡alÄ±ÅŸmalar Birimi">Sosyal Ã‡alÄ±ÅŸmalar Birimi</option>
+                  <option value="Bilimsel ve Akademik Ã‡alÄ±ÅŸmalar Birimi">Bilimsel ve Akademik Ã‡alÄ±ÅŸmalar Birimi</option>
+                  <option value="Mesleki ve Kariyer Ã‡alÄ±ÅŸmalarÄ± Birimi">Mesleki ve Kariyer Ã‡alÄ±ÅŸmalarÄ± Birimi</option>
+                  <option value="Ä°letiÅŸim ve TasarÄ±m Birimi">Ä°letiÅŸim ve TasarÄ±m Birimi</option>
                   <option value="Temsilcilikler Birimi">Temsilcilikler Birimi</option>
                 </select>
               </div>
@@ -259,10 +363,10 @@ export default function ReportsExportPage() {
               <div>
                 <label className="label">Etkinlik Durumu</label>
                 <select className="input" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-                  <option value="all">Tümü (Taslaklar Hariç)</option>
+                  <option value="all">TÃ¼mÃ¼ (Taslaklar HariÃ§)</option>
                   <option value="onaylandi">Sadece Onaylananlar</option>
                   <option value="bekliyor">Sadece Bekleyenler</option>
-                  <option value="iptal">Ýptal Edilenler / Reddedilenler</option>
+                  <option value="iptal">Ä°ptal Edilenler / Reddedilenler</option>
                 </select>
               </div>
             </div>
@@ -270,7 +374,7 @@ export default function ReportsExportPage() {
             <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
               <button onClick={handleExport} disabled={isExporting} className="btn btn-primary" style={{ padding: '0.75rem 2rem' }}>
                 <Download size={18} />
-                {isExporting ? 'Hazýrlanýyor...' : 'Excel Olarak Ýndir'}
+                {isExporting ? 'HazÄ±rlanÄ±yor...' : 'Excel Olarak Ä°ndir'}
               </button>
             </div>
           </div>
@@ -279,7 +383,7 @@ export default function ReportsExportPage() {
             <div className="card">
               <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <BarChart2 size={20} color="var(--color-primary)" />
-                Birimlere Göre Etkinlik Daðýlýmý
+                Birimlere GÃ¶re Etkinlik DaÄŸÄ±lÄ±mÄ±
               </h3>
               <div style={{ height: '300px', width: '100%' }}>
                 {unitStats.length > 0 ? (
@@ -289,7 +393,7 @@ export default function ReportsExportPage() {
                       <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <RechartsTooltip cursor={{ fill: '#f3f4f6' }} />
-                      <Bar dataKey="count" name="Etkinlik Sayýsý" radius={[4, 4, 0, 0]}>
+                      <Bar dataKey="count" name="Etkinlik SayÄ±sÄ±" radius={[4, 4, 0, 0]}>
                         {unitStats.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
@@ -297,7 +401,7 @@ export default function ReportsExportPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>Veri bulunamadý</div>
+                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>Veri bulunamadÄ±</div>
                 )}
               </div>
             </div>
@@ -305,7 +409,7 @@ export default function ReportsExportPage() {
             <div className="card">
               <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <PieChartIcon size={20} color="var(--color-primary)" />
-                Etkinlik Durum Daðýlýmý
+                Etkinlik Durum DaÄŸÄ±lÄ±mÄ±
               </h3>
               <div style={{ height: '300px', width: '100%' }}>
                 {statusStats.length > 0 ? (
@@ -330,7 +434,7 @@ export default function ReportsExportPage() {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>Veri bulunamadý</div>
+                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>Veri bulunamadÄ±</div>
                 )}
               </div>
             </div>

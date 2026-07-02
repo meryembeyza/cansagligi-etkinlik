@@ -23,7 +23,7 @@ export default function NewEventPage() {
   const [isDraftLoaded, setIsDraftLoaded] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Client-side yetkilendirme kontrolü
+  // Client-side yetkilendirme kontrolÃ¼
   useEffect(() => {
     if (!isLoading && currentRole) {
       const allowedRoles = ['unit_head', 'admin', 'representative'];
@@ -103,10 +103,10 @@ export default function NewEventPage() {
     if (currentRole === 'representative') {
       setFormData(prev => ({
         ...prev,
-        eventType: 'Ramazan Etkinliği'
+        eventType: 'Ramazan EtkinliÄŸi'
       }));
-    } else if (currentRole && formData.eventType === 'Ramazan Etkinliği') {
-      // Temsilci olmayan biri localStorage yüzünden Ramazan formunda kaldıysa temizle
+    } else if (currentRole && formData.eventType === 'Ramazan EtkinliÄŸi') {
+      // Temsilci olmayan biri localStorage yÃ¼zÃ¼nden Ramazan formunda kaldÄ±ysa temizle
       setFormData(prev => ({
         ...prev,
         eventType: ''
@@ -120,15 +120,15 @@ export default function NewEventPage() {
   const saveEventData = async (status: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Oturum bulunamadı.');
+      if (!user) throw new Error('Oturum bulunamadÄ±.');
 
       const { data: profile, error: profileErr } = await supabase.from('users').select('unit_name, university, region').eq('id', user.id).single();
-      if (profileErr) throw new Error('Kullanıcı profili alınamadı.');
+      if (profileErr) throw new Error('KullanÄ±cÄ± profili alÄ±namadÄ±.');
 
-      const finalEventType = formData.eventType === 'Diğer' ? formData.otherEventType : formData.eventType;
+      const finalEventType = formData.eventType === 'DiÄŸer' ? formData.otherEventType : formData.eventType;
 
       if (!formData.eventName || !finalEventType) {
-        throw new Error('Lütfen Adım 1\'deki Etkinlik Adı ve Türü alanlarını doldurun.');
+        throw new Error('LÃ¼tfen AdÄ±m 1\'deki Etkinlik AdÄ± ve TÃ¼rÃ¼ alanlarÄ±nÄ± doldurun.');
       }
 
       const eventDateValue = formData.eventDate ? new Date(formData.eventDate).toISOString() : new Date().toISOString();
@@ -171,9 +171,9 @@ export default function NewEventPage() {
             const speakerInserts = validSpeakers.map(s => ({
               full_name: s.name,
               title: s.title || 'Belirtilmedi',
-              linkedin_url: s.socialLinks?.[0] || null, // Sadece geriye dönük uyumluluk için ilk linki kaydediyoruz
+              linkedin_url: s.socialLinks?.[0] || null, // Sadece geriye dÃ¶nÃ¼k uyumluluk iÃ§in ilk linki kaydediyoruz
               about: s.about || null,
-              social_links: s.socialLinks || [], // Eğer veritabanında bu alan açılırsa buraya kaydedilecek
+              social_links: s.socialLinks || [], // EÄŸer veritabanÄ±nda bu alan aÃ§Ä±lÄ±rsa buraya kaydedilecek
               expertise_fields: s.expertiseFields || [],
               other_expertise: s.otherExpertise || null
             }));
@@ -193,7 +193,7 @@ export default function NewEventPage() {
       }
 
       // Save Ramadan specifics if it is a Ramadan Event
-      if (formData.eventType === 'Ramazan Etkinliği') {
+      if (formData.eventType === 'Ramazan EtkinliÄŸi') {
         const ramadanTask = (async () => {
           await supabase.from('ramazan_events').insert([
             {
@@ -213,7 +213,7 @@ export default function NewEventPage() {
         postEventTasks.push(ramadanTask);
       }
 
-      // Bildirim Oluştur (Bölge Sorumluları İçin - Sadece aynı birim ve aynı bölge)
+      // Bildirim OluÅŸtur (BÃ¶lge SorumlularÄ± Ä°Ã§in - Sadece aynÄ± birim ve aynÄ± bÃ¶lge)
       if (status === 'Onay Bekliyor') {
         const notificationTask = (async () => {
           const { data: rmData } = await supabase
@@ -221,20 +221,20 @@ export default function NewEventPage() {
             .select('id, email')
             .eq('role', 'region_manager')
             .eq('region', safeRegion)
-            .eq('unit_name', safeUnitName); // Sadece aynı birimin bölge sorumlusu
+            .eq('unit_name', safeUnitName); // Sadece aynÄ± birimin bÃ¶lge sorumlusu
           
           if (rmData && rmData.length > 0) {
             const notifications = rmData.map(rm => ({
               user_id: rm.id,
               event_id: eventData.id,
-              message: `Bölgenizdeki ${safeUniversity}'nden yeni bir etkinlik ("${formData.eventName}") onaya gönderildi.`,
+              message: `BÃ¶lgenizdeki ${safeUniversity}'nden yeni bir etkinlik ("${formData.eventName}") onaya gÃ¶nderildi.`,
               type: 'new_event_approval'
             }));
             await supabase.from('notifications').insert(notifications);
 
             const { data: { session } } = await supabase.auth.getSession();
             const token = session?.access_token || '';
-            // E-posta gönderimi (Arayüzü bekletmemek için await kullanılmıyor - Fire and forget)
+            // E-posta gÃ¶nderimi (ArayÃ¼zÃ¼ bekletmemek iÃ§in await kullanÄ±lmÄ±yor - Fire and forget)
             for (const rm of rmData) {
               if (rm.email) {
                 fetch('/api/send-email', {
@@ -246,9 +246,9 @@ export default function NewEventPage() {
                   body: JSON.stringify({
                     to: rm.email,
                     subject: 'Yeni Etkinlik Onay Bekliyor ??',
-                    html: `<p>Merhaba,</p><p>Sorumlusu olduğunuz <strong>${safeRegion}</strong> bölgesi, <strong>${safeUnitName}</strong> birimi altındaki <strong>${safeUniversity}</strong>'nden yeni bir etkinlik onayınıza sunulmuştur.</p><p><strong>Etkinlik Adı:</strong> ${formData.eventName}</p><p>Sisteme giriş yaparak etkinliği inceleyebilir ve onaylayabilirsiniz.</p>`
+                    html: `<p>Merhaba,</p><p>Sorumlusu olduÄŸunuz <strong>${safeRegion}</strong> bÃ¶lgesi, <strong>${safeUnitName}</strong> birimi altÄ±ndaki <strong>${safeUniversity}</strong>'nden yeni bir etkinlik onayÄ±nÄ±za sunulmuÅŸtur.</p><p><strong>Etkinlik AdÄ±:</strong> ${formData.eventName}</p><p>Sisteme giriÅŸ yaparak etkinliÄŸi inceleyebilir ve onaylayabilirsiniz.</p>`
                   })
-                }).catch(err => console.error('Manager e-posta hatası:', err));
+                }).catch(err => console.error('Manager e-posta hatasÄ±:', err));
               }
             }
           }
@@ -257,7 +257,7 @@ export default function NewEventPage() {
       }
 
 
-      // Tüm bağımsız veritabanı işlemlerini aynı anda paralel çalıştır
+      // TÃ¼m baÄŸÄ±msÄ±z veritabanÄ± iÅŸlemlerini aynÄ± anda paralel Ã§alÄ±ÅŸtÄ±r
       await Promise.allSettled(postEventTasks);
 
       return eventData;
@@ -274,8 +274,8 @@ export default function NewEventPage() {
       localStorage.removeItem('event_draft');
       setIsSubmitted(true);
     } catch (err) {
-      const errorMessage = err?.message || JSON.stringify(err) || 'Bilinmeyen bir hata oluştu.';
-      toast.error('Kayıt sırasında bir hata oluştu:\n' + errorMessage);
+      const errorMessage = err?.message || JSON.stringify(err) || 'Bilinmeyen bir hata oluÅŸtu.';
+      toast.error('KayÄ±t sÄ±rasÄ±nda bir hata oluÅŸtu:\n' + errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -364,17 +364,17 @@ export default function NewEventPage() {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <div className="card" style={{ maxWidth: '500px', width: '100%', padding: '3rem 2rem', textAlign: 'center' }}>
-          <div style={{ width: '80px', height: '80px', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem' }}>âœ“</div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>Etkinlik Başvurunuz Alındı</h2>
+          <div style={{ width: '80px', height: '80px', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem' }}>Ã¢Ã…â€œÃ¢â‚¬Å“</div>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>Etkinlik BaÅŸvurunuz AlÄ±ndÄ±</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
-            Etkinliğiniz başarıyla sisteme kaydedildi ve Bölge Sorumlusunun onayına gönderildi. Onay durumuyla ilgili bildirim alacaksınız.
+            EtkinliÄŸiniz baÅŸarÄ±yla sisteme kaydedildi ve BÃ¶lge Sorumlusunun onayÄ±na gÃ¶nderildi. Onay durumuyla ilgili bildirim alacaksÄ±nÄ±z.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             <Link href="/dashboard/events" className="btn btn-primary">
               Etkinliklerime Git
             </Link>
             <Link href="/dashboard" className="btn btn-outline">
-              Ana Sayfaya Dön
+              Ana Sayfaya DÃ¶n
             </Link>
           </div>
         </div>
@@ -386,32 +386,32 @@ export default function NewEventPage() {
     <div style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '4rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Yeni Etkinlik Oluştur</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Etkinlik bilgilerinizi adım adım doldurun.</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Yeni Etkinlik OluÅŸtur</h1>
+          <p style={{ color: 'var(--text-muted)' }}>Etkinlik bilgilerinizi adÄ±m adÄ±m doldurun.</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic', marginRight: '0.5rem' }}>
-            {isDraftLoaded ? 'Değişiklikler otomatik kaydediliyor...' : ''}
+            {isDraftLoaded ? 'DeÄŸiÅŸiklikler otomatik kaydediliyor...' : ''}
           </span>
           <Link href="/dashboard" className="btn btn-outline" style={{ color: 'var(--status-danger)', borderColor: 'var(--status-danger)' }}>
-            İptal
+            Ä°ptal
           </Link>
         </div>
       </div>
 
       {/* Progress Bar */}
-      {formData.eventType !== 'Ramazan Etkinliği' && (
+      {formData.eventType !== 'Ramazan EtkinliÄŸi' && (
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
           {[
             { step: 1, title: 'Temel Bilgiler' },
             { step: 2, title: 'Program & Yer' },
-            { step: 3, title: 'Konuşmacılar' },
+            { step: 3, title: 'KonuÅŸmacÄ±lar' },
             { step: 4, title: 'Lojistik & Onay' }
           ].map((s) => (
             <div key={s.step} style={{ flex: 1 }}>
               <div style={{ height: '6px', borderRadius: '4px', backgroundColor: currentStep >= s.step ? 'var(--color-primary)' : 'var(--border-color)', marginBottom: '0.5rem', transition: 'background-color 0.3s' }} />
               <div style={{ fontSize: '0.875rem', fontWeight: currentStep >= s.step ? 600 : 400, color: currentStep >= s.step ? 'var(--text-main)' : 'var(--text-muted)' }}>
-                Adım {s.step}: {s.title}
+                AdÄ±m {s.step}: {s.title}
               </div>
             </div>
           ))}
@@ -428,21 +428,21 @@ export default function NewEventPage() {
             {currentRole !== 'representative' && (
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <div style={{ gridColumn: 'span 2' }}>
-                  <label className="label">Etkinlik Türü *</label>
+                  <label className="label">Etkinlik TÃ¼rÃ¼ *</label>
                   <select className="input" value={formData.eventType} onChange={(e) => setFormData({...formData, eventType: e.target.value})}>
-                    <option value="">Seçiniz...</option>
-                    <option value="Atölye / Uygulamalı Eğitim">Atölye / Uygulamalı Eğitim</option>
-                    <option value="Konferans / Panel / Söyleşi">Konferans / Panel / Söyleşi</option>
+                    <option value="">SeÃ§iniz...</option>
+                    <option value="AtÃ¶lye / UygulamalÄ± EÄŸitim">AtÃ¶lye / UygulamalÄ± EÄŸitim</option>
+                    <option value="Konferans / Panel / SÃ¶yleÅŸi">Konferans / Panel / SÃ¶yleÅŸi</option>
                     <option value="Teknik Gezi">Teknik Gezi</option>
-                    <option value="Saha Çalışması">Saha Çalışması</option>
-                    <option value="Diğer">Diğer</option>
+                    <option value="Saha Ã‡alÄ±ÅŸmasÄ±">Saha Ã‡alÄ±ÅŸmasÄ±</option>
+                    <option value="DiÄŸer">DiÄŸer</option>
                   </select>
-                  {formData.eventType === 'Diğer' && (
+                  {formData.eventType === 'DiÄŸer' && (
                     <div style={{ marginTop: '0.75rem' }}>
                       <input 
                         type="text" 
                         className="input" 
-                        placeholder="Lütfen etkinlik türünü belirtin" 
+                        placeholder="LÃ¼tfen etkinlik tÃ¼rÃ¼nÃ¼ belirtin" 
                         value={formData.otherEventType} 
                         onChange={(e) => setFormData({...formData, otherEventType: e.target.value})} 
                         required 
@@ -453,25 +453,25 @@ export default function NewEventPage() {
               </div>
             )}
 
-            {formData.eventType === 'Ramazan Etkinliği' ? (
+            {formData.eventType === 'Ramazan EtkinliÄŸi' ? (
               /* SPECIALIZED RAMADAN FORM - DIRECT ENTRY BYPASSING STEPS */
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '0.5rem' }}>
                 <div style={{ padding: '1rem', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--color-primary)' }}>
                   <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    ?? Ramazan Takip Modülü Aktif
+                    ?? Ramazan Takip ModÃ¼lÃ¼ Aktif
                   </h3>
                   <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                    Bu etkinlik türünde konuşmacı, afiş veya lojistik adımları olmadan doğrudan kayıt ve takibi gerçekleştirebilirsiniz.
+                    Bu etkinlik tÃ¼rÃ¼nde konuÅŸmacÄ±, afiÅŸ veya lojistik adÄ±mlarÄ± olmadan doÄŸrudan kayÄ±t ve takibi gerÃ§ekleÅŸtirebilirsiniz.
                   </p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                   <div>
-                    <label className="label">Okul İsmi (Üniversite) *</label>
+                    <label className="label">Okul Ä°smi (Ãœniversite) *</label>
                     <input 
                       type="text" 
                       className="input" 
-                      placeholder="Örn: Cerrahpaşa Tıp Fakültesi" 
+                      placeholder="Ã–rn: CerrahpaÅŸa TÄ±p FakÃ¼ltesi" 
                       required 
                       value={formData.ramadan.okulIsmi || formData.location} 
                       onChange={(e) => {
@@ -502,12 +502,12 @@ export default function NewEventPage() {
                         checked={formData.ramadan.isIftar} 
                         onChange={(e) => setFormData({
                           ...formData, 
-                          eventName: e.target.checked ? 'Ramazan İftar Etkinliği' : 'Ramazan Sahur Etkinliği',
+                          eventName: e.target.checked ? 'Ramazan Ä°ftar EtkinliÄŸi' : 'Ramazan Sahur EtkinliÄŸi',
                           ramadan: { ...formData.ramadan, isIftar: e.target.checked }
                         })} 
                         style={{ width: '18px', height: '18px' }} 
                       />
-                      İftar Etkinliği
+                      Ä°ftar EtkinliÄŸi
                     </label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
                       <input 
@@ -515,22 +515,22 @@ export default function NewEventPage() {
                         checked={formData.ramadan.isSahur} 
                         onChange={(e) => setFormData({
                           ...formData, 
-                          eventName: e.target.checked ? 'Ramazan Sahur Etkinliği' : 'Ramazan İftar Etkinliği',
+                          eventName: e.target.checked ? 'Ramazan Sahur EtkinliÄŸi' : 'Ramazan Ä°ftar EtkinliÄŸi',
                           ramadan: { ...formData.ramadan, isSahur: e.target.checked }
                         })} 
                         style={{ width: '18px', height: '18px' }} 
                       />
-                      Sahur Etkinliği
+                      Sahur EtkinliÄŸi
                     </label>
                   </div>
 
                   <div>
-                    <label className="label">Katılımcı Sayısı (Kişi) *</label>
+                    <label className="label">KatÄ±lÄ±mcÄ± SayÄ±sÄ± (KiÅŸi) *</label>
                     <input 
                       type="number" 
                       className="input" 
                       min={0} 
-                      placeholder="Örn: 120" 
+                      placeholder="Ã–rn: 120" 
                       required 
                       value={formData.expectedCount} 
                       onChange={(e) => {
@@ -544,11 +544,11 @@ export default function NewEventPage() {
                   </div>
 
                   <div>
-                    <label className="label">Drive Linki (Fotoğraf Klasörü)</label>
+                    <label className="label">Drive Linki (FotoÄŸraf KlasÃ¶rÃ¼)</label>
                     <input 
                       type="text" 
                       className="input" 
-                      placeholder="Örn: https://drive.google.com/..." 
+                      placeholder="Ã–rn: https://drive.google.com/..." 
                       value={formData.ramadan.driveLink} 
                       onChange={(e) => setFormData({
                         ...formData, 
@@ -558,11 +558,11 @@ export default function NewEventPage() {
                   </div>
 
                   <div>
-                    <label className="label">Sosyal Paylaşım Linki</label>
+                    <label className="label">Sosyal PaylaÅŸÄ±m Linki</label>
                     <input 
                       type="text" 
                       className="input" 
-                      placeholder="Örn: https://instagram.com/..." 
+                      placeholder="Ã–rn: https://instagram.com/..." 
                       value={formData.ramadan.socialLink} 
                       onChange={(e) => setFormData({
                         ...formData, 
@@ -571,9 +571,9 @@ export default function NewEventPage() {
                     />
                   </div>
 
-                  {/* ETKİNLİK FOTOÄRAFI UPLOAD */}
+                  {/* ETKÄ°NLÄ°K FOTOÄRAFI UPLOAD */}
                   <div>
-                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>?? Etkinlik Fotoğrafı Yükle</label>
+                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>?? Etkinlik FotoÄŸrafÄ± YÃ¼kle</label>
                     <ImageUpload
                       bucket="posters"
                       value={formData.ramadan.photoUrlsJson}
@@ -583,13 +583,13 @@ export default function NewEventPage() {
                       })}
                       width="100%"
                       height="150px"
-                      label="Fotoğraf Yükle"
+                      label="FotoÄŸraf YÃ¼kle"
                     />
                   </div>
 
-                  {/* FİÅ / FATURA FOTOÄRAFI UPLOAD */}
+                  {/* FÄ°Å / FATURA FOTOÄRAFI UPLOAD */}
                   <div>
-                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>?? Fiş / Fatura Görseli Yükle</label>
+                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>?? FiÅŸ / Fatura GÃ¶rseli YÃ¼kle</label>
                     <ImageUpload
                       bucket="posters"
                       value={formData.ramadan.receiptPhotosJson}
@@ -599,7 +599,7 @@ export default function NewEventPage() {
                       })}
                       width="100%"
                       height="150px"
-                      label="Fiş / Fatura Yükle"
+                      label="FiÅŸ / Fatura YÃ¼kle"
                     />
                   </div>
 
@@ -614,17 +614,17 @@ export default function NewEventPage() {
                         })} 
                         style={{ width: '18px', height: '18px' }} 
                       />
-                      âš ï¸ Bu etkinlik İPTAL oldu
+                      Ã¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Bu etkinlik Ä°PTAL oldu
                     </label>
                     
                     {formData.ramadan.cancelled && (
                       <div style={{ marginTop: '0.75rem' }}>
-                        <label className="label" style={{ color: '#991b1b' }}>İptal Gerekçesi / Açıklama *</label>
+                        <label className="label" style={{ color: '#991b1b' }}>Ä°ptal GerekÃ§esi / AÃ§Ä±klama *</label>
                         <textarea 
                           className="input" 
                           rows={2} 
                           required 
-                          placeholder="Etkinliğin neden iptal edildiğini kısaca belirtin..." 
+                          placeholder="EtkinliÄŸin neden iptal edildiÄŸini kÄ±saca belirtin..." 
                           value={formData.ramadan.cancellationReason}
                           onChange={(e) => setFormData({
                             ...formData,
@@ -644,7 +644,7 @@ export default function NewEventPage() {
                     className="btn btn-primary" 
                     style={{ backgroundColor: 'var(--status-success)', padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: 700 }}
                   >
-                    {isSaving ? 'Kaydediliyor...' : '?? Ramazan Etkinliğini Kaydet ve Gönder'}
+                    {isSaving ? 'Kaydediliyor...' : '?? Ramazan EtkinliÄŸini Kaydet ve GÃ¶nder'}
                   </button>
                 </div>
               </div>
@@ -655,19 +655,19 @@ export default function NewEventPage() {
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                   <div>
-                    <label className="label">Etkinlik Adı *</label>
-                    <input type="text" className="input" placeholder="Örn: Yapay Zeka Zirvesi" value={formData.eventName} onChange={(e) => setFormData({...formData, eventName: e.target.value})} />
+                    <label className="label">Etkinlik AdÄ± *</label>
+                    <input type="text" className="input" placeholder="Ã–rn: Yapay Zeka Zirvesi" value={formData.eventName} onChange={(e) => setFormData({...formData, eventName: e.target.value})} />
                   </div>
                   <div style={{ display: 'none' }}>{/* hidden to preserve grid layout */}</div>
                   <div style={{ gridColumn: 'span 2' }}>
                     <label className="label">Etkinlik Hedef Kitlesi *</label>
-                    <input type="text" className="input" placeholder="Örn: Üniversite Öğrencileri, Kulüp Üyeleri, Dış Katılımcılar" value={formData.targetAudience} onChange={(e) => setFormData({...formData, targetAudience: e.target.value})} />
+                    <input type="text" className="input" placeholder="Ã–rn: Ãœniversite Ã–ÄŸrencileri, KulÃ¼p Ãœyeleri, DÄ±ÅŸ KatÄ±lÄ±mcÄ±lar" value={formData.targetAudience} onChange={(e) => setFormData({...formData, targetAudience: e.target.value})} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="label">Etkinlik Amacı *</label>
-                  <textarea className="input" rows={4} placeholder="Bu etkinliğin temel amacı nedir?" value={formData.eventPurpose} onChange={(e) => setFormData({...formData, eventPurpose: e.target.value})}></textarea>
+                  <label className="label">Etkinlik AmacÄ± *</label>
+                  <textarea className="input" rows={4} placeholder="Bu etkinliÄŸin temel amacÄ± nedir?" value={formData.eventPurpose} onChange={(e) => setFormData({...formData, eventPurpose: e.target.value})}></textarea>
                 </div>
                 
                 <div>
@@ -677,7 +677,7 @@ export default function NewEventPage() {
                     onChange={(url) => setFormData({...formData, posterUrl: url})}
                     width="200px"
                     height="300px"
-                    label="Etkinlik Afişi Yükle (İsteğe Bağlı)"
+                    label="Etkinlik AfiÅŸi YÃ¼kle (Ä°steÄŸe BaÄŸlÄ±)"
                   />
                 </div>
               </div>
@@ -703,36 +703,36 @@ export default function NewEventPage() {
               </div>
               <div>
                 <label className="label">Mekan veya Online Link *</label>
-                <input type="text" className="input" placeholder="Örn: Ana Salon veya Zoom Linki" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} />
+                <input type="text" className="input" placeholder="Ã–rn: Ana Salon veya Zoom Linki" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} />
               </div>
               <div>
-                <label className="label">Tahmini Katılımcı Sayısı</label>
-                <input type="number" className="input" placeholder="Örn: 150" value={formData.expectedCount} onChange={(e) => setFormData({...formData, expectedCount: e.target.value})} />
+                <label className="label">Tahmini KatÄ±lÄ±mcÄ± SayÄ±sÄ±</label>
+                <input type="number" className="input" placeholder="Ã–rn: 150" value={formData.expectedCount} onChange={(e) => setFormData({...formData, expectedCount: e.target.value})} />
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '0.5rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                   <input type="checkbox" checked={formData.preregRequired} onChange={(e) => setFormData({...formData, preregRequired: e.target.checked})} style={{ width: '18px', height: '18px' }} />
-                  <span>Ön kayıt gerektirir</span>
+                  <span>Ã–n kayÄ±t gerektirir</span>
                 </label>
               </div>
             </div>
           </div>
         )}
 
-        {/* STEP 3: Konuşmacılar */}
+        {/* STEP 3: KonuÅŸmacÄ±lar */}
         {currentStep === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Konuşmacı Yönetimi</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>KonuÅŸmacÄ± YÃ¶netimi</h2>
               <button onClick={addSpeaker} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
-                <Plus size={14} /> Yeni Konuşmacı Ekle
+                <Plus size={14} /> Yeni KonuÅŸmacÄ± Ekle
               </button>
             </div>
 
             {speakers.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db' }}>
-                <p style={{ color: 'var(--text-muted)' }}>Bu etkinlik için henüz konuşmacı eklemediniz.</p>
-                <button onClick={addSpeaker} className="btn btn-primary" style={{ marginTop: '1rem' }}>Konuşmacı Ekle</button>
+                <p style={{ color: 'var(--text-muted)' }}>Bu etkinlik iÃ§in henÃ¼z konuÅŸmacÄ± eklemediniz.</p>
+                <button onClick={addSpeaker} className="btn btn-primary" style={{ marginTop: '1rem' }}>KonuÅŸmacÄ± Ekle</button>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -744,11 +744,11 @@ export default function NewEventPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div>
                         <label className="label">Ad Soyad</label>
-                        <input type="text" className="input" placeholder="Örn: Prof. Dr. Ali Yılmaz" value={s.name} onChange={(e) => updateSpeaker(index, 'name', e.target.value)} />
+                        <input type="text" className="input" placeholder="Ã–rn: Prof. Dr. Ali YÄ±lmaz" value={s.name} onChange={(e) => updateSpeaker(index, 'name', e.target.value)} />
                       </div>
                       <div>
                         <label className="label">Unvan</label>
-                        <input type="text" className="input" placeholder="Örn: Profesör" value={s.title} onChange={(e) => updateSpeaker(index, 'title', e.target.value)} />
+                        <input type="text" className="input" placeholder="Ã–rn: ProfesÃ¶r" value={s.title} onChange={(e) => updateSpeaker(index, 'title', e.target.value)} />
                       </div>
                       <div style={{ gridColumn: 'span 2' }}>
                         <ExpertiseMultiSelect 
@@ -759,8 +759,8 @@ export default function NewEventPage() {
                         />
                       </div>
                       <div style={{ gridColumn: 'span 2' }}>
-                        <label className="label">Konuşmacı Hakkında (Kısa Özgeçmiş)</label>
-                        <textarea className="input" rows={2} placeholder="Konuşmacı hakkında özet bilgi..." value={s.about || ''} onChange={(e) => updateSpeaker(index, 'about', e.target.value)}></textarea>
+                        <label className="label">KonuÅŸmacÄ± HakkÄ±nda (KÄ±sa Ã–zgeÃ§miÅŸ)</label>
+                        <textarea className="input" rows={2} placeholder="KonuÅŸmacÄ± hakkÄ±nda Ã¶zet bilgi..." value={s.about || ''} onChange={(e) => updateSpeaker(index, 'about', e.target.value)}></textarea>
                       </div>
                       <div style={{ gridColumn: 'span 2' }}>
                         <label className="label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -783,8 +783,8 @@ export default function NewEventPage() {
                         </div>
                       </div>
                       <div style={{ gridColumn: 'span 2' }}>
-                        <label className="label">Seçilme Nedeni</label>
-                        <textarea className="input" rows={2} placeholder="Neden bu konuşmacıyı tercih ettiniz?" value={s.reason} onChange={(e) => updateSpeaker(index, 'reason', e.target.value)}></textarea>
+                        <label className="label">SeÃ§ilme Nedeni</label>
+                        <textarea className="input" rows={2} placeholder="Neden bu konuÅŸmacÄ±yÄ± tercih ettiniz?" value={s.reason} onChange={(e) => updateSpeaker(index, 'reason', e.target.value)}></textarea>
                       </div>
                     </div>
                   </div>
@@ -800,7 +800,7 @@ export default function NewEventPage() {
             <h2 style={{ fontSize: '1.25rem', fontWeight: 600, borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Lojistik ve Kaynak Talepleri</h2>
             
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-              Etkinliğiniz için ihtiyaç duyduğunuz özel talepleri detaylı bir şekilde giriniz.
+              EtkinliÄŸiniz iÃ§in ihtiyaÃ§ duyduÄŸunuz Ã¶zel talepleri detaylÄ± bir ÅŸekilde giriniz.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -811,118 +811,118 @@ export default function NewEventPage() {
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasShuttle ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasShuttle} readOnly style={{ width: '18px', height: '18px' }} />
-                  Araç / Servis Talebi
+                  AraÃ§ / Servis Talebi
                 </div>
                 
                 {formData.logistics.hasShuttle && (
                   <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', backgroundColor: 'var(--bg-card)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div><label className="label">Tarih</label><input type="date" className="input" value={formData.logistics.shuttle.date} onChange={e => updateShuttle('date', e.target.value)} /></div>
-                      <div><label className="label">Araç Talebi (Adet/Kişi)</label><input type="text" className="input" placeholder="Örn: 1 ADET 10-12 KİÅİLİK ARAÇ TALEBİMİZ BULUNMAKTADIR" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
-                      <div><label className="label">Kalkış Noktası</label><input type="text" className="input" value={formData.logistics.shuttle.departurePoint} onChange={e => updateShuttle('departurePoint', e.target.value)} /></div>
-                      <div><label className="label">Varış Noktası</label><input type="text" className="input" value={formData.logistics.shuttle.arrivalPoint} onChange={e => updateShuttle('arrivalPoint', e.target.value)} /></div>
-                      <div><label className="label">Hareket Saati (Gidiş)</label><input type="time" className="input" value={formData.logistics.shuttle.departureTime} onChange={e => updateShuttle('departureTime', e.target.value)} /></div>
-                      <div><label className="label">Dönüş Yeri</label><input type="text" className="input" value={formData.logistics.shuttle.returnPoint} onChange={e => updateShuttle('returnPoint', e.target.value)} /></div>
-                      <div><label className="label">Hareket Saati (Dönüş)</label><input type="time" className="input" value={formData.logistics.shuttle.returnTime} onChange={e => updateShuttle('returnTime', e.target.value)} /></div>
-                      <div><label className="label">Gidilecek Yerin Konumu (Link)</label><input type="text" className="input" placeholder="Örn: Google Maps linki" value={formData.logistics.shuttle.locationLink} onChange={e => updateShuttle('locationLink', e.target.value)} /></div>
-                      <div style={{ gridColumn: 'span 2' }}><label className="label">Araç Sorumlusu (Ad - Soyad - Tel No)</label><input type="text" className="input" placeholder="Örn: Ahmet Yılmaz - 0555..." value={formData.logistics.shuttle.vehicleManager} onChange={e => updateShuttle('vehicleManager', e.target.value)} /></div>
+                      <div><label className="label">AraÃ§ Talebi (Adet/KiÅŸi)</label><input type="text" className="input" placeholder="Ã–rn: 1 ADET 10-12 KÄ°ÅÄ°LÄ°K ARAÃ‡ TALEBÄ°MÄ°Z BULUNMAKTADIR" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
+                      <div><label className="label">KalkÄ±ÅŸ NoktasÄ±</label><input type="text" className="input" value={formData.logistics.shuttle.departurePoint} onChange={e => updateShuttle('departurePoint', e.target.value)} /></div>
+                      <div><label className="label">VarÄ±ÅŸ NoktasÄ±</label><input type="text" className="input" value={formData.logistics.shuttle.arrivalPoint} onChange={e => updateShuttle('arrivalPoint', e.target.value)} /></div>
+                      <div><label className="label">Hareket Saati (GidiÅŸ)</label><input type="time" className="input" value={formData.logistics.shuttle.departureTime} onChange={e => updateShuttle('departureTime', e.target.value)} /></div>
+                      <div><label className="label">DÃ¶nÃ¼ÅŸ Yeri</label><input type="text" className="input" value={formData.logistics.shuttle.returnPoint} onChange={e => updateShuttle('returnPoint', e.target.value)} /></div>
+                      <div><label className="label">Hareket Saati (DÃ¶nÃ¼ÅŸ)</label><input type="time" className="input" value={formData.logistics.shuttle.returnTime} onChange={e => updateShuttle('returnTime', e.target.value)} /></div>
+                      <div><label className="label">Gidilecek Yerin Konumu (Link)</label><input type="text" className="input" placeholder="Ã–rn: Google Maps linki" value={formData.logistics.shuttle.locationLink} onChange={e => updateShuttle('locationLink', e.target.value)} /></div>
+                      <div style={{ gridColumn: 'span 2' }}><label className="label">AraÃ§ Sorumlusu (Ad - Soyad - Tel No)</label><input type="text" className="input" placeholder="Ã–rn: Ahmet YÄ±lmaz - 0555..." value={formData.logistics.shuttle.vehicleManager} onChange={e => updateShuttle('vehicleManager', e.target.value)} /></div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Aromaterapi Yağ Talebi */}
+              {/* Aromaterapi YaÄŸ Talebi */}
               <div style={{ border: `1px solid ${formData.logistics.hasAroma ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasAroma', !formData.logistics.hasAroma)} 
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAroma ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasAroma} readOnly style={{ width: '18px', height: '18px' }} />
-                  Aromaterapi Yağ Talebi
+                  Aromaterapi YaÄŸ Talebi
                 </div>
                 
                 {formData.logistics.hasAroma && (
                   <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
                     {formData.logistics.aroma.map((a, index) => (
                       <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
-                        <h4 style={{ marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)' }}>{index + 1}. Formülasyon</h4>
+                        <h4 style={{ marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)' }}>{index + 1}. FormÃ¼lasyon</h4>
                         {formData.logistics.aroma.length > 1 && (
                            <button onClick={() => removeAroma(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         )}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                          <div><label className="label">Yağ Çeşitleri</label><input type="text" className="input" placeholder="Örn: Lavanta, Papatya" value={a.oils} onChange={e => updateAroma(index, 'oils', e.target.value)} /></div>
-                          <div><label className="label">Miktarları</label><input type="text" className="input" placeholder="Örn: 50ml, 100ml" value={a.amount} onChange={e => updateAroma(index, 'amount', e.target.value)} /></div>
-                          <div><label className="label">Planlanan Kişi Sayısı</label><input type="number" className="input" placeholder="Örn: 30" value={a.peopleCount} onChange={e => updateAroma(index, 'peopleCount', e.target.value)} /></div>
-                          <div style={{ gridColumn: 'span 2' }}><label className="label">Ekstra Not (Bu formülasyon için)</label><textarea className="input" rows={2} value={a.notes} onChange={e => updateAroma(index, 'notes', e.target.value)} /></div>
+                          <div><label className="label">YaÄŸ Ã‡eÅŸitleri</label><input type="text" className="input" placeholder="Ã–rn: Lavanta, Papatya" value={a.oils} onChange={e => updateAroma(index, 'oils', e.target.value)} /></div>
+                          <div><label className="label">MiktarlarÄ±</label><input type="text" className="input" placeholder="Ã–rn: 50ml, 100ml" value={a.amount} onChange={e => updateAroma(index, 'amount', e.target.value)} /></div>
+                          <div><label className="label">Planlanan KiÅŸi SayÄ±sÄ±</label><input type="number" className="input" placeholder="Ã–rn: 30" value={a.peopleCount} onChange={e => updateAroma(index, 'peopleCount', e.target.value)} /></div>
+                          <div style={{ gridColumn: 'span 2' }}><label className="label">Ekstra Not (Bu formÃ¼lasyon iÃ§in)</label><textarea className="input" rows={2} value={a.notes} onChange={e => updateAroma(index, 'notes', e.target.value)} /></div>
                         </div>
                       </div>
                     ))}
-                    <button onClick={addAroma} className="btn btn-outline" style={{ alignSelf: 'flex-start', fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}><Plus size={14}/> Yeni Formülasyon Ekle</button>
+                    <button onClick={addAroma} className="btn btn-outline" style={{ alignSelf: 'flex-start', fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}><Plus size={14}/> Yeni FormÃ¼lasyon Ekle</button>
                   </div>
                 )}
               </div>
 
-              {/* Temel Yaşam Desteği Malzeme Talebi */}
+              {/* Temel YaÅŸam DesteÄŸi Malzeme Talebi */}
               <div style={{ border: `1px solid ${formData.logistics.hasBasicLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} 
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} />
-                  ?? Temel Yaşam Desteği Malzemeleri Talebi
+                  ?? Temel YaÅŸam DesteÄŸi Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasBasicLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    <label className="label">Malzeme Detayları / Notlar</label>
-                    <textarea className="input" rows={2} placeholder="Talep edilen temel yaşam desteği malzemeleri ve detayları..." value={formData.logistics.basicLifeSupportDetails} onChange={e => updateLogistics('basicLifeSupportDetails', e.target.value)}></textarea>
+                    <label className="label">Malzeme DetaylarÄ± / Notlar</label>
+                    <textarea className="input" rows={2} placeholder="Talep edilen temel yaÅŸam desteÄŸi malzemeleri ve detaylarÄ±..." value={formData.logistics.basicLifeSupportDetails} onChange={e => updateLogistics('basicLifeSupportDetails', e.target.value)}></textarea>
                   </div>
                 )}
               </div>
 
-              {/* İleri Yaşam Desteği Malzeme Talebi */}
+              {/* Ä°leri YaÅŸam DesteÄŸi Malzeme Talebi */}
               <div style={{ border: `1px solid ${formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} 
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} />
-                  ?? İleri Yaşam Desteği Malzemeleri Talebi
+                  ?? Ä°leri YaÅŸam DesteÄŸi Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasAdvancedLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    <label className="label">Malzeme Detayları / Notlar</label>
-                    <textarea className="input" rows={2} placeholder="Talep edilen ileri yaşam desteği malzemeleri ve detayları..." value={formData.logistics.advancedLifeSupportDetails} onChange={e => updateLogistics('advancedLifeSupportDetails', e.target.value)}></textarea>
+                    <label className="label">Malzeme DetaylarÄ± / Notlar</label>
+                    <textarea className="input" rows={2} placeholder="Talep edilen ileri yaÅŸam desteÄŸi malzemeleri ve detaylarÄ±..." value={formData.logistics.advancedLifeSupportDetails} onChange={e => updateLogistics('advancedLifeSupportDetails', e.target.value)}></textarea>
                   </div>
                 )}
               </div>
 
-              {/* Sütur Eğitimi Malzeme Talebi */}
+              {/* SÃ¼tur EÄŸitimi Malzeme Talebi */}
               <div style={{ border: `1px solid ${formData.logistics.hasSutureTraining ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} 
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} />
-                  ?? Sütur Eğitimi Malzemeleri Talebi
+                  ?? SÃ¼tur EÄŸitimi Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasSutureTraining && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    <label className="label">Malzeme Detayları / Notlar</label>
-                    <textarea className="input" rows={2} placeholder="Talep edilen sütur eğitimi malzemeleri ve detayları..." value={formData.logistics.sutureTrainingDetails} onChange={e => updateLogistics('sutureTrainingDetails', e.target.value)}></textarea>
+                    <label className="label">Malzeme DetaylarÄ± / Notlar</label>
+                    <textarea className="input" rows={2} placeholder="Talep edilen sÃ¼tur eÄŸitimi malzemeleri ve detaylarÄ±..." value={formData.logistics.sutureTrainingDetails} onChange={e => updateLogistics('sutureTrainingDetails', e.target.value)}></textarea>
                   </div>
                 )}
               </div>
 
-              {/* Özel Talep Ekleme */}
+              {/* Ã–zel Talep Ekleme */}
               <div style={{ border: `1px solid ${(formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}
                 >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    Diğer Özel Talepleriniz
+                    DiÄŸer Ã–zel Talepleriniz
                   </span>
                   <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: 'var(--bg-card)' }}>
                     <Plus size={14} /> Yeni Talep Ekle
@@ -935,8 +935,8 @@ export default function NewEventPage() {
                       <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <button type="button" onClick={() => removeCustomRequest(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                          <div><label className="label">Talep Adı / Başlığı</label><input type="text" className="input" placeholder="Örn: Özel Ses Sistemi" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
-                          <div><label className="label">Talep Detayları ve Notlar</label><textarea className="input" rows={2} placeholder="Talebinizin detaylarını buraya yazınız..." value={req.note} onChange={e => updateCustomRequest(index, 'note', e.target.value)}></textarea></div>
+                          <div><label className="label">Talep AdÄ± / BaÅŸlÄ±ÄŸÄ±</label><input type="text" className="input" placeholder="Ã–rn: Ã–zel Ses Sistemi" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
+                          <div><label className="label">Talep DetaylarÄ± ve Notlar</label><textarea className="input" rows={2} placeholder="Talebinizin detaylarÄ±nÄ± buraya yazÄ±nÄ±z..." value={req.note} onChange={e => updateCustomRequest(index, 'note', e.target.value)}></textarea></div>
                         </div>
                       </div>
                     ))}
@@ -946,8 +946,8 @@ export default function NewEventPage() {
 
               {/* Ekstra Talepler */}
               <div style={{ marginTop: '1rem' }}>
-                <label className="label">Başka Belirtmek İstediğiniz Bir Kısım Var Mı? (Ekstra İstek/Talep/Ayrıntı)</label>
-                <textarea className="input" rows={3} placeholder="Tüm ekstra notlarınızı buraya girebilirsiniz..." value={formData.logistics.extraNotes} onChange={e => updateLogistics('extraNotes', e.target.value)}></textarea>
+                <label className="label">BaÅŸka Belirtmek Ä°stediÄŸiniz Bir KÄ±sÄ±m Var MÄ±? (Ekstra Ä°stek/Talep/AyrÄ±ntÄ±)</label>
+                <textarea className="input" rows={3} placeholder="TÃ¼m ekstra notlarÄ±nÄ±zÄ± buraya girebilirsiniz..." value={formData.logistics.extraNotes} onChange={e => updateLogistics('extraNotes', e.target.value)}></textarea>
               </div>
 
             </div>
@@ -955,7 +955,7 @@ export default function NewEventPage() {
             <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: 'var(--bg-danger-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-danger)' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#991b1b', marginBottom: '0.5rem' }}>Son Kontrol</h3>
               <p style={{ fontSize: '0.875rem', color: '#7f1d1d' }}>
-                Formu onaya gönderdiğinizde etkinlik Bölge Sorumlusunun paneline düşecektir. Onaylanana kadar etkinlik afiş süreci başlamaz.
+                Formu onaya gÃ¶nderdiÄŸinizde etkinlik BÃ¶lge Sorumlusunun paneline dÃ¼ÅŸecektir. Onaylanana kadar etkinlik afiÅŸ sÃ¼reci baÅŸlamaz.
               </p>
             </div>
           </div>
@@ -964,19 +964,19 @@ export default function NewEventPage() {
       </div>
 
       {/* Navigation Footer */}
-      {formData.eventType !== 'Ramazan Etkinliği' && (
+      {formData.eventType !== 'Ramazan EtkinliÄŸi' && (
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem' }}>
           <button onClick={handlePrev} disabled={currentStep === 1} className="btn btn-outline" style={{ opacity: currentStep === 1 ? 0.5 : 1 }}>
-            <ChevronLeft size={16} /> Önceki Adım
+            <ChevronLeft size={16} /> Ã–nceki AdÄ±m
           </button>
           
           {currentStep < 4 ? (
             <button onClick={handleNext} className="btn btn-primary">
-              Sonraki Adım <ChevronRight size={16} />
+              Sonraki AdÄ±m <ChevronRight size={16} />
             </button>
           ) : (
             <button onClick={submitEvent} disabled={isSaving} className="btn btn-primary" style={{ backgroundColor: 'var(--status-success)' }}>
-              {isSaving ? 'İşleniyor...' : 'Onaya Gönder'}
+              {isSaving ? 'Ä°ÅŸleniyor...' : 'Onaya GÃ¶nder'}
             </button>
           )}
         </div>
@@ -985,6 +985,7 @@ export default function NewEventPage() {
     </div>
   );
 }
+
 
 
 

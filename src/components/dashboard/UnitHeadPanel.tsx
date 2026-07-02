@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 const supabase = createClient();
 import { useRole } from '@/context/RoleContext';
-import { Loader2, Calendar, FileText, CheckCircle, AlertCircle, Link as LinkIcon, RefreshCw } from 'lucide-react';
+import { Loader2, Calendar, FileText, CheckCircle, AlertCircle, Link as LinkIcon, RefreshCw, CalendarDays, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function UnitHeadPanel() {
@@ -67,7 +67,7 @@ export default function UnitHeadPanel() {
     const pUni = formData.get('p_university') || '';
     const pSpeakers = formData.get('p_speakers') || '';
 
-    const manualDetails = `📌 AFİÅ METİN BİLGİLERİ:\nEtkinlik Adı: ${pName}\nTarih: ${pDate} - Saat: ${pTime}\nYer: ${pLocation}\nÜniversite: ${pUni}\nKonuşmacı(lar): ${pSpeakers}\n\n---\n\n`;
+    const manualDetails = `📌 AFİÃƒâ€¦Ã‚Â METİN BİLGİLERİ:\nEtkinlik Adı: ${pName}\nTarih: ${pDate} - Saat: ${pTime}\nYer: ${pLocation}\nÜniversite: ${pUni}\nKonuşmacı(lar): ${pSpeakers}\n\n---\n\n`;
 
     setIsSubmittingPoster(true);
     try {
@@ -92,7 +92,7 @@ export default function UnitHeadPanel() {
       fetchMyEvents();
     } catch (err) {
       console.error(err);
-      toast.error('Tasarım talebi gönderilemedi: ' + ((err as Error).message || 'Bilinmeyen Hata'));
+      toast.error('Tasarım talebi gönderilemedi: ' + ((err as any).message || 'Bilinmeyen Hata'));
     } finally {
       setIsSubmittingPoster(false);
     }
@@ -162,8 +162,8 @@ export default function UnitHeadPanel() {
     } catch (err) {
       console.error('Report submission error:', err);
       let errorMessage = 'Bilinmeyen bir hata oluştu.';
-      if (err instanceof Error) errorMessage = (err as Error).message;
-      else if (err?.message) errorMessage = (err as Error).message;
+      if (err instanceof Error) errorMessage = (err as any).message;
+      else if (err?.message) errorMessage = (err as any).message;
       else if (typeof err === 'string') errorMessage = err;
       else errorMessage = JSON.stringify(err);
       
@@ -176,21 +176,21 @@ export default function UnitHeadPanel() {
   if (isLoading) return <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}><Loader2 className="animate-spin" color="var(--color-primary)" /></div>;
 
   // Analiz
-  const reportNeededEvents = events.filter(e => 
-    e.status === 'Onaylandı' && 
-    new Date(e.event_date) < new Date() &&
-    (!e.post_event_reports || e.post_event_reports.length === 0)
-  );
+  const reportNeededEvents = events.filter(e => {
+    const isApproved = e.status === 'Onaylandı';
+    const isPast = new Date(e.event_date).getTime() < new Date().getTime();
+    const needsReport = !e.post_event_reports || e.post_event_reports.length === 0;
+    return isApproved && isPast && needsReport;
+  });
 
   const revisionNeededEvents = events.filter(e => e.status === 'Yeniden Onay Bekliyor');
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      
+    <div className="unit-head-panel-main">
       {/* İstatistik / Uyarı Kartları */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-        <div className="card" style={reportNeededEvents.length > 0 ? { backgroundColor: 'var(--bg-danger-light)', border: '1px solid var(--border-danger)' } : { background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '24px' }}>
-          <h3 style={reportNeededEvents.length > 0 ? { fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--status-danger)' } : { color: 'rgba(255,255,255,0.80)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '16px' }}>Rapor Bekleyen Etkinlikler</h3>
+        <div className="card" style={reportNeededEvents.length > 0 ? { backgroundColor: 'var(--bg-danger-light)', border: '1px solid var(--border-danger)' } : { backgroundColor: 'var(--bg-inner-card)', border: '1px solid var(--border-inner)', borderRadius: '12px', padding: '24px' }}>
+          <h3 style={reportNeededEvents.length > 0 ? { fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--status-danger)' } : { color: 'var(--text-main)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '16px' }}>Rapor Bekleyen Etkinlikler</h3>
           {reportNeededEvents.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {reportNeededEvents.map(e => (
@@ -203,15 +203,15 @@ export default function UnitHeadPanel() {
               ))}
             </div>
           ) : (
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.08)', borderRadius: '8px', padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ background: 'var(--bg-nested)', border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <CheckCircle size={18} color="rgba(34,197,94,0.50)" /> 
-              <span style={{ color: 'rgba(255,255,255,0.30)', fontSize: '0.85rem' }}>Raporlanmamış geçmiş etkinlik yok.</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Raporlanmamış geçmiş etkinlik yok.</span>
             </div>
           )}
         </div>
 
-        <div className="card" style={revisionNeededEvents.length > 0 ? { backgroundColor: 'var(--bg-warning-light)', border: '1px solid var(--border-warning)' } : { background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '24px' }}>
-          <h3 style={revisionNeededEvents.length > 0 ? { fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--status-highlight)' } : { color: 'rgba(255,255,255,0.80)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '16px' }}>Revizyon İstenenler</h3>
+        <div className="card" style={revisionNeededEvents.length > 0 ? { backgroundColor: 'var(--bg-warning-light)', border: '1px solid var(--border-warning)' } : { backgroundColor: 'var(--bg-inner-card)', border: '1px solid var(--border-inner)', borderRadius: '12px', padding: '24px' }}>
+          <h3 style={revisionNeededEvents.length > 0 ? { fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--status-highlight)' } : { color: 'var(--text-main)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '16px' }}>Revizyon İstenenler</h3>
           {revisionNeededEvents.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {revisionNeededEvents.map(e => (
@@ -224,9 +224,9 @@ export default function UnitHeadPanel() {
               ))}
             </div>
           ) : (
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.08)', borderRadius: '8px', padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ background: 'var(--bg-nested)', border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <CheckCircle size={18} color="rgba(34,197,94,0.50)" /> 
-              <span style={{ color: 'rgba(255,255,255,0.30)', fontSize: '0.85rem' }}>Revizyon bekleyen etkinlik yok.</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Revizyon bekleyen etkinlik yok.</span>
             </div>
           )}
         </div>
@@ -243,7 +243,7 @@ export default function UnitHeadPanel() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
             {events.map(event => {
-              const getStatusClass = (status: string, date: string, reports: PostEventReport[]) => {
+              const getStatusClass = (status: string, date: string, reports: any[]) => {
                 if (status === 'Yeniden Onay Bekliyor') return 'event-status-pending';
                 if (new Date(date) < new Date() && (!reports || reports.length === 0)) return 'event-status-rejected';
                 if (status === 'Onaylandı') return 'event-status-approved';
@@ -251,28 +251,40 @@ export default function UnitHeadPanel() {
                 if (status === 'Gerçekleşti') return 'event-status-completed';
                 return 'event-status-rejected';
               };
+              
+              const statusText = new Date(event.event_date).getTime() < new Date().getTime() && (!event.post_event_reports || event.post_event_reports.length === 0) && event.status !== 'İptal Edildi' ? 'Rapor Bekleniyor' : event.status;
               const statusClass = getStatusClass(event.status, event.event_date, event.post_event_reports);
-              const statusText = new Date(event.event_date) < new Date() && (!event.post_event_reports || event.post_event_reports.length === 0) && event.status !== 'İptal Edildi' ? 'Rapor Bekleniyor' : event.status;
+
+              let accentColor = '#d1d5db'; // default gray
+              if (statusText === 'Gerçekleşti') accentColor = '#3b82f6';
+              else if (statusText === 'Onaylandı') accentColor = '#10b981';
+              else if (statusText === 'Rapor Bekleniyor') accentColor = '#ef4444';
+              else if (statusText.includes('Onay Bekliyor')) accentColor = '#f59e0b';
+              else if (statusText === 'Reddedildi' || statusText === 'İptal Edildi') accentColor = '#ef4444';
+              else if (statusText === 'Revizyon İstendi' || statusText === 'Yeniden Onay Bekliyor') accentColor = '#8b5cf6';
 
               return (
-              <div key={event.id} className="event-card">
-                <div className="event-card-top">
-                  <h4 className="event-card-title">{event.event_name}</h4>
-                  <span className={`event-status-badge ${statusClass}`}>{statusText}</span>
+              <Link href={`/dashboard/events/${event.id}`} key={event.id} className="modern-event-card" style={{ borderLeftColor: accentColor }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-main)', margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: '1.4' }}>
+                    {event.event_name}
+                  </h4>
+                  <span className={`event-status-badge ${statusClass}`} style={{ flexShrink: 0 }}>{statusText}</span>
                 </div>
                 
-                <div className="event-card-middle">
-                  <span className="event-category-pill">{event.event_type}</span>
-                  <div className="event-date-row">
-                    <Calendar size={13} /> 
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', margin: '10px 0 14px' }}>
+                  <span style={{ backgroundColor: 'var(--bg-nested)', borderRadius: '999px', padding: '3px 10px', fontSize: '0.72rem', fontWeight: 500, color: 'var(--text-muted)' }}>
+                    {event.event_type}
+                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    <CalendarDays size={13} /> 
                     <span>{new Date(event.event_date).toLocaleDateString('tr-TR')}</span>
                   </div>
                 </div>
 
-                <div className="event-card-bottom">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
                   {event.poster_requests && event.poster_requests.length > 0 && event.event_type !== 'Ramazan Etkinliği' ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{fontSize: '0.75rem', color: 'var(--text-muted)'}}>Afiş Durumu:</span>
                       <span className="poster-status-badge">
                         {event.poster_requests[0].status}
                       </span>
@@ -280,15 +292,17 @@ export default function UnitHeadPanel() {
                   ) : <div></div>}
                   
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <Link href={`/dashboard/events/${event.id}`} className="event-detail-btn">Detay</Link>
                     {event.status === 'Yeniden Onay Bekliyor' && (
-                      <button className="btn btn-outline" style={{ borderColor: '#f59e0b', color: '#92400e', padding: '6px' }}>
+                      <div className="btn btn-outline" style={{ borderColor: '#f59e0b', color: '#92400e', padding: '6px', pointerEvents: 'none' }}>
                         <RefreshCw size={16} />
-                      </button>
+                      </div>
                     )}
+                    <div className="modern-detail-btn">
+                      Detay <ArrowRight size={12} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             )})}
           </div>
         )}
@@ -401,7 +415,7 @@ export default function UnitHeadPanel() {
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
                   <label className="label">Konuşmacı(lar)</label>
-                  <input type="text" name="p_speakers" className="input" required defaultValue={posterEvent.event_speakers && posterEvent.event_speakers.length > 0 ? posterEvent.event_speakers.map((s: EventSpeaker) => s.speakers?.full_name).join(', ') : ''} />
+                  <input type="text" name="p_speakers" className="input" required defaultValue={posterEvent.event_speakers && posterEvent.event_speakers.length > 0 ? posterEvent.event_speakers.map((s: any) => s.speakers?.full_name).join(', ') : ''} />
                 </div>
               </div>
               <div>
@@ -438,7 +452,6 @@ export default function UnitHeadPanel() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

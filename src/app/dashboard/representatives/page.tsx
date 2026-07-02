@@ -32,7 +32,7 @@ interface Representative {
 }
 
 const REGIONS = [
-  'Akdeniz', 'Doğu Anadolu', 'Ege', 'Güneydoğu Anadolu', 'Ankara', 'İç Anadolu', 'Karadeniz', 'İstanbul Anadolu', 'İstanbul Avrupa', 'Marmara'
+  'Akdeniz', 'DoÄŸu Anadolu', 'Ege', 'GÃ¼neydoÄŸu Anadolu', 'Ankara', 'Ä°Ã§ Anadolu', 'Karadeniz', 'Ä°stanbul Anadolu', 'Ä°stanbul Avrupa', 'Marmara'
 ];
 
 export default function RepresentativesPage() {
@@ -51,7 +51,7 @@ export default function RepresentativesPage() {
   // Modals state
   const [isCommModalOpen, setIsCommModalOpen] = useState(false);
   const [activeRep, setActiveRep] = useState<Representative | null>(null);
-  const [commChannel, setCommChannel] = useState<'WhatsApp' | 'Email' | 'SMS' | 'Yüzyüze'>('WhatsApp');
+  const [commChannel, setCommChannel] = useState<'WhatsApp' | 'Email' | 'SMS' | 'YÃ¼zyÃ¼ze'>('WhatsApp');
   const [commMessage, setCommMessage] = useState('');
   const [commHistory, setCommHistory] = useState<any[]>([]);
 
@@ -146,7 +146,7 @@ export default function RepresentativesPage() {
 
   // Approve a pending representative
   const handleApprove = async (repId: string, repName: string) => {
-    if (!confirm(`${repName} adlı temsilciyi onaylamak istiyor musunuz?`)) return;
+    if (!confirm(`${repName} adlÄ± temsilciyi onaylamak istiyor musunuz?`)) return;
     try {
       const { error: approveErr } = await supabase
         .from('users')
@@ -159,47 +159,47 @@ export default function RepresentativesPage() {
         .from('representative_profiles')
         .upsert([{ user_id: repId, status: 'Aktif', start_date: new Date().toISOString().split('T')[0] }]);
 
-      toast.success(`${repName} başarıyla onaylandı!`);
+      toast.success(`${repName} baÅŸarÄ±yla onaylandÄ±!`);
       fetchReps();
     } catch (err) {
-      toast.error('Onaylama sırasında hata: ' + (err as Error).message);
+      toast.error('Onaylama sÄ±rasÄ±nda hata: ' + (err as Error).message);
     }
   };
 
-  // Reject (soft â€” do NOT delete, just keep unapproved, mark as rejected)
+  // Reject (soft Ã¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT delete, just keep unapproved, mark as rejected)
   const handleReject = async (repId: string, repName: string) => {
-    if (!confirm(`${repName} adlı temsilciyi reddetmek istiyor musunuz? Hesap silinmeyecek, onay bekleyenler listesinde kalıp "Reddedildi" olarak işaretlenecektir.`)) return;
+    if (!confirm(`${repName} adlÄ± temsilciyi reddetmek istiyor musunuz? Hesap silinmeyecek, onay bekleyenler listesinde kalÄ±p "Reddedildi" olarak iÅŸaretlenecektir.`)) return;
     try {
       const { error } = await supabase
         .from('users')
         .update({ club_duty: `[Reddedildi: ${new Date().toLocaleDateString('tr-TR')}]` })
         .eq('id', repId);
       if (error) throw error;
-      toast.success(`${repName} reddedildi ve işaretlendi.`);
+      toast.success(`${repName} reddedildi ve iÅŸaretlendi.`);
       fetchReps();
     } catch (err) {
-      toast.error('İşlem sırasında hata: ' + (err as Error).message);
+      toast.error('Ä°ÅŸlem sÄ±rasÄ±nda hata: ' + (err as Error).message);
     }
   };
 
   // Permanently delete a pending (unapproved) representative
   const handleDeletePending = async (repId: string, repName: string) => {
-    if (!confirm(`âš ï¸ ${repName} adlı temsilcinin kaydını kalıcı olarak SILMEK istediğinizden emin misiniz? Bu işlem geri alınamaz!`)) return;
+    if (!confirm(`Ã¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â ${repName} adlÄ± temsilcinin kaydÄ±nÄ± kalÄ±cÄ± olarak SILMEK istediÄŸinizden emin misiniz? Bu iÅŸlem geri alÄ±namaz!`)) return;
     try {
       const { error } = await supabase
         .from('users')
         .delete()
         .eq('id', repId);
       if (error) throw error;
-      toast.success(`${repName} adlı temsilci kalıcı olarak silindi.`);
+      toast.success(`${repName} adlÄ± temsilci kalÄ±cÄ± olarak silindi.`);
       fetchReps();
     } catch (err) {
-      toast.error('Silme işlemi sırasında hata: ' + (err as Error).message);
+      toast.error('Silme iÅŸlemi sÄ±rasÄ±nda hata: ' + (err as Error).message);
     }
   };
 
   if (authLoading) {
-    return <div style={{ padding: '3rem', textAlign: 'center' }}>Yükleniyor...</div>;
+    return <div style={{ padding: '3rem', textAlign: 'center' }}>YÃ¼kleniyor...</div>;
   }
 
   const isAuthorized = currentRole === 'rep_head' || currentRole === 'rep_coordinator' || currentRole === 'rep_region_manager' || currentRole === 'general_admin';
@@ -208,10 +208,10 @@ export default function RepresentativesPage() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center', gap: '1rem' }}>
         <AlertCircle size={48} color="var(--status-danger)" />
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Yetkisiz Erişim</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Bu sayfayı görüntülemek için yetkiniz bulunmamaktadır.</p>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Yetkisiz EriÅŸim</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Bu sayfayÄ± gÃ¶rÃ¼ntÃ¼lemek iÃ§in yetkiniz bulunmamaktadÄ±r.</p>
         <Link href="/dashboard" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-          Panele Geri Dön
+          Panele Geri DÃ¶n
         </Link>
       </div>
     );
@@ -222,13 +222,13 @@ export default function RepresentativesPage() {
       'Ad Soyad': r.full_name,
       'E-posta': r.email,
       'Telefon': r.phone_number,
-      'Üniversite': r.university,
-      'Bölüm': r.department,
-      'Sınıf': r.grade,
-      'Bölge': r.region,
+      'Ãœniversite': r.university,
+      'BÃ¶lÃ¼m': r.department,
+      'SÄ±nÄ±f': r.grade,
+      'BÃ¶lge': r.region,
       'Durum': r.representative_profiles?.status || 'Aktif',
-      'Başlangıç Tarihi': r.representative_profiles?.start_date || '',
-      'Son İletişim': r.representative_profiles?.last_contact_date ? new Date(r.representative_profiles.last_contact_date).toLocaleDateString('tr-TR') : 'Hiç kurulmadı',
+      'BaÅŸlangÄ±Ã§ Tarihi': r.representative_profiles?.start_date || '',
+      'Son Ä°letiÅŸim': r.representative_profiles?.last_contact_date ? new Date(r.representative_profiles.last_contact_date).toLocaleDateString('tr-TR') : 'HiÃ§ kurulmadÄ±',
       'Notlar': r.representative_profiles?.notes || ''
     }));
 
@@ -305,10 +305,10 @@ export default function RepresentativesPage() {
       // Reset & refresh
       setIsCommModalOpen(false);
       fetchReps();
-      toast.success('İletişim başarıyla kaydedildi!');
+      toast.success('Ä°letiÅŸim baÅŸarÄ±yla kaydedildi!');
     } catch (err) {
       console.error("Communication logging error:", err);
-      toast.error('Hata oluştu, iletişim kaydedilemedi.');
+      toast.error('Hata oluÅŸtu, iletiÅŸim kaydedilemedi.');
     }
   };
 
@@ -344,7 +344,7 @@ export default function RepresentativesPage() {
           university: editFormData.university,
           department: editFormData.department,
           grade: editFormData.grade,
-          region: isRegionManager ? userRegion : editFormData.region // Sorumlu bölgesini değiştiremez
+          region: isRegionManager ? userRegion : editFormData.region // Sorumlu bÃ¶lgesini deÄŸiÅŸtiremez
         })
         .eq('id', activeRep.id);
 
@@ -365,16 +365,16 @@ export default function RepresentativesPage() {
 
       setIsEditModalOpen(false);
       fetchReps();
-      toast.success('Temsilci başarıyla güncellendi!');
+      toast.success('Temsilci baÅŸarÄ±yla gÃ¼ncellendi!');
     } catch (err) {
       console.error("Save representative changes error:", err);
-      toast.error('Güncelleme sırasında hata oluştu.');
+      toast.error('GÃ¼ncelleme sÄ±rasÄ±nda hata oluÅŸtu.');
     }
   };
 
   // Delete representative
   const handleDeleteRep = async (repId: string) => {
-    if (!window.confirm('Bu temsilci kaydını tamamen silmek istediğinizden emin misiniz?')) return;
+    if (!window.confirm('Bu temsilci kaydÄ±nÄ± tamamen silmek istediÄŸinizden emin misiniz?')) return;
 
     try {
       const { error } = await supabase
@@ -384,10 +384,10 @@ export default function RepresentativesPage() {
 
       if (error) throw error;
       fetchReps();
-      toast.success('Temsilci başarıyla silindi!');
+      toast.success('Temsilci baÅŸarÄ±yla silindi!');
     } catch (err) {
       console.error("Delete representative error:", err);
-      toast.error('Silme işlemi başarısız oldu.');
+      toast.error('Silme iÅŸlemi baÅŸarÄ±sÄ±z oldu.');
     }
   };
 
@@ -402,11 +402,11 @@ export default function RepresentativesPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Temsilcilikler Birimi</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Tüm bölge ve üniversite temsilcilerinin listesi ve yönetimi</p>
+          <p style={{ color: 'var(--text-muted)' }}>TÃ¼m bÃ¶lge ve Ã¼niversite temsilcilerinin listesi ve yÃ¶netimi</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button onClick={exportToExcel} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <Download size={16} /> Excel Rapor İndir
+            <Download size={16} /> Excel Rapor Ä°ndir
           </button>
         </div>
       </div>
@@ -428,7 +428,7 @@ export default function RepresentativesPage() {
             <Users size={20} color="var(--status-success)" />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Aktif Üyeler</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Aktif Ãœyeler</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--status-success)' }}>{activeCount}</div>
           </div>
         </div>
@@ -444,7 +444,7 @@ export default function RepresentativesPage() {
         </div>
 
         <div className="card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '4px solid var(--text-muted)' }}>
-          <div style={{ padding: '0.5rem', backgroundColor: '#f3f4f6', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-nested)', borderRadius: 'var(--radius-md)' }}>
             <Users size={20} color="var(--text-muted)" />
           </div>
           <div>
@@ -478,14 +478,14 @@ export default function RepresentativesPage() {
       {/* PENDING TAB */}
       {activeTab === 'pending' && (
         <div className="card" style={{ padding: '2rem' }}>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem', color: '#92400e' }}>?? Onay Bekleyen Temsilci Kayıtları</h2>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem', color: '#92400e' }}>?? Onay Bekleyen Temsilci KayÄ±tlarÄ±</h2>
           {isLoading ? (
-            <LoadingState message="Temsilciler yükleniyor..." />
+            <LoadingState message="Temsilciler yÃ¼kleniyor..." />
           ) : pendingReps.length === 0 ? (
             <EmptyState 
               icon={CheckCircle} 
               title="Her Åey Tamam" 
-              description="Onay bekleyen temsilci kaydı bulunmuyor. ??" 
+              description="Onay bekleyen temsilci kaydÄ± bulunmuyor. ??" 
             />
           ) : (
             <div style={{ overflowX: 'auto' }}>
@@ -493,11 +493,11 @@ export default function RepresentativesPage() {
                 <thead>
                   <tr style={{ backgroundColor: '#fef3c7', textAlign: 'left' }}>
                     <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Ad Soyad</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Üniversite</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Bölge</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>İletişim</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Kayıt Tarihi</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a', textAlign: 'right' }}>İşlemler</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Ãœniversite</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>BÃ¶lge</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>Ä°letiÅŸim</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a' }}>KayÄ±t Tarihi</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #fde68a', textAlign: 'right' }}>Ä°ÅŸlemler</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -545,7 +545,7 @@ export default function RepresentativesPage() {
                             <button
                               onClick={() => handleDeletePending(rep.id, rep.full_name)}
                               className="btn btn-outline"
-                              title="Kaydı kalıcı olarak sil"
+                              title="KaydÄ± kalÄ±cÄ± olarak sil"
                               style={{ padding: '0.4rem 0.8rem', color: 'var(--status-danger)', borderColor: 'var(--status-danger)', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem' }}
                             >
                               <Trash2 size={14} /> Sil
@@ -570,7 +570,7 @@ export default function RepresentativesPage() {
           
           <div className="card" style={{ padding: '1.5rem' }}>
             <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Filter size={16} /> Bölge Seçimi
+              <Filter size={16} /> BÃ¶lge SeÃ§imi
             </h3>
             
             {isRegionManager ? (
@@ -583,7 +583,7 @@ export default function RepresentativesPage() {
                   onClick={() => setSelectedRegion('')}
                   style={{ display: 'block', width: '100%', padding: '0.5rem', textAlign: 'left', border: 'none', backgroundColor: selectedRegion === '' ? 'var(--color-primary-light)' : 'transparent', color: selectedRegion === '' ? 'var(--color-primary)' : 'inherit', borderRadius: 'var(--radius-md)', fontWeight: selectedRegion === '' ? 700 : 500 }}
                 >
-                  Tüm Bölgeler ({reps.length})
+                  TÃ¼m BÃ¶lgeler ({reps.length})
                 </button>
                 {REGIONS.map(reg => {
                   const count = reps.filter(r => r.region?.toLowerCase() === reg.toLowerCase()).length;
@@ -604,7 +604,7 @@ export default function RepresentativesPage() {
           <div className="card" style={{ padding: '1.5rem' }}>
             <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Durum Filtresi</h3>
             <select className="input" value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)}>
-              <option value="">Tümü</option>
+              <option value="">TÃ¼mÃ¼</option>
               <option value="Aktif">Aktif</option>
               <option value="Pasif">Pasif</option>
               <option value="Mezun">Mezun</option>
@@ -622,7 +622,7 @@ export default function RepresentativesPage() {
               <input 
                 type="text" 
                 className="input" 
-                placeholder="Temsilci adı, e-posta veya üniversite ile ara..." 
+                placeholder="Temsilci adÄ±, e-posta veya Ã¼niversite ile ara..." 
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 style={{ paddingLeft: '2.5rem' }}
@@ -631,12 +631,12 @@ export default function RepresentativesPage() {
           </div>
 
           {isLoading ? (
-            <LoadingState message="Temsilciler yükleniyor..." />
+            <LoadingState message="Temsilciler yÃ¼kleniyor..." />
           ) : filteredReps.length === 0 ? (
             <EmptyState 
               icon={Users} 
-              title="Temsilci Bulunamadı" 
-              description="Arama kriterlerine uygun temsilci bulunamadı." 
+              title="Temsilci BulunamadÄ±" 
+              description="Arama kriterlerine uygun temsilci bulunamadÄ±." 
             />
           ) : (
             <div style={{ overflowX: 'auto' }}>
@@ -644,11 +644,11 @@ export default function RepresentativesPage() {
                 <thead>
                   <tr style={{ borderBottom: '2px solid #eaeaea' }}>
                     <th style={{ padding: '1rem 0.5rem' }}>Ad Soyad</th>
-                    <th style={{ padding: '1rem 0.5rem' }}>Üniversite / Bölüm</th>
-                    <th style={{ padding: '1rem 0.5rem' }}>Bölge</th>
-                    <th style={{ padding: '1rem 0.5rem' }}>Son İletişim</th>
+                    <th style={{ padding: '1rem 0.5rem' }}>Ãœniversite / BÃ¶lÃ¼m</th>
+                    <th style={{ padding: '1rem 0.5rem' }}>BÃ¶lge</th>
+                    <th style={{ padding: '1rem 0.5rem' }}>Son Ä°letiÅŸim</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Durum</th>
-                    <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>İşlemler</th>
+                    <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Ä°ÅŸlemler</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -658,7 +658,7 @@ export default function RepresentativesPage() {
                     
                     // Communication status coloring logic
                     let statusColor = '#10b981'; // Green
-                    let lastContactLabel = 'Hiç Kurulmadı';
+                    let lastContactLabel = 'HiÃ§ KurulmadÄ±';
 
                     if (lastContact) {
                       const diffTime = Math.abs(new Date().getTime() - new Date(lastContact).getTime());
@@ -675,7 +675,7 @@ export default function RepresentativesPage() {
                     }
 
                     return (
-                      <tr key={rep.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                      <tr key={rep.id} style={{ borderBottom: '1px solid var(--border-inner)' }}>
                         <td style={{ padding: '1rem 0.5rem' }}>
                           <div style={{ fontWeight: 600 }}>{rep.full_name}</div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{rep.phone_number}</div>
@@ -706,7 +706,7 @@ export default function RepresentativesPage() {
                             <Link 
                               href={`/dashboard/representatives/${rep.id}`}
                               className="btn btn-outline" 
-                              title="Temsilci Detay Sayfası"
+                              title="Temsilci Detay SayfasÄ±"
                               style={{ padding: '0.35rem', color: 'var(--color-primary)', borderColor: 'var(--color-primary-light)' }}
                             >
                               <Eye size={16} />
@@ -714,7 +714,7 @@ export default function RepresentativesPage() {
                             <button 
                               onClick={() => openCommHistory(rep)}
                               className="btn btn-outline" 
-                              title="İletişime Geç & İletişim Geçmişi"
+                              title="Ä°letiÅŸime GeÃ§ & Ä°letiÅŸim GeÃ§miÅŸi"
                               style={{ padding: '0.35rem', color: 'var(--color-primary)', borderColor: 'var(--color-primary-light)' }}
                             >
                               <MessageSquare size={16} />
@@ -722,7 +722,7 @@ export default function RepresentativesPage() {
                             <button 
                               onClick={() => openEdit(rep)}
                               className="btn btn-outline" 
-                              title="Düzenle"
+                              title="DÃ¼zenle"
                               style={{ padding: '0.35rem' }}
                             >
                               <Edit2 size={16} />
@@ -731,7 +731,7 @@ export default function RepresentativesPage() {
                               <button 
                                 onClick={() => handleDeleteRep(rep.id)}
                                 className="btn btn-outline" 
-                                title="Kayıt Sil"
+                                title="KayÄ±t Sil"
                                 style={{ padding: '0.35rem', color: 'var(--status-danger)', borderColor: 'var(--status-danger)' }}
                               >
                                 <Trash2 size={16} />
@@ -757,7 +757,7 @@ export default function RepresentativesPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? İletişim: {activeRep.full_name}</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Ä°letiÅŸim: {activeRep.full_name}</h2>
               <button onClick={() => setIsCommModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -770,20 +770,20 @@ export default function RepresentativesPage() {
                 className="btn btn-primary"
                 style={{ backgroundColor: '#25d366', borderColor: '#25d366', flex: 1, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', color: 'white', fontSize: '0.875rem' }}
               >
-                ?? WhatsApp Başlat
+                ?? WhatsApp BaÅŸlat
               </a>
               <a 
                 href={`mailto:${activeRep.email}`}
                 className="btn btn-primary"
                 style={{ flex: 1, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', color: 'white', fontSize: '0.875rem' }}
               >
-                âœ‰ï¸ E-posta Gönder
+                Ã¢Ã…â€œÃ¢â‚¬Â°ÃƒÂ¯Ã‚Â¸Ã‚Â E-posta GÃ¶nder
               </a>
             </div>
 
             {/* Form to log communication */}
             <form onSubmit={handleLogCommunication} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>İletişim Kaydı Ekle</h3>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Ä°letiÅŸim KaydÄ± Ekle</h3>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
@@ -792,18 +792,18 @@ export default function RepresentativesPage() {
                     <option value="WhatsApp">WhatsApp</option>
                     <option value="Email">E-posta</option>
                     <option value="SMS">SMS</option>
-                    <option value="Yüzyüze">Yüz Yüze Görüşme</option>
+                    <option value="YÃ¼zyÃ¼ze">YÃ¼z YÃ¼ze GÃ¶rÃ¼ÅŸme</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="label">Görüşme Detayları / Mesaj *</label>
+                <label className="label">GÃ¶rÃ¼ÅŸme DetaylarÄ± / Mesaj *</label>
                 <textarea 
                   className="input" 
                   rows={3} 
                   required 
-                  placeholder="Görüşülen konuyu, alınan kararları veya iletilen mesajı özetleyin..."
+                  placeholder="GÃ¶rÃ¼ÅŸÃ¼len konuyu, alÄ±nan kararlarÄ± veya iletilen mesajÄ± Ã¶zetleyin..."
                   value={commMessage}
                   onChange={e => setCommMessage(e.target.value)}
                 />
@@ -816,9 +816,9 @@ export default function RepresentativesPage() {
 
             {/* Communication History list */}
             <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Geçmiş Görüşmeler ({commHistory.length})</h3>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>GeÃ§miÅŸ GÃ¶rÃ¼ÅŸmeler ({commHistory.length})</h3>
               {commHistory.length === 0 ? (
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', textAlign: 'center' }}>Bu temsilciyle henüz geçmiş bir iletişim kaydı bulunmuyor.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', textAlign: 'center' }}>Bu temsilciyle henÃ¼z geÃ§miÅŸ bir iletiÅŸim kaydÄ± bulunmuyor.</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '200px', overflowY: 'auto' }}>
                   {commHistory.map((item, idx) => (
@@ -844,7 +844,7 @@ export default function RepresentativesPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Temsilci Bilgilerini Güncelle</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Temsilci Bilgilerini GÃ¼ncelle</h2>
               <button onClick={() => setIsEditModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -856,7 +856,7 @@ export default function RepresentativesPage() {
                   <input type="text" className="input" required value={editFormData.fullName} onChange={e => setEditFormData({...editFormData, fullName: e.target.value})} />
                 </div>
                 <div>
-                  <label className="label">Telefon Numarası *</label>
+                  <label className="label">Telefon NumarasÄ± *</label>
                   <input type="text" className="input" required value={editFormData.phone} onChange={e => setEditFormData({...editFormData, phone: e.target.value})} />
                 </div>
                 <div>
@@ -864,21 +864,21 @@ export default function RepresentativesPage() {
                   <input type="email" className="input" required value={editFormData.email} onChange={e => setEditFormData({...editFormData, email: e.target.value})} />
                 </div>
                 <div>
-                  <label className="label">Üniversite *</label>
+                  <label className="label">Ãœniversite *</label>
                   <input type="text" className="input" required value={editFormData.university} onChange={e => setEditFormData({...editFormData, university: e.target.value})} />
                 </div>
                 <div>
-                  <label className="label">Bölüm *</label>
+                  <label className="label">BÃ¶lÃ¼m *</label>
                   <input type="text" className="input" required value={editFormData.department} onChange={e => setEditFormData({...editFormData, department: e.target.value})} />
                 </div>
                 <div>
-                  <label className="label">Sınıf / Sene *</label>
+                  <label className="label">SÄ±nÄ±f / Sene *</label>
                   <select className="input" required value={editFormData.grade} onChange={e => setEditFormData({...editFormData, grade: e.target.value})}>
-                    <option value="Hazırlık">Hazırlık</option>
-                    <option value="1. Sınıf">1. Sınıf</option>
-                    <option value="2. Sınıf">2. Sınıf</option>
-                    <option value="3. Sınıf">3. Sınıf</option>
-                    <option value="4. Sınıf">4. Sınıf</option>
+                    <option value="HazÄ±rlÄ±k">HazÄ±rlÄ±k</option>
+                    <option value="1. SÄ±nÄ±f">1. SÄ±nÄ±f</option>
+                    <option value="2. SÄ±nÄ±f">2. SÄ±nÄ±f</option>
+                    <option value="3. SÄ±nÄ±f">3. SÄ±nÄ±f</option>
+                    <option value="4. SÄ±nÄ±f">4. SÄ±nÄ±f</option>
                     <option value="Mezun">Mezun</option>
                   </select>
                 </div>
@@ -892,7 +892,7 @@ export default function RepresentativesPage() {
                 </div>
                 {!isRegionManager && (
                   <div>
-                    <label className="label">Atandığı Bölge *</label>
+                    <label className="label">AtandÄ±ÄŸÄ± BÃ¶lge *</label>
                     <select className="input" required value={editFormData.region} onChange={e => setEditFormData({...editFormData, region: e.target.value})}>
                       {REGIONS.map(reg => (
                         <option key={reg} value={reg}>{reg.toUpperCase()}</option>
@@ -903,19 +903,19 @@ export default function RepresentativesPage() {
               </div>
 
               <div>
-                <label className="label">Özel Notlar</label>
+                <label className="label">Ã–zel Notlar</label>
                 <textarea 
                   className="input" 
                   rows={2} 
                   value={editFormData.notes || ''} 
                   onChange={e => setEditFormData({...editFormData, notes: e.target.value})} 
-                  placeholder="Gönüllü katılımı, etkinlik kalitesi veya genel değerlendirmeleriniz..."
+                  placeholder="GÃ¶nÃ¼llÃ¼ katÄ±lÄ±mÄ±, etkinlik kalitesi veya genel deÄŸerlendirmeleriniz..."
                 />
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="btn btn-outline">İptal</button>
-                <button type="submit" className="btn btn-primary">Değişiklikleri Kaydet</button>
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="btn btn-outline">Ä°ptal</button>
+                <button type="submit" className="btn btn-primary">DeÄŸiÅŸiklikleri Kaydet</button>
               </div>
 
             </form>

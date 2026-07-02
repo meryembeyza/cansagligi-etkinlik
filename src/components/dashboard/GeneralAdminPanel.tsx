@@ -14,7 +14,7 @@ export default function GeneralAdminPanel() {
   const [events, setEvents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Ýstatistikler
+  // Ä°statistikler
   const [stats, setStats] = useState({
     total: 0,
     completed: 0,
@@ -44,21 +44,21 @@ export default function GeneralAdminPanel() {
 
       setEvents(data || []);
 
-      // Ýstatistikleri sadece ilk yüklemede veya filtresizken genel hesaplamak daha mantýklýdýr,
-      // ama þimdilik mevcut filtrelenmiþ verinin veya tüm verinin istatistiðini gösterebiliriz.
-      // Tüm veriyi çekip istatistikleri genel tutalým:
+      // Ä°statistikleri sadece ilk yÃ¼klemede veya filtresizken genel hesaplamak daha mantÄ±klÄ±dÄ±r,
+      // ama ÅŸimdilik mevcut filtrelenmiÅŸ verinin veya tÃ¼m verinin istatistiÄŸini gÃ¶sterebiliriz.
+      // TÃ¼m veriyi Ã§ekip istatistikleri genel tutalÄ±m:
       if (!filterRegion && !filterStatus && !searchQuery && data) {
-        const completedEvents = data.filter(e => e.status === 'Gerçekleþti');
+        const completedEvents = data.filter(e => e.status === 'GerÃ§ekleÅŸti');
         
         setStats({
           total: data.length,
           completed: completedEvents.length,
           pending: data.filter(e => ['Onay Bekliyor', 'Yeniden Onay Bekliyor'].includes(e.status)).length,
-          cancelled: data.filter(e => e.status === 'Ýptal Edildi').length,
+          cancelled: data.filter(e => e.status === 'Ä°ptal Edildi').length,
           participants: completedEvents.reduce((acc, curr) => acc + (curr.expected_participants || 0), 0)
         });
 
-        // 3 günden uzun süredir onay bekleyenleri bul
+        // 3 gÃ¼nden uzun sÃ¼redir onay bekleyenleri bul
         const threeDaysAgo = new Date();
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
         const delayed = data.filter(e => 
@@ -69,7 +69,7 @@ export default function GeneralAdminPanel() {
       }
 
     } catch (error) {
-      console.error('Etkinlikler çekilemedi:', error);
+      console.error('Etkinlikler Ã§ekilemedi:', error);
     } finally {
       setIsLoading(false);
     }
@@ -77,36 +77,138 @@ export default function GeneralAdminPanel() {
 
   const exportToExcel = async () => {
     if (events.length === 0) {
-      toast.error('Ýndirilecek etkinlik bulunamadý.');
+      toast.error('Ä°ndirilecek etkinlik bulunamadÄ±.');
       return;
     }
     
-    const excelData = events.map(e => ({
-      'Etkinlik Adý': e.event_name,
-      'Tür': e.event_type,
-      'Bölge': e.region,
-      'Üniversite': e.university,
-      'Tarih': new Date(e.event_date).toLocaleString('tr-TR'),
-      'Durum': e.status,
-      'Katýlýmcý Sayýsý': e.expected_participants || 0
-    }));
+    try {
+      const sortedEvents = [...events].sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
 
-    const workbook = new ExcelJS.Workbook();
-    const ws = workbook.addWorksheet('Etkinlikler');
-    if (excelData.length > 0) {
-      ws.columns = Object.keys(excelData[0]).map(key => ({ header: key, key: key, width: 20 }));
-      ws.addRows(excelData);
+      const getMonthName = (dateStr: string) => {
+        const d = new Date(dateStr);
+        const months = ['OCAK', 'ÅžUBAT', 'MART', 'NÄ°SAN', 'MAYIS', 'HAZÄ°RAN', 'TEMMUZ', 'AÄžUSTOS', 'EYLÃœL', 'EKÄ°M', 'KASIM', 'ARALIK'];
+        return `${months[d.getMonth()]} ${d.getFullYear()}`;
+      };
+
+      const getWeekOfMonthName = (dateStr: string) => {
+        const d = new Date(dateStr);
+        const months = ['Ocak', 'Åžubat', 'Mart', 'Nisan', 'MayÄ±s', 'Haziran', 'Temmuz', 'AÄŸustos', 'EylÃ¼l', 'Ekim', 'KasÄ±m', 'AralÄ±k'];
+        return `${months[d.getMonth()]} ${Math.ceil(d.getDate() / 7)}. Hafta`;
+      };
+
+      const weekSummaryMap: Record<string, { totalEvents: number, totalParticipants: number, label: string }> = {};
+      sortedEvents.forEach(e => {
+        const d = new Date(e.event_date);
+        const weekNum = Math.ceil(d.getDate() / 7);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-W${weekNum}`;
+        const label = getWeekOfMonthName(e.event_date);
+        
+        if (!weekSummaryMap[key]) {
+          weekSummaryMap[key] = { totalEvents: 0, totalParticipants: 0, label };
+        }
+        weekSummaryMap[key].totalEvents += 1;
+        weekSummaryMap[key].totalParticipants += (e.expected_participants || 0);
+      });
+
+      const weekSummary = Object.keys(weekSummaryMap).sort().map(k => ({
+        'Hafta': weekSummaryMap[k].label,
+        'Toplam Etkinlik': weekSummaryMap[k].totalEvents,
+        'Toplam KatÄ±lÄ±mcÄ±': weekSummaryMap[k].totalParticipants
+      }));
+
+      const workbook = new ExcelJS.Workbook();
+      
+      const wsSummary = workbook.addWorksheet('Ã–zet Tablo');
+      wsSummary.columns = [
+        { header: 'Hafta', key: 'Hafta', width: 30 },
+        { header: 'Toplam Etkinlik', key: 'Toplam Etkinlik', width: 20 },
+        { header: 'Toplam KatÄ±lÄ±mcÄ±', key: 'Toplam KatÄ±lÄ±mcÄ±', width: 20 }
+      ];
+      if (weekSummary.length > 0) wsSummary.addRows(weekSummary);
+      
+      wsSummary.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      wsSummary.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+      wsSummary.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+      wsSummary.autoFilter = 'A1:C1';
+      wsSummary.eachRow((row) => {
+        row.eachCell((cell) => {
+          cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+      });
+
+      const wsEvents = workbook.addWorksheet('Etkinlikler');
+      wsEvents.columns = [
+        { header: 'Tarih', key: 'Tarih', width: 15 },
+        { header: 'Etkinlik AdÄ±', key: 'Etkinlik AdÄ±', width: 45 },
+        { header: 'Birim', key: 'Birim', width: 25 },
+        { header: 'Ãœniversite', key: 'Ãœniversite', width: 35 },
+        { header: 'BÃ¶lge', key: 'BÃ¶lge', width: 20 },
+        { header: 'Durum', key: 'Durum', width: 15 },
+        { header: 'Beklenen KatÄ±lÄ±mcÄ±', key: 'Beklenen KatÄ±lÄ±mcÄ±', width: 20 }
+      ];
+      
+      wsEvents.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      wsEvents.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+      wsEvents.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+      wsEvents.autoFilter = 'A1:G1';
+      wsEvents.views = [{ state: 'frozen', ySplit: 1 }];
+
+      let currentMonth = '';
+      sortedEvents.forEach(e => {
+        const monthStr = getMonthName(e.event_date);
+        
+        if (monthStr !== currentMonth) {
+          currentMonth = monthStr;
+          const headerRow = wsEvents.addRow([monthStr]);
+          wsEvents.mergeCells(`A${headerRow.number}:G${headerRow.number}`);
+          headerRow.font = { bold: true, size: 14, color: { argb: 'FF000000' } };
+          headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD1D5DB' } };
+          headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
+          headerRow.eachCell((cell) => {
+            cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+          });
+        }
+
+        const row = wsEvents.addRow([
+          new Date(e.event_date).toLocaleDateString('tr-TR'),
+          e.event_name,
+          e.unit_name || e.event_type,
+          e.university,
+          e.region,
+          e.status,
+          e.expected_participants || 0
+        ]);
+
+        let bgColor = 'FFFFFFFF'; 
+        if (e.region === 'Ä°stanbul Avrupa') bgColor = 'FFE0F2FE'; 
+        else if (e.region === 'Ä°stanbul Anadolu') bgColor = 'FFFEF08A'; 
+        else if (e.region === 'Marmara') bgColor = 'FFDCFCE7'; 
+        else if (e.region === 'Ä°Ã§ Anadolu') bgColor = 'FFFFEDD5'; 
+        else if (e.region === 'Ege') bgColor = 'FFFAE8FF'; 
+        else if (e.region) bgColor = 'FFF3E8FF'; 
+
+        row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bgColor } };
+        row.font = { color: { argb: 'FF000000' } }; // Force black font color just in case
+        
+        row.eachCell((cell) => {
+          cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `etkinlik_raporu_${new Date().toLocaleDateString('tr-TR')}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      toast.error('Excel oluÅŸturulamadÄ±.');
     }
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `etkinlik_raporu_${new Date().toLocaleDateString('tr-TR')}.xlsx`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   };
 
   useEffect(() => {
@@ -116,7 +218,7 @@ export default function GeneralAdminPanel() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
-      {/* Ýstatistik Kartlarý */}
+      {/* Ä°statistik KartlarÄ± */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>{stats.total}</div>
@@ -124,7 +226,7 @@ export default function GeneralAdminPanel() {
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--status-success)' }}>{stats.completed}</div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Gerçekleþen</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>GerÃ§ekleÅŸen</div>
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--status-pending)' }}>{stats.pending}</div>
@@ -132,20 +234,20 @@ export default function GeneralAdminPanel() {
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--status-danger)' }}>{stats.cancelled}</div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Ýptal Edilen</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Ä°ptal Edilen</div>
         </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>{stats.participants}</div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Toplam Katýlýmcý</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Toplam KatÄ±lÄ±mcÄ±</div>
         </div>
       </div>
 
-      {/* Gecikmiþ Onay Uyarýlarý */}
+      {/* GecikmiÅŸ Onay UyarÄ±larÄ± */}
       {delayedEvents.length > 0 && (
         <div style={{ backgroundColor: 'var(--bg-danger-light)', border: '1px solid #fca5a5', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#991b1b', fontWeight: 600, marginBottom: '0.5rem' }}>
             <AlertTriangle size={20} />
-            Dikkat: {delayedEvents.length} etkinlik 3 günden uzun süredir onay bekliyor!
+            Dikkat: {delayedEvents.length} etkinlik 3 gÃ¼nden uzun sÃ¼redir onay bekliyor!
           </div>
           <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#7f1d1d', fontSize: '0.875rem' }}>
             {delayedEvents.map(e => (
@@ -161,7 +263,7 @@ export default function GeneralAdminPanel() {
           <Search size={18} color="var(--text-muted)" />
           <input 
             type="text" 
-            placeholder="Etkinlik Adý Ara..." 
+            placeholder="Etkinlik AdÄ± Ara..." 
             style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -169,41 +271,41 @@ export default function GeneralAdminPanel() {
         </div>
         
         <select className="input" style={{ flex: '1 1 200px' }} value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)}>
-          <option value="">Tüm Bölgeler</option>
-          <option value="Ýstanbul Anadolu">Ýstanbul Anadolu</option>
-          <option value="Ýstanbul Avrupa">Ýstanbul Avrupa</option>
+          <option value="">TÃ¼m BÃ¶lgeler</option>
+          <option value="Ä°stanbul Anadolu">Ä°stanbul Anadolu</option>
+          <option value="Ä°stanbul Avrupa">Ä°stanbul Avrupa</option>
           <option value="Marmara">Marmara</option>
           <option value="Ege">Ege</option>
-          <option value="Ýç Anadolu">Ýç Anadolu</option>
+          <option value="Ä°Ã§ Anadolu">Ä°Ã§ Anadolu</option>
           <option value="Ankara">Ankara</option>
           <option value="Akdeniz">Akdeniz</option>
           <option value="Karadeniz">Karadeniz</option>
-          <option value="Doðu Anadolu">Doðu Anadolu</option>
-          <option value="Güneydoðu Anadolu">Güneydoðu Anadolu</option>
+          <option value="DoÄŸu Anadolu">DoÄŸu Anadolu</option>
+          <option value="GÃ¼neydoÄŸu Anadolu">GÃ¼neydoÄŸu Anadolu</option>
         </select>
 
         <select className="input" style={{ flex: '1 1 200px' }} value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value="">Tüm Durumlar</option>
+          <option value="">TÃ¼m Durumlar</option>
           <option value="Onay Bekliyor">Onay Bekliyor</option>
-          <option value="Onaylandý">Onaylandý</option>
-          <option value="Gerçekleþti">Gerçekleþti</option>
-          <option value="Ýptal Edildi">Ýptal Edildi</option>
+          <option value="OnaylandÄ±">OnaylandÄ±</option>
+          <option value="GerÃ§ekleÅŸti">GerÃ§ekleÅŸti</option>
+          <option value="Ä°ptal Edildi">Ä°ptal Edildi</option>
         </select>
 
         <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={exportToExcel}>
-          <Download size={16} /> Excel Ýndir
+          <Download size={16} /> Excel Ä°ndir
         </button>
       </div>
 
       {/* Etkinlik Listesi */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {isLoading ? (
-          <LoadingState message="Etkinlikler yükleniyor..." minHeight="300px" />
+          <LoadingState message="Etkinlikler yÃ¼kleniyor..." minHeight="300px" />
         ) : events.length === 0 ? (
           <EmptyState 
             icon={Calendar} 
-            title="Etkinlik Bulunamadý" 
-            description="Filtrelerinize uygun bir etkinlik bulunmamaktadýr." 
+            title="Etkinlik BulunamadÄ±" 
+            description="Filtrelerinize uygun bir etkinlik bulunmamaktadÄ±r." 
             minHeight="300px" 
           />
         ) : (
@@ -211,11 +313,11 @@ export default function GeneralAdminPanel() {
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #eaeaea', backgroundColor: 'var(--bg-main)' }}>
-                  <th style={{ padding: '1rem' }}>Etkinlik Adý</th>
-                  <th style={{ padding: '1rem' }}>Üniversite / Bölge</th>
+                  <th style={{ padding: '1rem' }}>Etkinlik AdÄ±</th>
+                  <th style={{ padding: '1rem' }}>Ãœniversite / BÃ¶lge</th>
                   <th style={{ padding: '1rem' }}>Tarih</th>
                   <th style={{ padding: '1rem' }}>Durum</th>
-                  <th style={{ padding: '1rem' }}>Ýþlem</th>
+                  <th style={{ padding: '1rem' }}>Ä°ÅŸlem</th>
                 </tr>
               </thead>
               <tbody>
@@ -234,8 +336,8 @@ export default function GeneralAdminPanel() {
                     </td>
                     <td style={{ padding: '1rem' }}>
                       <span className={`badge ${
-                        event.status.includes('Onay') ? (event.status === 'Onaylandý' ? 'badge-success' : 'badge-pending') :
-                        event.status.includes('Ýptal') || event.status.includes('Red') ? 'badge-danger' : ''
+                        event.status.includes('Onay') ? (event.status === 'OnaylandÄ±' ? 'badge-success' : 'badge-pending') :
+                        event.status.includes('Ä°ptal') || event.status.includes('Red') ? 'badge-danger' : ''
                       }`}>
                         {event.status}
                       </span>
@@ -256,5 +358,6 @@ export default function GeneralAdminPanel() {
     </div>
   );
 }
+
 
 

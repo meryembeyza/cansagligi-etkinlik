@@ -22,7 +22,7 @@ export default function ResourceManagerPanel() {
   const fetchReservations = async () => {
     setIsLoading(true);
     try {
-      // Sadece 'Bekliyor' durumundaki rezervasyonlarý ve iliþkili etkinlik/kaynak bilgilerini çek
+      // Sadece 'Bekliyor' durumundaki rezervasyonlarÄ± ve iliÅŸkili etkinlik/kaynak bilgilerini Ã§ek
       const { data, error } = await supabase
         .from('resource_reservations')
         .select(`
@@ -37,11 +37,11 @@ export default function ResourceManagerPanel() {
       
       let filteredData = data || [];
       if (currentRole === 'resource_manager' && userData?.unit_name) {
-        filteredData = filteredData.filter((res: ResourceReservation) => res.events?.unit_name === userData.unit_name);
+        filteredData = filteredData.filter((res: any) => res.events?.unit_name === userData.unit_name);
       }
       setReservations(filteredData);
     } catch (error) {
-      console.error('Rezervasyonlar çekilemedi:', error);
+      console.error('Rezervasyonlar Ã§ekilemedi:', error);
     } finally {
       setIsLoading(false);
     }
@@ -51,14 +51,14 @@ export default function ResourceManagerPanel() {
     fetchReservations();
   }, []);
 
-  const handleAction = async (reservation: ResourceReservation, newStatus: string) => {
+  const handleAction = async (reservation: any, newStatus: string) => {
     setProcessingId(reservation.id);
     try {
       let finalNotes = reservation.notes || '';
       
       if (newStatus === 'Reddedildi') {
         finalNotes += `\n\n--- Sistem Notu ---\nRed Nedeni: ${rejectReason}`;
-        if (altDate) finalNotes += `\nÖnerilen Alternatif Tarih: ${new Date(altDate).toLocaleString('tr-TR')}`;
+        if (altDate) finalNotes += `\nÃ–nerilen Alternatif Tarih: ${new Date(altDate).toLocaleString('tr-TR')}`;
       }
 
       const { error } = await supabase
@@ -71,13 +71,13 @@ export default function ResourceManagerPanel() {
 
       if (error) throw error;
 
-      // Bildirim Gönder (Etkinlik sahibine)
+      // Bildirim GÃ¶nder (Etkinlik sahibine)
       let notifMessage = '';
-      if (newStatus === 'Onaylandý') {
-        notifMessage = `"${reservation.events.event_name}" etkinliðiniz için "${reservation.resources.name}" talebiniz Onaylandý!`;
+      if (newStatus === 'OnaylandÄ±') {
+        notifMessage = `"${reservation.events.event_name}" etkinliÄŸiniz iÃ§in "${reservation.resources.name}" talebiniz OnaylandÄ±!`;
       } else if (newStatus === 'Reddedildi') {
-        notifMessage = `"${reservation.events.event_name}" etkinliðiniz için "${reservation.resources.name}" talebiniz Reddedildi. Neden: ${rejectReason}`;
-        if (altDate) notifMessage += ` (Önerilen Alternatif Tarih: ${new Date(altDate).toLocaleString('tr-TR')})`;
+        notifMessage = `"${reservation.events.event_name}" etkinliÄŸiniz iÃ§in "${reservation.resources.name}" talebiniz Reddedildi. Neden: ${rejectReason}`;
+        if (altDate) notifMessage += ` (Ã–nerilen Alternatif Tarih: ${new Date(altDate).toLocaleString('tr-TR')})`;
       }
 
       await supabase.from('notifications').insert([{
@@ -92,7 +92,7 @@ export default function ResourceManagerPanel() {
       setAltDate('');
       await fetchReservations();
     } catch (err) {
-      toast.error('Ýþlem baþarýsýz: ' + (err as Error).message);
+      toast.error('Ä°ÅŸlem baÅŸarÄ±sÄ±z: ' + (err as Error).message);
     } finally {
       setProcessingId(null);
     }
@@ -118,7 +118,7 @@ export default function ResourceManagerPanel() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <div>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <h4 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{res.events?.event_name || 'Silinmiþ Etkinlik'}</h4>
+                    <h4 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{res.events?.event_name || 'SilinmiÅŸ Etkinlik'}</h4>
                     <span className="badge badge-pending">Onay Bekliyor</span>
                   </div>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -153,13 +153,13 @@ export default function ResourceManagerPanel() {
                     <input 
                       type="text" 
                       className="input" 
-                      placeholder="Örn: Cihaz o tarihte bakýmda..." 
+                      placeholder="Ã–rn: Cihaz o tarihte bakÄ±mda..." 
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="label">Alternatif Tarih Önerisi (Opsiyonel)</label>
+                    <label className="label">Alternatif Tarih Ã–nerisi (Opsiyonel)</label>
                     <input 
                       type="datetime-local" 
                       className="input" 
@@ -170,7 +170,7 @@ export default function ResourceManagerPanel() {
                   
                   <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
                     <button className="btn btn-outline" onClick={() => { setRejectingId(null); setRejectReason(''); setAltDate(''); }} disabled={processingId === res.id}>
-                      Ýptal
+                      Ä°ptal
                     </button>
                     <button 
                       className="btn btn-outline" 
@@ -186,7 +186,7 @@ export default function ResourceManagerPanel() {
               ) : (
                 <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                   <Link href={`/dashboard/events/${res.events?.id}`} className="btn btn-outline" style={{ marginRight: 'auto', border: 'none', color: 'var(--color-primary)' }}>
-                    Etkinlik Detayýný Ýncele &rarr;
+                    Etkinlik DetayÄ±nÄ± Ä°ncele &rarr;
                   </Link>
 
                   <button 
@@ -195,12 +195,12 @@ export default function ResourceManagerPanel() {
                     onClick={() => setRejectingId(res.id)}
                     disabled={processingId === res.id}
                   >
-                    Reddet / Tarih Öner
+                    Reddet / Tarih Ã–ner
                   </button>
                   <button 
                     className="btn btn-primary" 
                     style={{ backgroundColor: 'var(--status-success)', borderColor: 'var(--status-success)' }} 
-                    onClick={() => handleAction(res, 'Onaylandý')}
+                    onClick={() => handleAction(res, 'OnaylandÄ±')}
                     disabled={processingId === res.id}
                   >
                     {processingId === res.id ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />} 

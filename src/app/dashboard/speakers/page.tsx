@@ -256,7 +256,7 @@ export default function SpeakersArchivePage() {
                     <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Uzmanlık Alanları</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                       {sp.expertiseFields.map((field: string, i: number) => (
-                        <span key={i} style={{ backgroundColor: '#f3f4f6', color: 'var(--text-muted)', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>
+                        <span key={i} style={{ backgroundColor: 'var(--bg-nested)', color: 'var(--text-muted)', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>
                           {field === 'Diğer' && sp.otherExpertise ? `Diğer (${sp.otherExpertise})` : field}
                         </span>
                       ))}

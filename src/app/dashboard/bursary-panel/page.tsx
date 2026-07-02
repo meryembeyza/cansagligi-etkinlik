@@ -79,7 +79,7 @@ export default function BursaryPanelPage() {
     if (!activeEvent || !rsvpMode) return;
 
     if (rsvpMode === 'not_attending' && !excuseText.trim()) {
-      toast.success('Lütfen geçerli bir mazeret giriniz.');
+      toast.success('LÃ¼tfen geÃ§erli bir mazeret giriniz.');
       return;
     }
 
@@ -109,7 +109,7 @@ export default function BursaryPanelPage() {
         if (error) throw error;
       }
 
-      toast.success('RSVP durumunuz başarıyla kaydedildi.');
+      toast.success('RSVP durumunuz baÅŸarÄ±yla kaydedildi.');
       setActiveEvent(null);
       setRsvpMode(null);
       setExcuseText('');
@@ -123,7 +123,7 @@ export default function BursaryPanelPage() {
   };
 
   const handleMarkAttended = async (attendanceId: string) => {
-    if (!confirm('Etkinliğe fiilen katıldığınızı onaylıyor musunuz?')) return;
+    if (!confirm('EtkinliÄŸe fiilen katÄ±ldÄ±ÄŸÄ±nÄ±zÄ± onaylÄ±yor musunuz?')) return;
     
     try {
       const { error } = await supabase
@@ -132,7 +132,7 @@ export default function BursaryPanelPage() {
         .eq('id', attendanceId);
 
       if (error) throw error;
-      toast.success('Yoklamanız başarıyla alındı!');
+      toast.success('YoklamanÄ±z baÅŸarÄ±yla alÄ±ndÄ±!');
       fetchEvents();
     } catch (err) {
       toast.error('Hata: ' + (err as Error).message);
@@ -140,13 +140,13 @@ export default function BursaryPanelPage() {
   };
 
   if (currentRole !== 'bursary_student' && currentRole !== 'general_admin') {
-    return <div style={{ padding: '2rem' }}>Sadece bursiyerlerin erişimine açıktır.</div>;
+    return <div style={{ padding: '2rem' }}>Sadece bursiyerlerin eriÅŸimine aÃ§Ä±ktÄ±r.</div>;
   }
 
   const isEventPastOrToday = (dateString: string) => {
     const evDate = new Date(dateString);
     const today = new Date();
-    // Eğer etkinlik tarihi geçmişse veya bugünse (saatlere bakmaksızın gün bazında)
+    // EÄŸer etkinlik tarihi geÃ§miÅŸse veya bugÃ¼nse (saatlere bakmaksÄ±zÄ±n gÃ¼n bazÄ±nda)
     // Yoklama butonu aktif olsun.
     return evDate <= today || evDate.toDateString() === today.toDateString();
   };
@@ -155,18 +155,18 @@ export default function BursaryPanelPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingBottom: '4rem' }}>
       <div>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          ?? Bursiyer Paneli
+          ğŸ“ Bursiyer Paneli
         </h1>
-        <p style={{ color: 'var(--text-muted)' }}>Zorunlu etkinliklerinizi görüntüleyip katılım durumunuzu bildirebilirsiniz.</p>
+        <p style={{ color: 'var(--text-muted)' }}>Zorunlu etkinliklerinizi gÃ¶rÃ¼ntÃ¼leyip katÄ±lÄ±m durumunuzu bildirebilirsiniz.</p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {isLoading ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>Etkinlikler yükleniyor...</div>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>Etkinlikler yÃ¼kleniyor...</div>
         ) : events.length === 0 ? (
           <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
             <Calendar size={48} style={{ margin: '0 auto 1rem', opacity: 0.2 }} />
-            Yaklaşan bir bursiyer etkinliği bulunmuyor.
+            YaklaÅŸan bir bursiyer etkinliÄŸi bulunmuyor.
           </div>
         ) : (
           events.map(ev => {
@@ -188,25 +188,25 @@ export default function BursaryPanelPage() {
                     {!att || att.rsvp_status === 'pending' ? (
                       <span className="badge badge-warning"><Clock size={14} style={{ marginRight:'4px' }}/> RSVP Bekleniyor</span>
                     ) : att.rsvp_status === 'attending' ? (
-                      <span className="badge badge-success"><CheckCircle size={14} style={{ marginRight:'4px' }}/> Katılacağım</span>
+                      <span className="badge badge-success"><CheckCircle size={14} style={{ marginRight:'4px' }}/> KatÄ±lacaÄŸÄ±m</span>
                     ) : (
-                      <span className="badge badge-danger"><XCircle size={14} style={{ marginRight:'4px' }}/> Katılamayacağım</span>
+                      <span className="badge badge-danger"><XCircle size={14} style={{ marginRight:'4px' }}/> KatÄ±lamayacaÄŸÄ±m</span>
                     )}
                   </div>
                 </div>
                 
                 {ev.description && (
                   <div style={{ backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem' }}>
-                    <strong>Açıklama:</strong> {ev.description}
+                    <strong>AÃ§Ä±klama:</strong> {ev.description}
                   </div>
                 )}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
                   <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                     {att?.has_attended ? (
-                      <span style={{ color: 'var(--status-success)', fontWeight: 600 }}>Yoklamanız alındı. Teşekkürler!</span>
+                      <span style={{ color: 'var(--status-success)', fontWeight: 600 }}>YoklamanÄ±z alÄ±ndÄ±. TeÅŸekkÃ¼rler!</span>
                     ) : (
-                      <span>Katılım bildirimi (RSVP) yapmanız zorunludur.</span>
+                      <span>KatÄ±lÄ±m bildirimi (RSVP) yapmanÄ±z zorunludur.</span>
                     )}
                   </div>
                   
@@ -214,14 +214,14 @@ export default function BursaryPanelPage() {
                     {/* Yoklama Butonu */}
                     {canMarkAttended && (
                       <button onClick={() => handleMarkAttended(att.id)} className="btn btn-primary" style={{ backgroundColor: 'var(--status-success)', borderColor: 'var(--status-success)' }}>
-                        Etkinliğe Katıldım (Yoklama)
+                        EtkinliÄŸe KatÄ±ldÄ±m (Yoklama)
                       </button>
                     )}
 
                     {/* RSVP Butonu */}
                     {!att?.has_attended && (
                       <button onClick={() => setActiveEvent(ev)} className="btn btn-outline" style={{ color: 'var(--color-primary)', borderColor: 'var(--color-primary-light)' }}>
-                        {att && att.rsvp_status !== 'pending' ? 'Durumumu Değiştir' : 'Katılım Durumu Bildir'}
+                        {att && att.rsvp_status !== 'pending' ? 'Durumumu DeÄŸiÅŸtir' : 'KatÄ±lÄ±m Durumu Bildir'}
                       </button>
                     )}
                   </div>
@@ -238,12 +238,12 @@ export default function BursaryPanelPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '500px' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Katılım Durumu (RSVP)</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>KatÄ±lÄ±m Durumu (RSVP)</h2>
               <button onClick={() => {setActiveEvent(null); setRsvpMode(null); setExcuseText('');}} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
             <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
-              <strong>{activeEvent.title}</strong> etkinliğine katılım durumunuzu aşağıdan belirtiniz.
+              <strong>{activeEvent.title}</strong> etkinliÄŸine katÄ±lÄ±m durumunuzu aÅŸaÄŸÄ±dan belirtiniz.
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -251,19 +251,19 @@ export default function BursaryPanelPage() {
                 onClick={() => setRsvpMode('attending')}
                 style={{ 
                   padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'attending' ? '2px solid var(--status-success)' : '1px solid var(--border-color)', 
-                  backgroundColor: rsvpMode === 'attending' ? '#ecfdf5' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'attending' ? 'var(--status-success)' : 'inherit'
+                  backgroundColor: rsvpMode === 'attending' ? 'var(--bg-success-light)' : 'transparent', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'attending' ? 'var(--status-success)' : 'inherit'
                 }}
               >
-                âœ… Katılacağım
+                âœ… KatÄ±lacaÄŸÄ±m
               </button>
               <button 
                 onClick={() => setRsvpMode('not_attending')}
                 style={{ 
                   padding: '1rem', borderRadius: 'var(--radius-md)', border: rsvpMode === 'not_attending' ? '2px solid var(--status-danger)' : '1px solid var(--border-color)', 
-                  backgroundColor: rsvpMode === 'not_attending' ? 'var(--bg-danger-light)' : 'white', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'not_attending' ? 'var(--status-danger)' : 'inherit'
+                  backgroundColor: rsvpMode === 'not_attending' ? 'var(--bg-danger-light)' : 'transparent', cursor: 'pointer', textAlign: 'center', fontWeight: 600, color: rsvpMode === 'not_attending' ? 'var(--status-danger)' : 'inherit'
                 }}
               >
-                âŒ Katılamayacağım
+                âŒ KatÄ±lamayacaÄŸÄ±m
               </button>
             </div>
 
@@ -274,7 +274,7 @@ export default function BursaryPanelPage() {
                   className="input" 
                   rows={3} 
                   required
-                  placeholder="Lütfen etkinliğe neden katılamayacağınızı detaylıca açıklayınız."
+                  placeholder="LÃ¼tfen etkinliÄŸe neden katÄ±lamayacaÄŸÄ±nÄ±zÄ± detaylÄ±ca aÃ§Ä±klayÄ±nÄ±z."
                   value={excuseText}
                   onChange={e => setExcuseText(e.target.value)}
                 />
@@ -282,7 +282,7 @@ export default function BursaryPanelPage() {
             )}
 
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-              <button onClick={() => {setActiveEvent(null); setRsvpMode(null); setExcuseText('');}} className="btn btn-outline">İptal</button>
+              <button onClick={() => {setActiveEvent(null); setRsvpMode(null); setExcuseText('');}} className="btn btn-outline">Ä°ptal</button>
               <button onClick={handleRSVP} disabled={isSubmitting || !rsvpMode} className="btn btn-primary">
                 {isSubmitting ? 'Kaydediliyor...' : 'Kaydet'}
               </button>
@@ -294,6 +294,7 @@ export default function BursaryPanelPage() {
     </div>
   );
 }
+
 
 
 

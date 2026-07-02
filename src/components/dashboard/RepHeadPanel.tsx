@@ -128,7 +128,7 @@ export default function RepHeadPanel() {
         </div>
 
         <div className="card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '4px solid var(--text-muted)' }}>
-          <div style={{ padding: '0.75rem', backgroundColor: '#f3f4f6', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-nested)', borderRadius: 'var(--radius-md)' }}>
             <Users size={24} color="var(--text-muted)" />
           </div>
           <div>

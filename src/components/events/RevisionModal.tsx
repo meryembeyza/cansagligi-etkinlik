@@ -188,7 +188,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!revisionNotes) {
-      toast.success('Lütfen bir revizyon notu giriniz.');
+      toast.success('LÃ¼tfen bir revizyon notu giriniz.');
       return;
     }
 
@@ -196,7 +196,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Oturum bulunamadý.');
+      if (!user) throw new Error('Oturum bulunamadÄ±.');
 
       // 1. Yedekleme
       const backupEvent = {
@@ -213,7 +213,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
       if (revError) throw revError;
 
-      // 2. Etkinliði güncelle
+      // 2. EtkinliÄŸi gÃ¼ncelle
       const eventDateValue = formData.eventDate ? new Date(formData.eventDate).toISOString() : new Date().toISOString();
       
       const updatedEventData = {
@@ -239,11 +239,11 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
       if (updateError) throw updateError;
 
-      // 3. Konuþmacýlarý Güncelle
+      // 3. KonuÅŸmacÄ±larÄ± GÃ¼ncelle
       for (const s of speakers) {
         if (s.name) {
           if (s.eventSpeakerId) {
-            // Var olan konuþmacýyý güncelle
+            // Var olan konuÅŸmacÄ±yÄ± gÃ¼ncelle
             await supabase.from('speakers').update({
               full_name: s.name,
               title: s.title || 'Belirtilmedi',
@@ -256,11 +256,11 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
             await supabase.from('event_speakers').update({
               select_reason: s.reason || '',
               is_cancelled: s.is_cancelled || false,
-              status: s.is_cancelled ? 'Reddedildi' : 'Bekliyor' // Revize edildiðinde durumu bekliyora al (eðer silinmemiþse)
+              status: s.is_cancelled ? 'Reddedildi' : 'Bekliyor' // Revize edildiÄŸinde durumu bekliyora al (eÄŸer silinmemiÅŸse)
             }).eq('id', s.eventSpeakerId);
             
           } else if (!s.is_cancelled) {
-            // Yeni konuþmacý ekle
+            // Yeni konuÅŸmacÄ± ekle
             const { data: insertedSpeaker } = await supabase.from('speakers').insert([{
               full_name: s.name,
               title: s.title || 'Belirtilmedi',
@@ -282,30 +282,30 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         }
       }
 
-      // 4. Bölge Sorumlusuna bildirim (Sadece ayný birim ve ayný bölge)
+      // 4. BÃ¶lge Sorumlusuna bildirim (Sadece aynÄ± birim ve aynÄ± bÃ¶lge)
       const { data: rmData } = await supabase
         .from('users')
         .select('id')
         .eq('role', 'region_manager')
         .eq('region', event.region)
-        .eq('unit_name', event.unit_name); // Sadece ayný birimin bölge sorumlusu
+        .eq('unit_name', event.unit_name); // Sadece aynÄ± birimin bÃ¶lge sorumlusu
       
       if (rmData && rmData.length > 0) {
         const notifications = rmData.map(rm => ({
           user_id: rm.id,
           event_id: event.id,
-          message: `"${event.event_name}" etkinliði revize edildi ve yeniden onayýnýzý bekliyor.`,
+          message: `"${event.event_name}" etkinliÄŸi revize edildi ve yeniden onayÄ±nÄ±zÄ± bekliyor.`,
           type: 'event_revision'
         }));
         await supabase.from('notifications').insert(notifications);
       }
 
-      // Draft'ý temizle
+      // Draft'Ä± temizle
       if (event?.id) {
         localStorage.removeItem(`revision_draft_${event.id}`);
       }
 
-      toast.success('Revizyon baþarýyla gönderildi.');
+      toast.success('Revizyon baÅŸarÄ±yla gÃ¶nderildi.');
       onSuccess(updatedEvent);
     } catch (err) {
       console.error(err);
@@ -322,7 +322,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         {/* Header */}
         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-nested)' }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Etkinliði Revize Et</h2>
+            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>EtkinliÄŸi Revize Et</h2>
             <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{event.event_name}</div>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
@@ -337,7 +337,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
             required
             className="input" 
             style={{ borderColor: '#fcd34d', backgroundColor: 'var(--bg-card)' }}
-            placeholder="Neleri deðiþtirdiniz? Kýsaca özetleyin..."
+            placeholder="Neleri deÄŸiÅŸtirdiniz? KÄ±saca Ã¶zetleyin..."
             value={revisionNotes}
             onChange={e => setRevisionNotes(e.target.value)}
           />
@@ -348,7 +348,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
           {[
             { step: 1, title: 'Temel Bilgiler' },
             { step: 2, title: 'Program & Yer' },
-            { step: 3, title: 'Konuþmacýlar' },
+            { step: 3, title: 'KonuÅŸmacÄ±lar' },
             { step: 4, title: 'Lojistik & Onay' }
           ].map((s) => (
             <div key={s.step} style={{ flex: 1, cursor: 'pointer' }} onClick={() => setCurrentStep(s.step as Step)}>
@@ -368,16 +368,16 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <div>
-                  <label className="label">Etkinlik Adý *</label>
+                  <label className="label">Etkinlik AdÄ± *</label>
                   <input type="text" className="input" value={formData.eventName} onChange={(e) => setFormData({...formData, eventName: e.target.value})} />
                 </div>
                 <div>
-                  <label className="label">Etkinlik Türü *</label>
+                  <label className="label">Etkinlik TÃ¼rÃ¼ *</label>
                   <select className="input" value={formData.eventType} onChange={(e) => setFormData({...formData, eventType: e.target.value})}>
-                    <option value="">Seçiniz...</option>
+                    <option value="">SeÃ§iniz...</option>
                     <option value="Panel">Panel</option>
                     <option value="Konferans">Konferans</option>
-                    <option value="Atölye">Atölye</option>
+                    <option value="AtÃ¶lye">AtÃ¶lye</option>
                     <option value="Gezi">Gezi</option>
                   </select>
                 </div>
@@ -387,7 +387,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                 </div>
               </div>
               <div>
-                <label className="label">Etkinlik Amacý *</label>
+                <label className="label">Etkinlik AmacÄ± *</label>
                 <textarea className="input" rows={4} value={formData.eventPurpose} onChange={(e) => setFormData({...formData, eventPurpose: e.target.value})}></textarea>
               </div>
             </div>
@@ -405,40 +405,40 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                 <input type="text" className="input" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} />
               </div>
               <div>
-                <label className="label">Tahmini Katýlýmcý Sayýsý</label>
+                <label className="label">Tahmini KatÄ±lÄ±mcÄ± SayÄ±sÄ±</label>
                 <input type="number" className="input" value={formData.expectedCount} onChange={(e) => setFormData({...formData, expectedCount: e.target.value})} />
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '0.5rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                   <input type="checkbox" checked={formData.preregRequired} onChange={(e) => setFormData({...formData, preregRequired: e.target.checked})} style={{ width: '18px', height: '18px' }} />
-                  <span>Ön kayýt gerektirir</span>
+                  <span>Ã–n kayÄ±t gerektirir</span>
                 </label>
               </div>
             </div>
           )}
 
-          {/* STEP 3: Konuþmacýlar */}
+          {/* STEP 3: KonuÅŸmacÄ±lar */}
           {currentStep === 3 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Konuþmacýlarý Düzenle</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>KonuÅŸmacÄ±larÄ± DÃ¼zenle</h3>
                 <button type="button" onClick={addSpeaker} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
                   <Plus size={14} /> Yeni Ekle
                 </button>
               </div>
 
               {speakers.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db', color: 'var(--text-muted)' }}>Konuþmacý yok.</div>
+                <div style={{ textAlign: 'center', padding: '2rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db', color: 'var(--text-muted)' }}>KonuÅŸmacÄ± yok.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {speakers.map((s, index) => (
                     <div key={index} style={{ padding: '1.5rem', backgroundColor: s.is_cancelled ? 'var(--bg-danger-light)' : 'var(--bg-nested)', border: `1px solid ${s.is_cancelled ? 'var(--border-danger)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', position: 'relative', opacity: s.is_cancelled ? 0.7 : 1 }}>
                       {s.is_cancelled && (
-                        <div style={{ position: 'absolute', top: '1rem', left: '1rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--status-danger)', textTransform: 'uppercase' }}>ÝPTAL EDÝLECEK</div>
+                        <div style={{ position: 'absolute', top: '1rem', left: '1rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--status-danger)', textTransform: 'uppercase' }}>Ä°PTAL EDÄ°LECEK</div>
                       )}
                       
                       {s.is_cancelled ? (
-                         <button type="button" onClick={() => restoreSpeaker(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--color-primary)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>GERÝ AL</button>
+                         <button type="button" onClick={() => restoreSpeaker(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--color-primary)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>GERÄ° AL</button>
                       ) : (
                         <button type="button" onClick={() => removeSpeaker(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}>
                           <Trash2 size={18} />
@@ -456,7 +456,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                             onOtherChange={(val) => updateSpeaker(index, 'otherExpertise', val)}
                           />
                         </div>
-                        <div style={{ gridColumn: 'span 2' }}><label className="label">Konuþmacý Hakkýnda</label><textarea className="input" rows={2} value={s.about || ''} onChange={(e) => updateSpeaker(index, 'about', e.target.value)}></textarea></div>
+                        <div style={{ gridColumn: 'span 2' }}><label className="label">KonuÅŸmacÄ± HakkÄ±nda</label><textarea className="input" rows={2} value={s.about || ''} onChange={(e) => updateSpeaker(index, 'about', e.target.value)}></textarea></div>
                         <div style={{ gridColumn: 'span 2' }}>
                           <label className="label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             Sosyal Medya Linkleri
@@ -473,7 +473,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                             ))}
                           </div>
                         </div>
-                        <div style={{ gridColumn: 'span 2' }}><label className="label">Seçilme Nedeni</label><textarea className="input" rows={2} value={s.reason} onChange={(e) => updateSpeaker(index, 'reason', e.target.value)}></textarea></div>
+                        <div style={{ gridColumn: 'span 2' }}><label className="label">SeÃ§ilme Nedeni</label><textarea className="input" rows={2} value={s.reason} onChange={(e) => updateSpeaker(index, 'reason', e.target.value)}></textarea></div>
                       </div>
                     </div>
                   ))}
@@ -489,19 +489,19 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               {/* Shuttle */}
               <div style={{ border: `1px solid ${formData.logistics.hasShuttle ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasShuttle', !formData.logistics.hasShuttle)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasShuttle ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasShuttle} readOnly style={{ width: '18px', height: '18px' }} /> Araç / Servis Talebi
+                  <input type="checkbox" checked={formData.logistics.hasShuttle} readOnly style={{ width: '18px', height: '18px' }} /> AraÃ§ / Servis Talebi
                 </div>
                 {formData.logistics.hasShuttle && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div><label className="label">Tarih</label><input type="date" className="input" value={formData.logistics.shuttle.date} onChange={e => updateShuttle('date', e.target.value)} /></div>
-                    <div><label className="label">Araç Talebi</label><input type="text" className="input" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
-                    <div><label className="label">Kalkýþ Noktasý</label><input type="text" className="input" value={formData.logistics.shuttle.departurePoint} onChange={e => updateShuttle('departurePoint', e.target.value)} /></div>
-                    <div><label className="label">Varýþ Noktasý</label><input type="text" className="input" value={formData.logistics.shuttle.arrivalPoint} onChange={e => updateShuttle('arrivalPoint', e.target.value)} /></div>
-                    <div><label className="label">Hareket Saati (Gidiþ)</label><input type="time" className="input" value={formData.logistics.shuttle.departureTime} onChange={e => updateShuttle('departureTime', e.target.value)} /></div>
-                    <div><label className="label">Dönüþ Yeri</label><input type="text" className="input" value={formData.logistics.shuttle.returnPoint} onChange={e => updateShuttle('returnPoint', e.target.value)} /></div>
-                    <div><label className="label">Hareket Saati (Dönüþ)</label><input type="time" className="input" value={formData.logistics.shuttle.returnTime} onChange={e => updateShuttle('returnTime', e.target.value)} /></div>
+                    <div><label className="label">AraÃ§ Talebi</label><input type="text" className="input" value={formData.logistics.shuttle.description} onChange={e => updateShuttle('description', e.target.value)} /></div>
+                    <div><label className="label">KalkÄ±ÅŸ NoktasÄ±</label><input type="text" className="input" value={formData.logistics.shuttle.departurePoint} onChange={e => updateShuttle('departurePoint', e.target.value)} /></div>
+                    <div><label className="label">VarÄ±ÅŸ NoktasÄ±</label><input type="text" className="input" value={formData.logistics.shuttle.arrivalPoint} onChange={e => updateShuttle('arrivalPoint', e.target.value)} /></div>
+                    <div><label className="label">Hareket Saati (GidiÅŸ)</label><input type="time" className="input" value={formData.logistics.shuttle.departureTime} onChange={e => updateShuttle('departureTime', e.target.value)} /></div>
+                    <div><label className="label">DÃ¶nÃ¼ÅŸ Yeri</label><input type="text" className="input" value={formData.logistics.shuttle.returnPoint} onChange={e => updateShuttle('returnPoint', e.target.value)} /></div>
+                    <div><label className="label">Hareket Saati (DÃ¶nÃ¼ÅŸ)</label><input type="time" className="input" value={formData.logistics.shuttle.returnTime} onChange={e => updateShuttle('returnTime', e.target.value)} /></div>
                     <div><label className="label">Konum Linki</label><input type="text" className="input" value={formData.logistics.shuttle.locationLink} onChange={e => updateShuttle('locationLink', e.target.value)} /></div>
-                    <div style={{ gridColumn: 'span 2' }}><label className="label">Araç Sorumlusu (Ad, Tel)</label><input type="text" className="input" value={formData.logistics.shuttle.vehicleManager} onChange={e => updateShuttle('vehicleManager', e.target.value)} /></div>
+                    <div style={{ gridColumn: 'span 2' }}><label className="label">AraÃ§ Sorumlusu (Ad, Tel)</label><input type="text" className="input" value={formData.logistics.shuttle.vehicleManager} onChange={e => updateShuttle('vehicleManager', e.target.value)} /></div>
                   </div>
                 )}
               </div>
@@ -509,7 +509,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               {/* Aroma */}
               <div style={{ border: `1px solid ${formData.logistics.hasAroma ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasAroma', !formData.logistics.hasAroma)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAroma ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasAroma} readOnly style={{ width: '18px', height: '18px' }} /> Aromaterapi Yað Talebi
+                  <input type="checkbox" checked={formData.logistics.hasAroma} readOnly style={{ width: '18px', height: '18px' }} /> Aromaterapi YaÄŸ Talebi
                 </div>
                 {formData.logistics.hasAroma && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -517,52 +517,52 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                       <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         {formData.logistics.aroma.length > 1 && <button type="button" onClick={() => removeAroma(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                          <div><label className="label">Yað Çeþitleri</label><input type="text" className="input" value={a.oils} onChange={e => updateAroma(index, 'oils', e.target.value)} /></div>
-                          <div><label className="label">Miktarlarý</label><input type="text" className="input" value={a.amount} onChange={e => updateAroma(index, 'amount', e.target.value)} /></div>
-                          <div><label className="label">Kiþi Sayýsý</label><input type="number" className="input" value={a.peopleCount} onChange={e => updateAroma(index, 'peopleCount', e.target.value)} /></div>
+                          <div><label className="label">YaÄŸ Ã‡eÅŸitleri</label><input type="text" className="input" value={a.oils} onChange={e => updateAroma(index, 'oils', e.target.value)} /></div>
+                          <div><label className="label">MiktarlarÄ±</label><input type="text" className="input" value={a.amount} onChange={e => updateAroma(index, 'amount', e.target.value)} /></div>
+                          <div><label className="label">KiÅŸi SayÄ±sÄ±</label><input type="number" className="input" value={a.peopleCount} onChange={e => updateAroma(index, 'peopleCount', e.target.value)} /></div>
                           <div style={{ gridColumn: 'span 2' }}><label className="label">Ekstra Not</label><textarea className="input" rows={2} value={a.notes} onChange={e => updateAroma(index, 'notes', e.target.value)} /></div>
                         </div>
                       </div>
                     ))}
-                    <button type="button" onClick={addAroma} className="btn btn-outline" style={{ alignSelf: 'flex-start', fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}><Plus size={14}/> Formülasyon Ekle</button>
+                    <button type="button" onClick={addAroma} className="btn btn-outline" style={{ alignSelf: 'flex-start', fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}><Plus size={14}/> FormÃ¼lasyon Ekle</button>
                   </div>
                 )}
               </div>
 
-              {/* Temel Yaþam Desteði */}
+              {/* Temel YaÄŸam DesteÄŸi */}
               <div style={{ border: `1px solid ${formData.logistics.hasBasicLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> ?? Temel Yaþam Desteði Malzemeleri
+                  <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> ?? Temel YaÄŸam DesteÄŸi Malzemeleri
                 </div>
                 {formData.logistics.hasBasicLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    <label className="label">Malzeme Detaylarý</label>
+                    <label className="label">Malzeme DetaylarÄ±</label>
                     <textarea className="input" rows={2} value={formData.logistics.basicLifeSupportDetails} onChange={e => updateLogistics('basicLifeSupportDetails', e.target.value)}></textarea>
                   </div>
                 )}
               </div>
 
-              {/* Ýleri Yaþam Desteði */}
+              {/* Ä°leri YaÄŸam DesteÄŸi */}
               <div style={{ border: `1px solid ${formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> ?? Ýleri Yaþam Desteði Malzemeleri
+                  <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> ?? Ä°leri YaÄŸam DesteÄŸi Malzemeleri
                 </div>
                 {formData.logistics.hasAdvancedLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    <label className="label">Malzeme Detaylarý</label>
+                    <label className="label">Malzeme DetaylarÄ±</label>
                     <textarea className="input" rows={2} value={formData.logistics.advancedLifeSupportDetails} onChange={e => updateLogistics('advancedLifeSupportDetails', e.target.value)}></textarea>
                   </div>
                 )}
               </div>
 
-              {/* Sütur Eðitimi */}
+              {/* SÃ¼tur EÄŸitimi */}
               <div style={{ border: `1px solid ${formData.logistics.hasSutureTraining ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} /> ?? Sütur Eðitimi Malzemeleri
+                  <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} /> ?? SÃ¼tur EÄŸitimi Malzemeleri
                 </div>
                 {formData.logistics.hasSutureTraining && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    <label className="label">Malzeme Detaylarý</label>
+                    <label className="label">Malzeme DetaylarÄ±</label>
                     <textarea className="input" rows={2} value={formData.logistics.sutureTrainingDetails} onChange={e => updateLogistics('sutureTrainingDetails', e.target.value)}></textarea>
                   </div>
                 )}
@@ -571,7 +571,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               {/* Custom Requests */}
               <div style={{ border: `1px solid ${(formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div style={{ padding: '1rem', backgroundColor: (formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}>
-                  <span>Özel Talepler</span>
+                  <span>Ã–zel Talepler</span>
                   <button type="button" onClick={addCustomRequest} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', backgroundColor: 'var(--bg-card)' }}><Plus size={14} /> Yeni Talep</button>
                 </div>
                 {(formData.logistics.customRequests || []).length > 0 && (
@@ -580,7 +580,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
                       <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <button type="button" onClick={() => removeCustomRequest(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                          <div><label className="label">Talep Adý</label><input type="text" className="input" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
+                          <div><label className="label">Talep AdÄ±</label><input type="text" className="input" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
                           <div><label className="label">Detaylar</label><textarea className="input" rows={2} value={req.note} onChange={e => updateCustomRequest(index, 'note', e.target.value)}></textarea></div>
                         </div>
                       </div>
@@ -591,7 +591,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
 
               {/* Extra Notes */}
               <div>
-                <label className="label">Ekstra Ýletmek Ýstedikleriniz</label>
+                <label className="label">Ekstra Ä°letmek Ä°stedikleriniz</label>
                 <textarea className="input" rows={3} value={formData.logistics.extraNotes} onChange={e => updateLogistics('extraNotes', e.target.value)}></textarea>
               </div>
 
@@ -602,18 +602,18 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
         {/* Footer Actions */}
         <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--bg-nested)', display: 'flex', justifyContent: 'space-between' }}>
           <button type="button" onClick={handlePrev} disabled={currentStep === 1} className="btn btn-outline" style={{ opacity: currentStep === 1 ? 0.5 : 1 }}>
-            <ChevronLeft size={16} /> Önceki Adým
+            <ChevronLeft size={16} /> Ã–nceki AdÄ±m
           </button>
           
           <div style={{ display: 'flex', gap: '1rem' }}>
             {currentStep < 4 ? (
               <button type="button" onClick={handleNext} className="btn btn-primary">
-                Sonraki Adým <ChevronRight size={16} />
+                Sonraki AdÄ±m <ChevronRight size={16} />
               </button>
             ) : (
               <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="btn btn-primary" style={{ backgroundColor: 'var(--status-success)' }}>
                 {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                Revizeyi Onaya Gönder
+                Revizeyi Onaya GÃ¶nder
               </button>
             )}
           </div>

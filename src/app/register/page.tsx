@@ -224,7 +224,7 @@ const tealPrimary = '#0e9b8f';
           </div>
 
           <div style={{ display: 'inline-block', backgroundColor: 'var(--border-color)', color: '#475569', fontSize: '0.75rem', fontWeight: 600, padding: '0.25rem 0.75rem', borderRadius: '9999px', marginBottom: '2.5rem' }}>
-            Genellikle 1–3 iş günü
+            Genellikle 1ââ‚¬â€œ3 iş günü
           </div>
 
           <Link href="/login" className="btn" style={{ display: 'block', width: '100%', backgroundColor: redPrimary, color: 'white', padding: '0.875rem', fontWeight: 600, borderRadius: '8px', textDecoration: 'none' }}>
@@ -315,7 +315,7 @@ const tealPrimary = '#0e9b8f';
                     <label className="label">Bağlı Olduğu Birim *</label>
                     {isRepRole ? (
                       <div className="input" style={{ backgroundColor: redLight, color: redHover, fontWeight: 600, cursor: 'not-allowed', display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: redPrimary }}>
-                        🤝 Temsilcilikler Birimi
+                        ğÅ¸Â¤Â Temsilcilikler Birimi
                       </div>
                     ) : (
                       <select className="input" value={formData.unitName} onChange={e => { setFormData({...formData, unitName: e.target.value}); setErrors(prev => ({...prev, unitName: ''})); }} style={{ borderColor: errors.unitName ? '#dc2626' : undefined }}>
@@ -323,7 +323,6 @@ const tealPrimary = '#0e9b8f';
                         <option value="Sosyal Çalışmalar Birimi">Sosyal Çalışmalar Birimi</option>
                         <option value="Mesleki ve Kariyer Çalışmaları Birimi">Mesleki ve Kariyer Çalışmaları Birimi</option>
                         <option value="Bilimsel ve Akademik Çalışmalar Birimi">Bilimsel ve Akademik Çalışmalar Birimi</option>
-                        <option value="İletişim ve Planlama Birimi">İletişim ve Planlama Birimi</option>
                         <option value="Temsilcilikler Birimi">Temsilcilikler Birimi</option>
                         <option value="Bursiyer">Bursiyer (Birim Yok)</option>
                       </select>
@@ -433,12 +432,12 @@ const tealPrimary = '#0e9b8f';
                 <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
                   <div>
                     <label className="label">Şifre *</label>
-                    <input type="password" className="input" minLength={6} placeholder="••••••••" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
+                    <input type="password" className="input" minLength={6} placeholder="ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
                     {errors.password && <div className="error-text">{errors.password}</div>}
                   </div>
                   <div>
                     <label className="label">Şifre Tekrar *</label>
-                    <input type="password" className="input" minLength={6} placeholder="••••••••" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
+                    <input type="password" className="input" minLength={6} placeholder="ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
                     {errors.passwordConfirm && <div className="error-text">{errors.passwordConfirm}</div>}
                   </div>
                 </div>

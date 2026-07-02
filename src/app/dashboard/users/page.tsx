@@ -15,7 +15,7 @@ export default function UsersAdminPage() {
   const [activeUsers, setActiveUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Hiyerarþik aðaç için state (hangi bölgelerin açýk olduðunu tutar)
+  // HiyerarÅŸik aÄŸaÃ§ iÃ§in state (hangi bÃ¶lgelerin aÃ§Ä±k olduÄŸunu tutar)
   const [expandedRegions, setExpandedRegions] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -40,35 +40,35 @@ export default function UsersAdminPage() {
       setPendingUsers(pUsers);
       setActiveUsers(aUsers);
     } catch (err) {
-      console.error('Kullanýcýlar çekilirken hata:', err);
+      console.error('KullanÄ±cÄ±lar Ã§ekilirken hata:', err);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleApprove = async (userId: string, userName: string) => {
-    if (!confirm(`${userName} adlý kullanýcýnýn hesabýný onaylamak istiyor musunuz?`)) return;
+    if (!confirm(`${userName} adlÄ± kullanÄ±cÄ±nÄ±n hesabÄ±nÄ± onaylamak istiyor musunuz?`)) return;
 
     try {
       const { error } = await supabase.from('users').update({ is_approved: true }).eq('id', userId);
       if (error) throw error;
-      toast.success(`${userName} baþarýyla onaylandý.`);
+      toast.success(`${userName} baÅŸarÄ±yla onaylandÄ±.`);
       fetchUsers();
     } catch (err) {
-      toast.error('Onaylama sýrasýnda hata oluþtu: ' + (err as Error).message);
+      toast.error('Onaylama sÄ±rasÄ±nda hata oluÅŸtu: ' + (err as Error).message);
     }
   };
 
   const handleReject = async (userId: string, userName: string) => {
-    if (!confirm(`${userName} adlý kullanýcýnýn kaydýný tamamen SÝLMEK istiyor musunuz?`)) return;
+    if (!confirm(`${userName} adlÄ± kullanÄ±cÄ±nÄ±n kaydÄ±nÄ± tamamen SÄ°LMEK istiyor musunuz?`)) return;
 
     try {
       const { error } = await supabase.from('users').delete().eq('id', userId);
       if (error) throw error;
-      toast.success(`${userName} kaydý silindi.`);
+      toast.success(`${userName} kaydÄ± silindi.`);
       fetchUsers();
     } catch (err) {
-      toast.error('Silme sýrasýnda hata oluþtu: ' + (err as Error).message);
+      toast.error('Silme sÄ±rasÄ±nda hata oluÅŸtu: ' + (err as Error).message);
     }
   };
 
@@ -77,15 +77,15 @@ export default function UsersAdminPage() {
   };
 
   if (currentRole !== 'general_admin') {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>Yetkisiz Eriþim</div>;
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Yetkisiz EriÅŸim</div>;
   }
 
-  // Aktif kullanýcýlarý aðaç yapýsýna (Hiyerarþiye) dönüþtür
-  // Yapý: Region -> { manager: User[], universities: { UnivName: UnitHead[] } }
+  // Aktif kullanÄ±cÄ±larÄ± aÄŸaÃ§ yapÄ±sÄ±na (HiyerarÅŸiye) dÃ¶nÃ¼ÅŸtÃ¼r
+  // YapÄ±: Region -> { manager: User[], universities: { UnivName: UnitHead[] } }
   const treeData: Record<string, { managers: unknown[], universities: Record<string, unknown[]> }> = {};
 
   activeUsers.forEach(user => {
-    const region = user.region || 'Belirtilmeyen Bölge';
+    const region = user.region || 'Belirtilmeyen BÃ¶lge';
     if (!treeData[region]) {
       treeData[region] = { managers: [], universities: {} };
     }
@@ -93,22 +93,22 @@ export default function UsersAdminPage() {
     if (user.role === 'region_manager') {
       treeData[region].managers.push(user);
     } else if (user.role === 'unit_head') {
-      const univ = user.university || 'Belirtilmeyen Üniversite';
+      const univ = user.university || 'Belirtilmeyen Ã¼niversite';
       if (!treeData[region].universities[univ]) {
         treeData[region].universities[univ] = [];
       }
       treeData[region].universities[univ].push(user);
     }
-    // Diðer roller (general_admin, design_team vb.) bu aðaçta görünmeyebilir veya "Sistem Yöneticileri" bölgesine atýlabilir
+    // DiÄŸer roller (general_admin, design_team vb.) bu aÄŸaÃ§ta gÃ¶rÃ¼nmeyebilir veya "Sistem YÃ¶neticileri" bÃ¶lgesine atÄ±labilir
   });
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '4rem' }}>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Users size={24} color="var(--color-primary)" /> Kullanýcý ve Aðaç Yönetimi
+          <Users size={24} color="var(--color-primary)" /> KullanÄ±cÄ± ve AÄŸaÃ§ YÃ¶netimi
         </h1>
-        <p style={{ color: 'var(--text-muted)' }}>Sistemdeki kullanýcýlarý onaylayýn veya hiyerarþik yapýyý inceleyin.</p>
+        <p style={{ color: 'var(--text-muted)' }}>Sistemdeki kullanÄ±cÄ±larÄ± onaylayÄ±n veya hiyerarÅŸik yapÄ±yÄ± inceleyin.</p>
       </div>
 
       {/* Tabs */}
@@ -123,13 +123,13 @@ export default function UsersAdminPage() {
           onClick={() => setActiveTab('active')}
           style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'active' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'active' ? 'var(--color-primary)' : 'var(--text-muted)', fontWeight: activeTab === 'active' ? 600 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
-          Aktif Kullanýcý Aðacý
+          Aktif KullanÄ±cÄ± AÄŸacÄ±
         </button>
       </div>
 
       <div className="card">
         {isLoading ? (
-          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Yükleniyor...</div>
+          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>YÃ¼kleniyor...</div>
         ) : activeTab === 'pending' ? (
           // BEKLEYEN ONAYLAR TAB'i
           pendingUsers.length === 0 ? (
@@ -141,11 +141,11 @@ export default function UsersAdminPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
                 <thead>
                   <tr style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-muted)', textAlign: 'left' }}>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Kullanýcý</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Üniversite & Bölge</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Talep Ettiði Rol</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Ýletiþim & Öðr. No</th>
-                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', textAlign: 'right' }}>Ýþlemler</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>KullanÄ±cÄ±</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Ã¼niversite & BÃ¶lge</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Talep EttiÄŸi Rol</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)' }}>Ä°letiÅŸim & tÄ±r. No</th>
+                    <th style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-color)', textAlign: 'right' }}>Ä°ÅŸlemler</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,7 +165,7 @@ export default function UsersAdminPage() {
                       </td>
                       <td style={{ padding: '1rem' }}>
                         <div>{user.phone_number}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Öðr No: {user.student_id || '-'}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>tÄ±r No: {user.student_id || '-'}</div>
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'right', display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                         <button onClick={() => handleApprove(user.id, user.full_name)} className="btn" style={{ padding: '0.5rem', backgroundColor: 'var(--status-success)', color: 'white' }}>
@@ -182,42 +182,42 @@ export default function UsersAdminPage() {
             </div>
           )
         ) : (
-          // AKTÝF KULLANICI AÄžACI TAB'i
+          // AKTÄ°F KULLANICI AÄžACI TAB'i
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {Object.keys(treeData).length === 0 ? (
-              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Sistemde aktif kullanýcý bulunmuyor.</div>
+              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Sistemde aktif kullanÄ±cÄ± bulunmuyor.</div>
             ) : (
               Object.entries(treeData).sort(([a], [b]) => a.localeCompare(b)).map(([region, data]) => (
                 <div key={region} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                   
-                  {/* BÖLGE BAÅžLIÄžI */}
+                  {/* BÃ–LGE BAÅžLIÄžI */}
                   <div 
                     onClick={() => toggleRegion(region)}
                     style={{ padding: '1rem', backgroundColor: expandedRegions[region] ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', transition: 'all 0.2s' }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: expandedRegions[region] ? 'var(--color-primary)' : 'var(--text-main)' }}>
                       {expandedRegions[region] ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-                      {region} Bölgesi
+                      {region} BÃ¶lgesi
                     </div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', gap: '1rem' }}>
                       <span>Sorumlu: {data.managers.length}</span>
-                      <span>Üniversite: {Object.keys(data.universities).length}</span>
+                      <span>Ã¼niversite: {Object.keys(data.universities).length}</span>
                     </div>
                   </div>
 
-                  {/* BÖLGE ÝÇERÝÄžÝ */}
+                  {/* BÃ–LGE Ä±Ä±ERÄ±ÄžÄ± */}
                   {expandedRegions[region] && (
                     <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-color)' }}>
                       
-                      {/* BÖLGE SORUMLULARI */}
+                      {/* BÃ–LGE SORUMLULARI */}
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Bölge Sorumlularý</h4>
+                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>BÃ¶lge SorumlularÄ±</h4>
                         {data.managers.length === 0 ? (
-                          <div style={{ fontSize: '0.875rem', color: 'var(--status-danger)', fontStyle: 'italic' }}>Atanmýþ bölge sorumlusu yok!</div>
+                          <div style={{ fontSize: '0.875rem', color: 'var(--status-danger)', fontStyle: 'italic' }}>AtanmÄ±ÅŸ bÃ¶lge sorumlusu yok!</div>
                         ) : (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             {data.managers.map(mgr => (
-                              <div key={mgr.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 'var(--radius-sm)' }}>
+                              <div key={mgr.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-success-light)', border: '1px solid var(--border-success)', borderRadius: 'var(--radius-sm)' }}>
                                 <UserIcon size={18} color="#16a34a" />
                                 <div style={{ flex: 1 }}>
                                   <div style={{ fontWeight: 600, color: '#166534' }}>{mgr.full_name}</div>
@@ -229,16 +229,16 @@ export default function UsersAdminPage() {
                         )}
                       </div>
 
-                      {/* ÜNÝVERSÝTELER VE BÝRÝM BAÅžKANLARI */}
+                      {/* ÃœNÄ°VERSÄ°TELER VE BÄ°RÄ°M BAÅžKANLARI */}
                       <div>
-                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Baðlý Üniversiteler</h4>
+                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>BaÄŸlÄ± Ã¼niversiteler</h4>
                         {Object.keys(data.universities).length === 0 ? (
-                          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Bu bölgeye baðlý üniversite baþkaný bulunmuyor.</div>
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Bu bÃ¶lgeye baÄŸlÄ± Ã¼niversite baÅŸkanÄ± bulunmuyor.</div>
                         ) : (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
                             {Object.entries(data.universities).sort(([a], [b]) => a.localeCompare(b)).map(([univ, heads]) => (
                               <div key={univ} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-                                <div style={{ padding: '0.5rem 1rem', backgroundColor: '#f3f4f6', fontWeight: 600, fontSize: '0.875rem', borderBottom: '1px solid var(--border-color)' }}>
+                                <div style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--bg-nested)', fontWeight: 600, fontSize: '0.875rem', borderBottom: '1px solid var(--border-color)' }}>
                                   {univ}
                                 </div>
                                 <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -255,7 +255,7 @@ export default function UsersAdminPage() {
                                         <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{head.full_name}</div>
                                         <div style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: 500 }}>{head.unit_name}</div>
                                         <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                                          <div>Sýnýf: {head.class_year || 'Belirtilmedi'} | Bölüm: {head.department || 'Belirtilmedi'}</div>
+                                          <div>SÄ±nÄ±f: {head.class_year || 'Belirtilmedi'} | BÃ¶lÃ¼m: {head.department || 'Belirtilmedi'}</div>
                                           <div>No: {head.student_id || '-'}</div>
                                           <div>{head.phone_number}</div>
                                         </div>

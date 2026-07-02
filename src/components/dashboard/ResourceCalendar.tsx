@@ -77,7 +77,7 @@ export default function ResourceCalendar() {
 
           // A. Shuttle / Servis Talebi -> Ulaşım/Araç
           if (logData.hasShuttle && logData.shuttle) {
-            parsedFromEvents.push({
+            parsedFromevents.push({
               id: `${event.id}-shuttle`,
               eventId: event.id,
               eventName: event.event_name,
@@ -100,7 +100,7 @@ export default function ResourceCalendar() {
               `Formül ${idx + 1}: ${a.oils} (${a.amount}) - ${a.peopleCount} Kişilik`
             ).join(' | ');
 
-            parsedFromEvents.push({
+            parsedFromevents.push({
               id: `${event.id}-aroma`,
               eventId: event.id,
               eventName: event.event_name,
@@ -119,7 +119,7 @@ export default function ResourceCalendar() {
 
           // C. Temel Yaşam Desteği Talebi
           if (logData.hasBasicLifeSupport) {
-            parsedFromEvents.push({
+            parsedFromevents.push({
               id: `${event.id}-basic-life`,
               eventId: event.id,
               eventName: event.event_name,
@@ -138,7 +138,7 @@ export default function ResourceCalendar() {
 
           // D. İleri Yaşam Desteği Talebi
           if (logData.hasAdvancedLifeSupport) {
-            parsedFromEvents.push({
+            parsedFromevents.push({
               id: `${event.id}-advanced-life`,
               eventId: event.id,
               eventName: event.event_name,
@@ -157,7 +157,7 @@ export default function ResourceCalendar() {
 
           // E. Sütur Eğitimi Talebi
           if (logData.hasSutureTraining) {
-            parsedFromEvents.push({
+            parsedFromevents.push({
               id: `${event.id}-suture-training`,
               eventId: event.id,
               eventName: event.event_name,
@@ -177,7 +177,7 @@ export default function ResourceCalendar() {
           // D. Özel Talepler -> Serbest
           if (logData.customRequests && logData.customRequests.length > 0) {
             logData.customRequests.forEach((cr: Record<string, unknown>, idx: number) => {
-              parsedFromEvents.push({
+              parsedFromevents.push({
                 id: `${event.id}-custom-${idx}`,
                 eventId: event.id,
                 eventName: event.event_name,
@@ -243,7 +243,7 @@ export default function ResourceCalendar() {
       });
 
       // İki veri setini birleştir
-      const allMerged = [...parsedFromEvents, ...parsedFromDb];
+      const allMerged = [...parsedFromevents, ...parsedFromDb];
       setMergedReservations(allMerged);
 
     } catch (err) {
@@ -412,7 +412,7 @@ export default function ResourceCalendar() {
                           <td key={day} style={{ 
                             padding: '0.5rem 0.25rem', 
                             textAlign: 'center', 
-                            backgroundColor: isToday(day) ? '#fff5f5' : isWeekend ? '#fafbfd' : 'transparent',
+                            backgroundColor: isToday(day) ? 'var(--bg-danger-light)' : isWeekend ? 'var(--bg-nested)' : 'transparent',
                             borderLeft: '1px solid var(--border-color)',
                             position: 'relative',
                             height: '75px'
@@ -598,7 +598,7 @@ export default function ResourceCalendar() {
             {/* Modal Footer */}
             <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-nested)' }}>
               <span style={{ fontSize: '0.75rem', color: 'var(--status-success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                ● REZERVASYON ONAYLI
+                ââ€”Â REZERVASYON ONAYLI
               </span>
               <button className="btn btn-primary" onClick={() => setSelectedRes(null)} style={{ padding: '0.5rem 1.5rem', borderRadius: '20px' }}>
                 Kapat

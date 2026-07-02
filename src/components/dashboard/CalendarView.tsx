@@ -10,7 +10,6 @@ const UNIT_COLORS: Record<string, string> = {
   'Sosyal Çalışmalar Birimi': '#10b981', // Yeşil
   'Mesleki ve Kariyer Çalışmaları Birimi': '#ef4444', // Kırmızı
   'Bilimsel ve Akademik Çalışmalar Birimi': '#3b82f6', // Mavi
-  'İletişim ve Planlama Birimi': '#8b5cf6', // Mor
   'Temsilcilikler Birimi': '#f59e0b', // Amber / Turuncu
   'Diğer': '#64748b' // Gri
 };
@@ -76,15 +75,15 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
         query = query.eq('unit_name', unitToFilter);
       }
     } else if (userRole === 'unit_head') {
-      // Birim başkanı sadece kendi oluşturduğu etkinlikleri görmeli
-      if (userId) {
-        query = query.eq('created_by', userId);
-      } else {
-        // userId gelmemişse (yarış durumları için) auth'dan çekmeye çalış
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          query = query.eq('created_by', user.id);
-        }
+      // Birim başkanı kendi okulunun etkinliklerini görmeli
+      let universityToFilter = '';
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: userData } = await supabase.from('users').select('university').eq('id', user.id).single();
+        universityToFilter = userData?.university || '';
+      }
+      if (universityToFilter) {
+        query = query.eq('university', universityToFilter);
       }
     } else if (userRole === 'resource_manager') {
       // Kaynak sorumlusu sadece kendi biriminin onaylanmış/gerçekleşmiş etkinliklerini görmeli
@@ -381,7 +380,10 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
             FİLTRELER
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
-            <div>
+
+
+              {userRole !== 'unit_head' && (
+              <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.25rem', display: 'block' }}>Bölgeler (Çoklu Seçim)</label>
                 <select 
                   multiple 
@@ -403,15 +405,15 @@ export default function CalendarView({ userRole, userRegion, userId }: { userRol
                 </select>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>*Birden fazla seçmek için Ctrl/Cmd tuşuna basılı tutun. Hiçbiri seçili değilse tüm bölgeler gelir.</div>
               </div>
-
-              <div>
+            )}
+            
+            <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.25rem', display: 'block' }}>Birim Türü</label>
                 <select className="input" value={unitFilter} onChange={(e) => setUnitFilter(e.target.value)} style={{ width: '100%' }}>
                   <option value="">Tümü</option>
                   <option value="Sosyal Çalışmalar Birimi">Sosyal Çalışmalar Birimi</option>
                   <option value="Mesleki ve Kariyer Çalışmaları Birimi">Mesleki ve Kariyer Çalışmaları Birimi</option>
                   <option value="Bilimsel ve Akademik Çalışmalar Birimi">Bilimsel ve Akademik Çalışmalar Birimi</option>
-                  <option value="İletişim ve Planlama Birimi">İletişim ve Planlama Birimi</option>
                   <option value="Temsilcilikler Birimi">Temsilcilikler Birimi</option>
                 </select>
               </div>

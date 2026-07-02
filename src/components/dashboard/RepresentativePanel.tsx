@@ -206,7 +206,7 @@ export default function RepresentativePanel() {
                   {events.map(event => {
                     const posterStatus = event.poster_requests?.[0]?.status || 'Talep Edilmedi';
                     return (
-                      <tr key={event.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                      <tr key={event.id} style={{ borderBottom: '1px solid var(--border-inner)' }}>
                         <td style={{ padding: '1rem 0.5rem', fontWeight: 600 }}>{event.event_name}</td>
                         <td style={{ padding: '1rem 0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>{event.unit_name}</td>
                         <td style={{ padding: '1rem 0.5rem' }}>{new Date(event.event_date).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
@@ -287,7 +287,7 @@ export default function RepresentativePanel() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', minHeight: '380px' }}>
             {/* Empty days offset */}
             {Array.from({ length: startOffset }).map((_, idx) => (
-              <div key={`offset-${idx}`} style={{ backgroundColor: 'var(--bg-main)', borderRadius: '4px', border: '1px solid #f3f4f6', opacity: 0.4 }} />
+              <div key={`offset-${idx}`} style={{ backgroundColor: 'var(--bg-main)', borderRadius: '4px', border: '1px solid var(--border-inner)', opacity: 0.4 }} />
             ))}
 
             {/* Monthly calendar days */}

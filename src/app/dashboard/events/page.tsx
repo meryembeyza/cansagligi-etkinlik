@@ -43,7 +43,7 @@ export default function EventsPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'Taslak': return <span className="badge" style={{ backgroundColor: '#f3f4f6', color: 'var(--text-muted)' }}>Taslak</span>;
+      case 'Taslak': return <span className="badge" style={{ backgroundColor: 'var(--bg-nested)', color: 'var(--text-muted)' }}>Taslak</span>;
       case 'Onay Bekliyor': return <span className="badge badge-warning">Onay Bekliyor</span>;
       case 'Onaylandı': return <span className="badge badge-success">Onaylandı</span>;
       case 'Reddedildi': return <span className="badge badge-danger">Reddedildi</span>;

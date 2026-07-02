@@ -30,7 +30,7 @@ export default function DesignTeamPanel() {
       if (error) throw error;
       setRequests(data || []);
     } catch (error) {
-      console.error('Afiþ talepleri çekilemedi:', error);
+      console.error('AfiÅŸ talepleri Ã§ekilemedi:', error);
     } finally {
       setIsLoading(false);
     }
@@ -47,10 +47,10 @@ export default function DesignTeamPanel() {
     setProcessingId(requestId);
     try {
       if (file.size > 15 * 1024 * 1024) {
-        throw new Error('Dosya boyutu 15MB limitini aþýyor.');
+        throw new Error('Dosya boyutu 15MB limitini aÃ§Ä±yor.');
       }
 
-      // Dosya adýný güvenli hale getir ve benzersiz yap
+      // Dosya adÄ±nÄ± gÃ¼venli hale getir ve benzersiz yap
       const safeFilename = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
       const filePath = `${eventId}/${Date.now()}_${safeFilename}`;
 
@@ -72,24 +72,24 @@ export default function DesignTeamPanel() {
       const { error } = await supabase
         .from('poster_requests')
         .update({ 
-          status: 'Tamamlandý',
+          status: 'TamamlandÄ±',
           poster_url: publicUrl 
         })
         .eq('id', requestId);
 
       if (error) throw error;
 
-      // Bildirim Gönder (Etkinlik Sahibine)
+      // Bildirim GÃ¶nder (Etkinlik Sahibine)
       await supabase.from('notifications').insert([{
         user_id: eventCreatorId,
         event_id: eventId,
-        message: `Tasarým ekibi "${eventName}" etkinliði için afiþ dosyasýný yükledi.`,
+        message: `TasarÄ±m ekibi "${eventName}" etkinliÄŸi iÃ§in afiÅŸ dosyasÄ±nÄ± yÃ¼kledi.`,
         type: 'poster_update'
       }]);
 
       await fetchRequests();
     } catch (err) {
-      toast.error('Dosya yüklenirken hata oluþtu: ' + (err as Error).message);
+      toast.error('Dosya yÃ¼klenirken hata oluÅŸtu: ' + (err as Error).message);
     } finally {
       setProcessingId(null);
     }
@@ -100,7 +100,7 @@ export default function DesignTeamPanel() {
     try {
       const { error } = await supabase
         .from('poster_requests')
-        .update({ status: 'Hazýrlanýyor' })
+        .update({ status: 'HazÄ±rlanÄ±yor' })
         .eq('id', requestId);
 
       if (error) throw error;
@@ -118,21 +118,21 @@ export default function DesignTeamPanel() {
 
   return (
     <div className="card">
-      <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Aktif Afiþ Talepleri</h3>
+      <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Aktif AfiÅŸ Talepleri</h3>
       
       {requests.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)' }}>
           <Check size={48} color="var(--status-success)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Åžu an bekleyen veya devam eden bir afiþ talebi bulunmuyor.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Åžu an bekleyen veya devam eden bir afiÅŸ talebi bulunmuyor.</p>
         </div>
       ) : (
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid #eaeaea', textAlign: 'left' }}>
-              <th style={{ padding: '1rem 0.75rem' }}>Etkinlik Adý</th>
+              <th style={{ padding: '1rem 0.75rem' }}>Etkinlik AdÄ±</th>
               <th style={{ padding: '1rem 0.75rem' }}>Tarih</th>
               <th style={{ padding: '1rem 0.75rem' }}>Durum</th>
-              <th style={{ padding: '1rem 0.75rem' }}>Ýþlem</th>
+              <th style={{ padding: '1rem 0.75rem' }}>Ä°ÅŸlem</th>
             </tr>
           </thead>
           <tbody>
@@ -144,7 +144,7 @@ export default function DesignTeamPanel() {
                       onClick={() => setSelectedRequest(req)} 
                       style={{ color: 'var(--color-primary)', background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline', textAlign: 'left' }}
                     >
-                      {req.events?.event_name || 'Silinmiþ Etkinlik'}
+                      {req.events?.event_name || 'SilinmiÅŸ Etkinlik'}
                     </button>
                   </div>
                   {req.designer_notes && (
@@ -159,7 +159,7 @@ export default function DesignTeamPanel() {
                 <td style={{ padding: '1rem 0.75rem' }}>
                   <span className={`badge ${
                     req.status === 'Bekliyor' ? 'badge-pending' :
-                    req.status === 'Hazýrlanýyor' ? 'badge-warning' :
+                    req.status === 'HazÄ±rlanÄ±yor' ? 'badge-warning' :
                     req.status === 'Revizyon Gerekli' ? 'badge-danger' :
                     'badge-success'
                   }`}>
@@ -174,14 +174,14 @@ export default function DesignTeamPanel() {
                       onClick={() => markAsPreparing(req.id)}
                       disabled={processingId === req.id}
                     >
-                      {processingId === req.id ? <Loader2 size={14} className="animate-spin" /> : <Clock size={14} style={{ marginRight: '4px', display: 'inline' }}/>} Ýþleme Al
+                      {processingId === req.id ? <Loader2 size={14} className="animate-spin" /> : <Clock size={14} style={{ marginRight: '4px', display: 'inline' }}/>} Ä°ÅŸleme Al
                     </button>
                   )}
 
-                  {(req.status === 'Hazýrlanýyor' || req.status === 'Revizyon Gerekli') && (
+                  {(req.status === 'HazÄ±rlanÄ±yor' || req.status === 'Revizyon Gerekli') && (
                     <label className={`btn btn-primary ${processingId === req.id ? 'opacity-50 cursor-not-allowed' : ''}`} style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', backgroundColor: 'var(--status-success)', borderColor: 'var(--status-success)' }}>
                       {processingId === req.id ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />} 
-                      {req.status === 'Revizyon Gerekli' ? 'Yeni Versiyon Yükle' : 'Dosya Seç (Yükle)'}
+                      {req.status === 'Revizyon Gerekli' ? 'Yeni Versiyon YÃ¼kle' : 'Dosya SeÃ§ (YÃ¼kle)'}
                       <input 
                         type="file" 
                         style={{ display: 'none' }} 
@@ -192,9 +192,9 @@ export default function DesignTeamPanel() {
                     </label>
                   )}
 
-                  {req.status === 'Tamamlandý' && (
+                  {req.status === 'TamamlandÄ±' && (
                     <div style={{ color: 'var(--status-success)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 500 }}>
-                      <Check size={16} /> Gönderildi
+                      <Check size={16} /> GÃ¶nderildi
                     </div>
                   )}
                 </td>
@@ -208,12 +208,12 @@ export default function DesignTeamPanel() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div style={{ backgroundColor: 'var(--bg-card)', width: '100%', maxWidth: '550px', borderRadius: 'var(--radius-lg)', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
-              Afiþ Talebi Detaylarý
+              AfiÅŸ Talebi DetaylarÄ±
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>
               <div>
-                <strong style={{ color: 'var(--text-muted)' }}>Etkinlik Adý:</strong> 
+                <strong style={{ color: 'var(--text-muted)' }}>Etkinlik AdÄ±:</strong> 
                 <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 600 }}>
                   {selectedRequest.events?.event_name}
                 </div>
@@ -242,7 +242,7 @@ export default function DesignTeamPanel() {
               </div>
 
               <div>
-                <strong style={{ color: 'var(--text-muted)' }}>Konuþmacý(lar):</strong>
+                <strong style={{ color: 'var(--text-muted)' }}>KonuÅŸmacÄ±(lar):</strong>
                 <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                   {selectedRequest.events?.event_speakers && selectedRequest.events.event_speakers.length > 0
                     ? selectedRequest.events.event_speakers.map((s: EventSpeaker) => s.speakers?.full_name).join(', ')
@@ -251,23 +251,23 @@ export default function DesignTeamPanel() {
               </div>
 
               <div>
-                <strong style={{ color: 'var(--text-muted)' }}>Üniversite:</strong>
+                <strong style={{ color: 'var(--text-muted)' }}>Ã¼niversite:</strong>
                 <div style={{ padding: '0.5rem', backgroundColor: 'var(--bg-main)', borderRadius: '4px', marginTop: '0.25rem', fontWeight: 500 }}>
                   {selectedRequest.events?.university || '-'}
                 </div>
               </div>
 
               <div>
-                <strong style={{ color: 'var(--text-muted)' }}>Afiþte Bulunmasý Gereken Logolar:</strong>
-                <div style={{ padding: '0.75rem', backgroundColor: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '4px', marginTop: '0.25rem', whiteSpace: 'pre-wrap', fontWeight: 500 }}>
-                  {selectedRequest.required_logos || 'Belirtilmemiþ.'}
+                <strong style={{ color: 'var(--text-muted)' }}>AfiÅŸte BulunmasÄ± Gereken Logolar:</strong>
+                <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-info-light)', border: '1px solid var(--border-info)', borderRadius: '4px', marginTop: '0.25rem', whiteSpace: 'pre-wrap', fontWeight: 500 }}>
+                  {selectedRequest.required_logos || 'BelirtilmemiÅŸ.'}
                 </div>
               </div>
 
               <div>
                 <strong style={{ color: 'var(--text-muted)' }}>Dikkat Edilmesi Gerekenler:</strong>
                 <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-warning-light)', border: '1px solid #fde68a', borderRadius: '4px', marginTop: '0.25rem', whiteSpace: 'pre-wrap', fontWeight: 500 }}>
-                  {selectedRequest.special_instructions || 'Belirtilmemiþ.'}
+                  {selectedRequest.special_instructions || 'BelirtilmemiÅŸ.'}
                 </div>
               </div>
 
@@ -275,7 +275,7 @@ export default function DesignTeamPanel() {
                 <strong style={{ color: 'var(--text-muted)' }}>Etkinlik Onay Durumu:</strong>
                 <div style={{ marginTop: '0.25rem' }}>
                   <span className={`badge ${
-                    selectedRequest.events?.status === 'Onaylandý' ? 'badge-success' :
+                    selectedRequest.events?.status === 'OnaylandÄ±' ? 'badge-success' :
                     selectedRequest.events?.status?.includes('Onay') ? 'badge-pending' :
                     'badge-danger'
                   }`}>
