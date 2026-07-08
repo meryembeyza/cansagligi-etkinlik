@@ -228,7 +228,7 @@ export default function BursaryPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            ?? Bursiyer ve Mülakat Sistemi
+            🎓 Bursiyer ve Mülakat Sistemi
           </h1>
           <p style={{ color: 'var(--text-muted)' }}>Cansağlığı Vakfı bursiyer adayları mülakat planlama ve değerlendirme modülü</p>
         </div>
@@ -307,7 +307,7 @@ export default function BursaryPage() {
         {isRegionManager && (
           <div>
             <label className="label">Bölge</label>
-            <input type="text" className="input" disabled value={`?? ${userRegion.toUpperCase()}`} />
+            <input type="text" className="input" disabled value={`📍 ${userRegion.toUpperCase()}`} />
           </div>
         )}
 
@@ -329,7 +329,7 @@ export default function BursaryPage() {
       {/* Main Table area */}
       <div className="card" style={{ padding: '2rem' }}>
         <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          ?? Mülakat Randevu ve Takip Havuzu
+          📅 Mülakat Randevu ve Takip Havuzu
         </h3>
 
         {isLoading ? (
@@ -372,7 +372,7 @@ export default function BursaryPage() {
                     <td style={{ padding: '1rem 0.5rem' }}>
                       {cand.interview_date ? (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
-                          ?? {new Date(cand.interview_date).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' })}
+                          📅 {new Date(cand.interview_date).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       ) : (
                         <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Planlanmadı</span>
@@ -501,7 +501,7 @@ export default function BursaryPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Mülakat & Değerlendirme: {activeCandidate.full_name}</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>💬 Mülakat & Değerlendirme: {activeCandidate.full_name}</h2>
               <button onClick={() => setIsInterviewModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 

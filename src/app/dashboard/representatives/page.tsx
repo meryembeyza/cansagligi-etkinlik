@@ -478,14 +478,14 @@ export default function RepresentativesPage() {
       {/* PENDING TAB */}
       {activeTab === 'pending' && (
         <div className="card" style={{ padding: '2rem' }}>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem', color: '#92400e' }}>?? Onay Bekleyen Temsilci Kayıtları</h2>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem', color: '#92400e' }}>⏳ Onay Bekleyen Temsilci Kayıtları</h2>
           {isLoading ? (
             <LoadingState message="Temsilciler yükleniyor..." />
           ) : pendingReps.length === 0 ? (
             <EmptyState 
               icon={CheckCircle} 
               title="Her Şey Tamam" 
-              description="Onay bekleyen temsilci kaydı bulunmuyor. ??" 
+              description="Onay bekleyen temsilci kaydı bulunmuyor. ✅" 
             />
           ) : (
             <div style={{ overflowX: 'auto' }}>
@@ -575,7 +575,7 @@ export default function RepresentativesPage() {
             
             {isRegionManager ? (
               <div style={{ padding: '0.5rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', fontWeight: 700, borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                ?? {userRegion.toUpperCase()}
+                📍 {userRegion.toUpperCase()}
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -757,7 +757,7 @@ export default function RepresentativesPage() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? İletişim: {activeRep.full_name}</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>💬 İletişim: {activeRep.full_name}</h2>
               <button onClick={() => setIsCommModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 
@@ -770,7 +770,7 @@ export default function RepresentativesPage() {
                 className="btn btn-primary"
                 style={{ backgroundColor: '#25d366', borderColor: '#25d366', flex: 1, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', color: 'white', fontSize: '0.875rem' }}
               >
-                ?? WhatsApp Başlat
+                📱 WhatsApp Başlat
               </a>
               <a 
                 href={`mailto:${activeRep.email}`}

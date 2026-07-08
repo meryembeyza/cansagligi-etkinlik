@@ -53,7 +53,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
       { name: 'Ayarlar', icon: Settings, path: '/dashboard/settings' },
     ],
     design_team: [
-      { name: 'Afiş Talepleri', icon: PenTool, path: '/dashboard' },
+      { name: 'Afiş Talepleri', icon: PenTool, path: '/dashboard/afis-talepleri' },
     ],
     resource_manager: [
       { name: 'Rezervasyon Talepleri', icon: Briefcase, path: '/dashboard' },

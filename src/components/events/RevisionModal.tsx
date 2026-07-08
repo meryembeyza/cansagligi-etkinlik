@@ -532,7 +532,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               {/* Temel Yağam Desteği */}
               <div style={{ border: `1px solid ${formData.logistics.hasBasicLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> ?? Temel Yağam Desteği Malzemeleri
+                  <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🩺 Temel Yaşam Desteği Malzemeleri
                 </div>
                 {formData.logistics.hasBasicLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
@@ -545,7 +545,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               {/* İleri Yağam Desteği */}
               <div style={{ border: `1px solid ${formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> ?? İleri Yağam Desteği Malzemeleri
+                  <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} /> 🩺 İleri Yaşam Desteği Malzemeleri
                 </div>
                 {formData.logistics.hasAdvancedLifeSupport && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
@@ -558,7 +558,7 @@ export default function RevisionModal({ event, initialSpeakers, isManager, onClo
               {/* Sütur Eğitimi */}
               <div style={{ border: `1px solid ${formData.logistics.hasSutureTraining ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} /> ?? Sütur Eğitimi Malzemeleri
+                  <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} /> 🪡 Sütur Eğitimi Malzemeleri
                 </div>
                 {formData.logistics.hasSutureTraining && (
                   <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-card)' }}>

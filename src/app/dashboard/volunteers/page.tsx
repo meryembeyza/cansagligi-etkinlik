@@ -127,8 +127,7 @@ export default function VolunteersPage() {
       
       {/* Header */}
       <div>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          ğÅ¸Â¤Â Gönüllü Takip ve Üniversite Yapısı
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>👥 Gönüllü Takip ve Üniversite Yapısı
         </h1>
         <p style={{ color: 'var(--text-muted)' }}>Cansağlığı faaliyetlerine katılan üniversiteli aktif gönüllülerin dağılımı ve başarı sırası</p>
       </div>
@@ -193,7 +192,7 @@ export default function VolunteersPage() {
 
       {/* Main List */}
       <div className="card" style={{ padding: '2rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>ğÅ¸â€˜Â¥ Üniversite Gönüllü Havuzu</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>👥 Üniversite Gönüllü Havuzu</h3>
 
         {isLoading ? (
           <LoadingState message="Gönüllüler yükleniyor..." minHeight="200px" />

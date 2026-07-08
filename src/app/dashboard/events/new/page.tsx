@@ -245,7 +245,7 @@ export default function NewEventPage() {
                   },
                   body: JSON.stringify({
                     to: rm.email,
-                    subject: 'Yeni Etkinlik Onay Bekliyor ??',
+                    subject: 'Yeni Etkinlik Onay Bekliyor ⏳',
                     html: `<p>Merhaba,</p><p>Sorumlusu olduğunuz <strong>${safeRegion}</strong> bölgesi, <strong>${safeUnitName}</strong> birimi altındaki <strong>${safeUniversity}</strong>'nden yeni bir etkinlik onayınıza sunulmuştur.</p><p><strong>Etkinlik Adı:</strong> ${formData.eventName}</p><p>Sisteme giriş yaparak etkinliği inceleyebilir ve onaylayabilirsiniz.</p>`
                   })
                 }).catch(err => console.error('Manager e-posta hatası:', err));
@@ -458,7 +458,7 @@ export default function NewEventPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '0.5rem' }}>
                 <div style={{ padding: '1rem', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--color-primary)' }}>
                   <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    ?? Ramazan Takip Modülü Aktif
+                    🌙 Ramazan Takip Modülü Aktif
                   </h3>
                   <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
                     Bu etkinlik türünde konuşmacı, afiş veya lojistik adımları olmadan doğrudan kayıt ve takibi gerçekleştirebilirsiniz.
@@ -573,7 +573,7 @@ export default function NewEventPage() {
 
                   {/* ETKİNLİK FOTOĞRAFI UPLOAD */}
                   <div>
-                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>?? Etkinlik Fotoğrafı Yükle</label>
+                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>📸 Etkinlik Fotoğrafı Yükle</label>
                     <ImageUpload
                       bucket="posters"
                       value={formData.ramadan.photoUrlsJson}
@@ -589,7 +589,7 @@ export default function NewEventPage() {
 
                   {/* FİŞ / FATURA FOTOĞRAFI UPLOAD */}
                   <div>
-                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>?? Fiş / Fatura Görseli Yükle</label>
+                    <label className="label" style={{ marginBottom: '0.75rem', display: 'block' }}>🧾 Fiş / Fatura Görseli Yükle</label>
                     <ImageUpload
                       bucket="posters"
                       value={formData.ramadan.receiptPhotosJson}
@@ -613,8 +613,7 @@ export default function NewEventPage() {
                           ramadan: { ...formData.ramadan, cancelled: e.target.checked }
                         })} 
                         style={{ width: '18px', height: '18px' }} 
-                      />
-                      âÅ¡Â Ã¯Â¸Â Bu etkinlik İPTAL oldu
+                      />❌ Bu etkinlik İPTAL oldu
                     </label>
                     
                     {formData.ramadan.cancelled && (
@@ -644,7 +643,7 @@ export default function NewEventPage() {
                     className="btn btn-primary" 
                     style={{ backgroundColor: 'var(--status-success)', padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: 700 }}
                   >
-                    {isSaving ? 'Kaydediliyor...' : '?? Ramazan Etkinliğini Kaydet ve Gönder'}
+                    {isSaving ? 'Kaydediliyor...' : '🌙 Ramazan Etkinliğini Kaydet ve Gönder'}
                   </button>
                 </div>
               </div>
@@ -869,7 +868,7 @@ export default function NewEventPage() {
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasBasicLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasBasicLifeSupport} readOnly style={{ width: '18px', height: '18px' }} />
-                  ?? Temel Yaşam Desteği Malzemeleri Talebi
+                  🩺 Temel Yaşam Desteği Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasBasicLifeSupport && (
@@ -887,7 +886,7 @@ export default function NewEventPage() {
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasAdvancedLifeSupport} readOnly style={{ width: '18px', height: '18px' }} />
-                  ?? İleri Yaşam Desteği Malzemeleri Talebi
+                  🩺 İleri Yaşam Desteği Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasAdvancedLifeSupport && (
@@ -905,7 +904,7 @@ export default function NewEventPage() {
                   style={{ padding: '1rem', cursor: 'pointer', backgroundColor: formData.logistics.hasSutureTraining ? 'var(--color-primary-light)' : 'var(--bg-nested)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
                 >
                   <input type="checkbox" checked={formData.logistics.hasSutureTraining} readOnly style={{ width: '18px', height: '18px' }} />
-                  ?? Sütur Eğitimi Malzemeleri Talebi
+                  🪡 Sütur Eğitimi Malzemeleri Talebi
                 </div>
                 
                 {formData.logistics.hasSutureTraining && (

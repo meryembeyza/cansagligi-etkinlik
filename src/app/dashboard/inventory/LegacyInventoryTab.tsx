@@ -318,7 +318,7 @@ export function LegacyInventoryTab() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            ?? Envanter Talepleri & Kullanım Takibi
+            📦 Envanter Talepleri & Kullanım Takibi
           </h1>
           <p style={{ color: 'var(--text-muted)' }}>Cansağlığı kulüp tanıtımları, stantları ve etkinlikleri için malzeme lojistik modülü</p>
         </div>
@@ -405,7 +405,7 @@ export function LegacyInventoryTab() {
 
       {/* List table */}
       <div className="card" style={{ padding: '2rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>?? Malzeme Talep Başvuruları</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>📝 Malzeme Talep Başvuruları</h3>
 
         {isLoading ? (
           <LoadingState message="Envanter talepleri yükleniyor..." />
@@ -446,12 +446,12 @@ export function LegacyInventoryTab() {
                     <td style={{ padding: '1rem 0.5rem' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.25rem', fontSize: '0.8rem' }}>
                         {req.bez_canta > 0 && <div>???Ã¯Â¸Â Bez Çanta: <strong>{req.bez_canta}</strong></div>}
-                        {req.rozet > 0 && <div>??? Rozet: <strong>{req.rozet}</strong></div>}
+                        {req.rozet > 0 && <div>🏅 Rozet: <strong>{req.rozet}</strong></div>}
                         {req.etiket > 0 && <div>???Ã¯Â¸Â Etiket: <strong>{req.etiket}</strong></div>}
-                        {req.cepli_dosya > 0 && <div>?? Cepli Dosya: <strong>{req.cepli_dosya}</strong></div>}
-                        {req.defter > 0 && <div>?? Defter: <strong>{req.defter}</strong></div>}
+                        {req.cepli_dosya > 0 && <div>📁 Cepli Dosya: <strong>{req.cepli_dosya}</strong></div>}
+                        {req.defter > 0 && <div>📓 Defter: <strong>{req.defter}</strong></div>}
                         {req.kalem > 0 && <div>???Ã¯Â¸Â Kalem: <strong>{req.kalem}</strong></div>}
-                        {req.brosur > 0 && <div>?? Broşür: <strong>{req.brosur}</strong></div>}
+                        {req.brosur > 0 && <div>📄 Broşür: <strong>{req.brosur}</strong></div>}
                       </div>
                       {req.notes && (
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem', fontStyle: 'italic' }}>
@@ -462,7 +462,7 @@ export function LegacyInventoryTab() {
                       {/* Render usage report summary if finished */}
                       {req.envanter_usage_report && (
                         <div style={{ marginTop: '0.5rem', padding: '0.5rem', backgroundColor: 'var(--bg-success-light)', borderRadius: '4px', borderLeft: '3px solid #16a34a', fontSize: '0.75rem' }}>
-                          ?? <strong>Kullanım Raporu Girildi:</strong> Fiili Katılımcı: {req.envanter_usage_report.katilimci_sayisi} Kişi
+                          ✅ <strong>Kullanım Raporu Girildi:</strong> Fiili Katılımcı: {req.envanter_usage_report.katilimci_sayisi} Kişi
                         </div>
                       )}
                     </td>
@@ -558,15 +558,15 @@ export function LegacyInventoryTab() {
                     <input type="number" min={0} className="input" value={materials.etiket} onChange={e => setMaterials({...materials, etiket: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">??? Rozet</label>
+                    <label className="label">🏅 Rozet</label>
                     <input type="number" min={0} className="input" value={materials.rozet} onChange={e => setMaterials({...materials, rozet: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">?? Cepli Dosya</label>
+                    <label className="label">📁 Cepli Dosya</label>
                     <input type="number" min={0} className="input" value={materials.cepliDosya} onChange={e => setMaterials({...materials, cepliDosya: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
-                    <label className="label">?? Defter</label>
+                    <label className="label">📓 Defter</label>
                     <input type="number" min={0} className="input" value={materials.defter} onChange={e => setMaterials({...materials, defter: parseInt(e.target.value) || 0})} />
                   </div>
                   <div>
@@ -574,7 +574,7 @@ export function LegacyInventoryTab() {
                     <input type="number" min={0} className="input" value={materials.kalem} onChange={e => setMaterials({...materials, kalem: parseInt(e.target.value) || 0})} />
                   </div>
                   <div style={{ gridColumn: 'span 3' }}>
-                    <label className="label">?? Gönüllülük Broşürü</label>
+                    <label className="label">📄 Gönüllülük Broşürü</label>
                     <input type="number" min={0} className="input" value={materials.brosur} onChange={e => setMaterials({...materials, brosur: parseInt(e.target.value) || 0})} />
                   </div>
                 </div>
@@ -650,7 +650,7 @@ export function LegacyInventoryTab() {
           <div style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>?? Envanter Kullanım Raporu</h2>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>📊 Envanter Kullanım Raporu</h2>
               <button onClick={() => setIsReportModalOpen(false)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>
 

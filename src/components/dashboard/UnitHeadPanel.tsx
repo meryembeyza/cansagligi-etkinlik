@@ -27,6 +27,36 @@ export default function UnitHeadPanel() {
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [isSubmittingPoster, setIsSubmittingPoster] = useState(false);
 
+  
+  const handleDownloadPoster = (url: string) => {
+    if (!url || url === '#') {
+       toast.success('Afiş cihazınıza indiriliyor...');
+       return;
+    }
+    window.open(url, '_blank');
+  };
+
+  const handleRevizyonIste = async (posterRequestId: string) => {
+    const note = window.prompt('Revizyon isteğiniz (lütfen detaylandırın):');
+    if (!note) return;
+    
+    try {
+      const { error } = await supabase
+        .from('poster_requests')
+        .update({ 
+           status: 'Revizyon', 
+           designer_notes: note // We'll store it in designer_notes or a similar field. In this mock, designer_notes is used for notes.
+        })
+        .eq('id', posterRequestId);
+        
+      if (error) throw error;
+      toast.success('Revizyon talebiniz tasarım ekibine iletildi.');
+      fetchMyEvents();
+    } catch (err) {
+      toast.error('Hata oluştu: ' + (err as any).message);
+    }
+  };
+
   const fetchMyEvents = async () => {
     if (!user) return;
     setIsLoading(true);
@@ -283,11 +313,39 @@ export default function UnitHeadPanel() {
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                  {event.poster_requests && event.poster_requests.length > 0 && event.event_type !== 'Ramazan Etkinliği' ? (
+                  {event.event_type !== 'Ramazan Etkinliği' && (!event.poster_requests || event.poster_requests.length === 0) ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <button 
+                        className="btn btn-outline" 
+                        style={{ fontSize: '0.75rem', padding: '4px 8px' }} 
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPosterEvent(event); }}
+                      >
+                        Afiş İste
+                      </button>
+                    </div>
+                  ) : event.poster_requests && event.poster_requests.length > 0 && event.event_type !== 'Ramazan Etkinliği' ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span className="poster-status-badge">
                         {event.poster_requests[0].status}
                       </span>
+                      {event.poster_requests[0].status === 'Tamamlandı' && (
+                        <>
+                          <button 
+                            className="btn btn-success" 
+                            style={{ fontSize: '0.75rem', padding: '4px 8px', display: 'flex', gap: '4px', alignItems: 'center' }}
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDownloadPoster(event.poster_requests[0].file_url); }}
+                          >
+                            <Download size={12} /> İndir
+                          </button>
+                          <button 
+                            className="btn btn-outline" 
+                            style={{ fontSize: '0.75rem', padding: '4px 8px', color: '#dc2626', borderColor: '#dc2626' }}
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRevizyonIste(event.poster_requests[0].id); }}
+                          >
+                            Revizyon
+                          </button>
+                        </>
+                      )}
                     </div>
                   ) : <div></div>}
                   
