@@ -664,7 +664,7 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 9999
+          zIndex: 'var(--z-modal)'
         }}>
           <div style={{
             background: 'white',

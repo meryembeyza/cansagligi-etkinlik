@@ -217,6 +217,11 @@ export default function UnitHeadPanel() {
 
   return (
     <div className="unit-head-panel-main">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+        <Link href="/dashboard/reports" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e11d48', color: 'white' }}>
+          <FileText size={16} /> Gelişmiş Raporlar & PDF
+        </Link>
+      </div>
       {/* İstatistik / Uyarı Kartları */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
         <div className="card" style={reportNeededEvents.length > 0 ? { backgroundColor: 'var(--bg-danger-light)', border: '1px solid var(--border-danger)' } : { backgroundColor: 'var(--bg-inner-card)', border: '1px solid var(--border-inner)', borderRadius: '12px', padding: '24px' }}>

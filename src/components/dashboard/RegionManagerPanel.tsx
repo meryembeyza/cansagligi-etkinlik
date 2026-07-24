@@ -168,8 +168,14 @@ export default function RegionManagerPanel() {
   }
 
   return (
-    <div className="card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Link href="/dashboard/reports" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e11d48', color: 'white' }}>
+          <FileSearch size={16} /> Gelişmiş Raporlar & PDF
+        </Link>
+      </div>
+      <div className="card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h3 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-main)' }}>
           {isOwnRegion ? 'Bölge Onayı Bekleyen Etkinlikler' : `${selectedRegion} Bölgesi Etkinlikleri (Salt Okunur)`}
         </h3>
@@ -333,6 +339,7 @@ export default function RegionManagerPanel() {
           onClose={() => setDiffEventId(null)} 
         />
       )}
+      </div>
     </div>
   );
 }

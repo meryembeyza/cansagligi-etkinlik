@@ -1,5 +1,6 @@
 'use client';
 import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 
 import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Save, Plus, Trash2 } from 'lucide-react';
@@ -12,6 +13,18 @@ import ImageUpload from '@/components/ImageUpload';
 import ExpertiseMultiSelect from '@/components/ExpertiseMultiSelect';
 
 type Step = 1 | 2 | 3 | 4;
+
+const eventSchema = z.object({
+  eventName: z.string().min(3, 'Etkinlik adı en az 3 karakter olmalıdır.'),
+  eventType: z.string().min(1, 'Etkinlik türü seçmelisiniz.'),
+  otherEventType: z.string().optional(),
+  eventPurpose: z.string().min(10, 'Etkinlik amacı en az 10 karakter olmalıdır.'),
+  location: z.string().min(3, 'Mekan bilgisi gereklidir.'),
+  eventDate: z.string().min(1, 'Etkinlik tarihi gereklidir.'),
+  targetAudience: z.string().min(3, 'Hedef kitle gereklidir.'),
+  expectedCount: z.string().optional()
+});
+
 
 export default function NewEventPage() {
   const { currentRole, isLoading } = useRole();
@@ -125,11 +138,23 @@ export default function NewEventPage() {
       const { data: profile, error: profileErr } = await supabase.from('users').select('unit_name, university, region').eq('id', user.id).single();
       if (profileErr) throw new Error('Kullanıcı profili alınamadı.');
 
+      
       const finalEventType = formData.eventType === 'Diğer' ? formData.otherEventType : formData.eventType;
 
-      if (!formData.eventName || !finalEventType) {
-        throw new Error('Lütfen Adım 1\'deki Etkinlik Adı ve Türü alanlarını doldurun.');
+      if (formData.eventType !== 'Ramazan Etkinliği') {
+        try {
+          eventSchema.parse({
+            ...formData,
+            eventType: finalEventType
+          });
+        } catch (e) {
+          if (e instanceof z.ZodError) {
+            throw new Error(e.errors[0].message);
+          }
+          throw e;
+        }
       }
+
 
       const eventDateValue = formData.eventDate ? new Date(formData.eventDate).toISOString() : new Date().toISOString();
       const expectedCount = formData.expectedCount ? parseInt(formData.expectedCount) : null;
@@ -220,48 +245,7 @@ export default function NewEventPage() {
         postEventTasks.push(ramadanTask);
       }
 
-      // Bildirim Oluştur (Bölge Sorumluları İçin - Sadece aynı birim ve aynı bölge)
-      if (status === 'Onay Bekliyor') {
-        const notificationTask = (async () => {
-          const { data: rmData } = await supabase
-            .from('users')
-            .select('id, email')
-            .eq('role', 'region_manager')
-            .eq('region', safeRegion)
-            .eq('unit_name', safeUnitName); // Sadece aynı birimin bölge sorumlusu
-          
-          if (rmData && rmData.length > 0) {
-            const notifications = rmData.map(rm => ({
-              user_id: rm.id,
-              event_id: eventData.id,
-              message: `Bölgenizdeki ${safeUniversity}'nden yeni bir etkinlik ("${formData.eventName}") onaya gönderildi.`,
-              type: 'new_event_approval'
-            }));
-            await supabase.from('notifications').insert(notifications);
-
-            const { data: { session } } = await supabase.auth.getSession();
-            const token = session?.access_token || '';
-            // E-posta gönderimi (Arayüzü bekletmemek için await kullanılmıyor - Fire and forget)
-            for (const rm of rmData) {
-              if (rm.email) {
-                fetch('/api/send-email', {
-                  method: 'POST',
-                  headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                  },
-                  body: JSON.stringify({
-                    to: rm.email,
-                    subject: 'Yeni Etkinlik Onay Bekliyor ⏳',
-                    html: `<p>Merhaba,</p><p>Sorumlusu olduğunuz <strong>${safeRegion}</strong> bölgesi, <strong>${safeUnitName}</strong> birimi altındaki <strong>${safeUniversity}</strong>'nden yeni bir etkinlik onayınıza sunulmuştur.</p><p><strong>Etkinlik Adı:</strong> ${formData.eventName}</p><p>Sisteme giriş yaparak etkinliği inceleyebilir ve onaylayabilirsiniz.</p>`
-                  })
-                }).catch(err => console.error('Manager e-posta hatası:', err));
-              }
-            }
-          }
-        })();
-        postEventTasks.push(notificationTask);
-      }
+      // Bildirim oluşturma işlemi Supabase Database Trigger'a devredilmiştir.
 
 
       // Tüm bağımsız veritabanı işlemlerini aynı anda paralel çalıştır

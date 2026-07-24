@@ -295,6 +295,9 @@ export default function GeneralAdminPanel() {
         <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={exportToExcel}>
           <Download size={16} /> Excel İndir
         </button>
+        <Link href="/dashboard/reports" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#e11d48', color: 'white' }}>
+          <Download size={16} /> Gelişmiş Raporlar & PDF
+        </Link>
       </div>
 
       {/* Etkinlik Listesi */}

@@ -57,6 +57,15 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   
+  /* Z-Index Hierarchy */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 900;
+  --z-modal: 1000;
+  --z-popover: 1100;
+  --z-tooltip: 1200;
+
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 300ms ease-in-out;
 }
