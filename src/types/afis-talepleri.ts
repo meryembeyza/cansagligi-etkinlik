@@ -2,6 +2,9 @@ export type AfisDurumu = 'Bekliyor' | 'Hazırlanıyor' | 'Tamamlandı' | 'Revizy
 
 export interface AfisTalebi {
   id: string;
+  eventId?: string;
+  eventCreatorId?: string;
+  aciklama?: string;
   etkinlikAdi: string;
   universiteAdi: string;
   birim: 'Sosyal' | 'Mesleki' | 'Eğitim' | 'Diğer';
@@ -22,4 +25,8 @@ export interface AfisTalebi {
   // Revizyon için
   revizyonNotu?: string;
   revizyonİsteyen?: string;
+  creator?: {
+    full_name?: string;
+    phone?: string;
+  };
 }

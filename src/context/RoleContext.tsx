@@ -90,7 +90,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
       try {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
-        if (userError && userError.name !== 'AuthSessionMissingError' && !user(error as Error).message.includes('missing')) {
+        if (userError && userError.name !== 'AuthSessionMissingError' && !userError.message.includes('missing')) {
           console.error("getUser error:", userError);
         }
 

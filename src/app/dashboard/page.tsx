@@ -131,22 +131,24 @@ export default function DashboardPage() {
         </>
       )}
 
-      <div className="tab-group-pill">
-        <button 
-          className={`tab-pill-btn ${viewMode === 'list' ? 'active' : ''}`}
-          onClick={() => setViewMode('list')}
-        >
-          Yönetim Paneli
-        </button>
-        <button 
-          className={`tab-pill-btn ${viewMode === 'calendar' ? 'active' : ''}`}
-          onClick={() => setViewMode('calendar')}
-        >
-          Etkinlik Takvimi
-        </button>
-      </div>
+      {currentRole !== 'design_team' && (
+        <div className="tab-group-pill">
+          <button 
+            className={`tab-pill-btn ${viewMode === 'list' ? 'active' : ''}`}
+            onClick={() => setViewMode('list')}
+          >
+            Yönetim Paneli
+          </button>
+          <button 
+            className={`tab-pill-btn ${viewMode === 'calendar' ? 'active' : ''}`}
+            onClick={() => setViewMode('calendar')}
+          >
+            Etkinlik Takvimi
+          </button>
+        </div>
+      )}
 
-      {viewMode === 'calendar' ? (
+      {currentRole !== 'design_team' && viewMode === 'calendar' ? (
         <CalendarView userRole={currentRole || ''} userRegion={userData?.region || ''} userId={user?.id} />
       ) : (
         <>

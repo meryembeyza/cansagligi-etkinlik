@@ -294,7 +294,7 @@
 }
 .progressBarFill {
   height: 100%;
-  background: #F39C12;
+  background: #da1c15;
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -344,10 +344,10 @@
 }
 
 .btnPrimary {
-  background: #E67E22;
+  background: #da1c15;
   color: white;
 }
-.btnPrimary:hover { background: #d35400; }
+.btnPrimary:hover { background: #b31711; }
 
 .btnSecondary {
   background: #f3f4f6;
@@ -356,10 +356,10 @@
 .btnSecondary:hover { background: #e5e7eb; }
 
 .btnSuccess {
-  background: #27AE60;
+  background: #da1c15;
   color: white;
 }
-.btnSuccess:hover { background: #219653; }
+.btnSuccess:hover { background: #b31711; }
 
 .btnOutline {
   background: transparent;
@@ -370,11 +370,10 @@
   background: #f9fafb;
 }
 
-/* Warning Banner */
 .warningBanner {
-  background: #fff7ed;
-  border: 1px solid #fdba74;
-  color: #c2410c;
+  background: #fff0ef;
+  border: 1px solid #da1c15;
+  color: #a31010;
   padding: 12px 16px;
   border-radius: 12px;
   display: flex;
@@ -437,3 +436,8 @@
 :global(.dark) .cardActions { border-color: #374151; }
 :global(.dark) .tabsContainer { border-color: #374151; }
 :global(.dark) .progressBarBg { background: #374151; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
