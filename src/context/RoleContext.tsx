@@ -13,6 +13,7 @@ interface RoleContextType {
   user: User | null;
   userData: UserData | null;
   isLoading: boolean;
+  networkError: boolean;
   logout: () => Promise<void>;
 }
 
@@ -23,6 +24,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [networkError, setNetworkError] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -127,15 +129,13 @@ export function RoleProvider({ children }: { children: ReactNode }) {
       if (mounted) {
         setIsLoading(prev => {
           if (prev) {
-            console.warn('RoleContext: Force disabling isLoading due to timeout (7s).');
-            if (window.location.pathname?.startsWith('/dashboard')) {
-               window.location.href = '/login?error=session_error';
-            }
+            console.warn('RoleContext: Force disabling isLoading due to timeout (10s).');
+            setNetworkError(true);
           }
           return false;
         });
       }
-    }, 7000);
+    }, 10000);
 
     return () => {
       mounted = false;
@@ -145,12 +145,16 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = async () => {
+    localStorage.removeItem('event_draft');
+    localStorage.removeItem('revision_draft_' + userData?.id);
+    // Also clear any keys starting with 'revision_draft_'
+    Object.keys(localStorage).filter(k => k.startsWith('revision_draft_') || k.startsWith('event_draft')).forEach(k => localStorage.removeItem(k));
     await supabase.auth.signOut();
     router.push('/login');
   };
 
   return (
-    <RoleContext.Provider value={{ currentRole, user, userData, isLoading, logout }}>
+    <RoleContext.Provider value={{ currentRole, user, userData, isLoading, networkError, logout }}>
       {children}
     </RoleContext.Provider>
   );

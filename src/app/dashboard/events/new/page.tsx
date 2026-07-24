@@ -168,18 +168,25 @@ export default function NewEventPage() {
       const validSpeakers = speakers.filter(s => s.name);
       if (validSpeakers.length > 0) {
         const speakerTask = (async () => {
-            const speakerInserts = validSpeakers.map(s => ({
-              full_name: s.name,
-              title: s.title || 'Belirtilmedi',
-              linkedin_url: s.socialLinks?.[0] || null, // Sadece geriye dönük uyumluluk için ilk linki kaydediyoruz
-              about: s.about || null,
-              social_links: s.socialLinks || [], // Eğer veritabanında bu alan açılırsa buraya kaydedilecek
-              expertise_fields: s.expertiseFields || [],
-              other_expertise: s.otherExpertise || null
-            }));
-          
-          const { data: insertedSpeakers, error: speakerErr } = await supabase.from('speakers').insert(speakerInserts).select();
-          
+          const speakerInserts = validSpeakers.map(s => ({
+            full_name: s.name,
+            title: s.title || 'Belirtilmedi',
+            linkedin_url: s.socialLinks?.[0] || null,
+            about: s.about || null,
+            social_links: s.socialLinks || [],
+            expertise_fields: s.expertiseFields || [],
+            other_expertise: s.otherExpertise || null
+          }));
+
+          // Upsert: if speaker with same full_name exists, update; otherwise insert
+          const { data: insertedSpeakers, error: speakerErr } = await supabase
+            .from('speakers')
+            .upsert(speakerInserts, { 
+              onConflict: 'full_name',
+              ignoreDuplicates: false 
+            })
+            .select();
+
           if (insertedSpeakers && !speakerErr) {
             const eventSpeakerInserts = insertedSpeakers.map((s, idx) => ({
               event_id: eventData.id,

@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useRole } from '@/context/RoleContext';
 import { createClient } from '@/utils/supabase/client';
 const supabase = createClient();
@@ -24,7 +25,15 @@ interface BursaryEvent {
 }
 
 export default function BursaryPanelPage() {
-  const { currentRole, user } = useRole();
+  const { currentRole, user, isLoading: isRoleLoading } = useRole();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isRoleLoading && currentRole && currentRole !== 'bursary_student' && currentRole !== 'general_admin') {
+      router.push('/dashboard');
+    }
+  }, [currentRole, isRoleLoading, router]);
+
   const [events, setEvents] = useState<BursaryEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -13,19 +13,6 @@ interface RegionStat {
   activeCount: number;
 }
 
-const REGIONS = [
-  { name: 'Akdeniz', manager: 'Tuğba KIRIM', responsibility: 'Adana, Mersin, Antalya, İçel vb.' },
-  { name: 'Doğu Anadolu', manager: 'Furkan BAYHAN', responsibility: 'Erzurum, Rize, Trabzon, Van vb.' },
-  { name: 'Ege', manager: 'Abdullah KAYA', responsibility: 'İzmir, Aydın, Denizli, Muğla vb.' },
-  { name: 'Güneydoğu Anadolu', manager: 'Recep ÇETİN', responsibility: 'Gaziantep, Şanlıurfa, Diyarbakır, Mardin vb.' },
-  { name: 'Ankara', manager: 'Hasan SAY', responsibility: 'Ankara' },
-  { name: 'İç Anadolu', manager: 'Berire GÜLMEZ', responsibility: 'Konya, Kayseri, Sivas, Niğde vb.' },
-  { name: 'Karadeniz', manager: 'Hasan Sadık MAYDA', responsibility: 'Samsun, Ordu, Rize, Giresun vb.' },
-  { name: 'İstanbul Anadolu', manager: 'Rabia Nur MUTLU', responsibility: 'İstanbul (Anadolu Yakası)' },
-  { name: 'İstanbul Avrupa', manager: 'Zeynep Erva DOĞAN', responsibility: 'İstanbul (Avrupa Yakası)' },
-  { name: 'Marmara', manager: 'Yusuf ÖZTÜRKMEN', responsibility: 'Bursa, Eskişehir, Bilecik, Tekirdağ vb.' }
-];
-
 export default function RepHeadPanel() {
   const [stats, setStats] = useState({
     total: 0,
@@ -35,6 +22,7 @@ export default function RepHeadPanel() {
     regionManagersCount: 10
   });
   const [regionStats, setRegionStats] = useState<RegionStat[]>([]);
+  const [regionManagers, setRegionManagers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -47,6 +35,24 @@ export default function RepHeadPanel() {
           .eq('role', 'representative');
 
         if (error) throw error;
+        
+        // Fetch region managers
+        const { data: managers } = await supabase
+          .from('users')
+          .select('full_name, region, phone_number')
+          .eq('role', 'region_manager')
+          .eq('is_approved', true)
+          .order('region');
+          
+        const fetchedManagers = managers || [];
+        setRegionManagers(fetchedManagers);
+        
+        // Fetch bursary candidates
+        const { count: bursaryCount } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'bursary_student')
+          .eq('is_approved', true);
 
         // Calculate counts
         const totalCount = reps?.length || 0;
@@ -54,8 +60,10 @@ export default function RepHeadPanel() {
         let passive = 0;
 
         const regionCounts: Record<string, { total: number; active: number }> = {};
-        REGIONS.forEach(r => {
-          regionCounts[r.name.toLowerCase()] = { total: 0, active: 0 };
+        fetchedManagers.forEach(m => {
+          if (m.region) {
+            regionCounts[m.region.toLowerCase()] = { total: 0, active: 0 };
+          }
         });
 
         reps?.forEach(rep => {
@@ -64,6 +72,7 @@ export default function RepHeadPanel() {
           else passive++;
 
           const rName = rep.region ? rep.region.toString().toLowerCase() : '';
+          // Only count if there's a manager for this region
           if (regionCounts[rName]) {
             regionCounts[rName].total++;
             if (profileStatus === 'Aktif') regionCounts[rName].active++;
@@ -75,16 +84,16 @@ export default function RepHeadPanel() {
           total: totalCount,
           active,
           passive,
-          bursaryCandidates: 12, // Mock or fetch bursary candidates
-          regionManagersCount: REGIONS.length
+          bursaryCandidates: bursaryCount || 0,
+          regionManagersCount: fetchedManagers.length
         });
 
         // Map region stats
-        const mappedRegionStats = REGIONS.map(r => ({
-          name: r.name,
-          manager: r.manager,
-          count: regionCounts[r.name.toLowerCase()]?.total || 0,
-          activeCount: regionCounts[r.name.toLowerCase()]?.active || 0
+        const mappedRegionStats = fetchedManagers.map(m => ({
+          name: m.region || 'Bilinmiyor',
+          manager: m.full_name,
+          count: m.region && regionCounts[m.region.toLowerCase()] ? regionCounts[m.region.toLowerCase()].total : 0,
+          activeCount: m.region && regionCounts[m.region.toLowerCase()] ? regionCounts[m.region.toLowerCase()].active : 0
         }));
 
         setRegionStats(mappedRegionStats);

@@ -85,6 +85,58 @@ export default function RegionManagerPanel() {
 
       const targetEvent = events.find(e => e.id === eventId);
       
+      if (newStatus === 'Onaylandı') {
+        // Tasarım ekibine bildirim gönder
+        const { data: designTeam } = await supabase
+          .from('users')
+          .select('id')
+          .eq('role', 'design_team')
+          .eq('is_approved', true);
+
+        if (designTeam && designTeam.length > 0) {
+          const designNotifications = designTeam.map(dt => ({
+            user_id: dt.id,
+            event_id: eventId,
+            message: `"${targetEvent?.event_name}" etkinliği onaylandı. Afiş tasarımı için yeni talep oluşturuldu.`,
+            type: 'new_poster_request'
+          }));
+          await supabase.from('notifications').insert(designNotifications);
+        }
+
+        // Lojistik talepleri kontrolü
+        try {
+          const logisticsData = targetEvent?.budget_request ? JSON.parse(targetEvent.budget_request) : null;
+          const hasLogistics = logisticsData && (
+            logisticsData.hasShuttle || 
+            logisticsData.hasAroma || 
+            logisticsData.hasBasicLifeSupport || 
+            logisticsData.hasAdvancedLifeSupport || 
+            logisticsData.hasSutureTraining || 
+            (logisticsData.customRequests && logisticsData.customRequests.length > 0)
+          );
+
+          if (hasLogistics) {
+            const { data: resourceManagers } = await supabase
+              .from('users')
+              .select('id')
+              .eq('role', 'resource_manager')
+              .eq('is_approved', true);
+
+            if (resourceManagers && resourceManagers.length > 0) {
+              const logisticsNotifs = resourceManagers.map(rm => ({
+                user_id: rm.id,
+                event_id: eventId,
+                message: `"${targetEvent?.event_name}" etkinliği onaylandı ve lojistik talepleri mevcut. Lütfen inceleyiniz.`,
+                type: 'logistics_request'
+              }));
+              await supabase.from('notifications').insert(logisticsNotifs);
+            }
+          }
+        } catch (parseError) {
+          console.warn('Lojistik verisi ayrıştırılamadı:', parseError);
+        }
+      }
+
       // 3. Bildirim oluştur (Birim Başkanına)
       let notifMessage = '';
       if (newStatus === 'Onaylandı') notifMessage = `Tebrikler, "${targetEvent?.event_name}" etkinliğiniz Bölge Sorumlusu tarafından onaylandı.`;
