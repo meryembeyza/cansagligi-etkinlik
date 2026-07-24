@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { createClient } from '@/utils/supabase/server';
 
-// Rate limiting cache (memory-based for serverless instance)
-const rateLimit = new Map<string, { count: number, resetTime: number }>();
 
 export async function POST(request: Request) {
   try {
@@ -14,16 +12,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Rate Limiting: Max 5 emails per minute per user
-    const now = Date.now();
-    const userRate = rateLimit.get(user.id);
-    if (userRate && now < userRate.resetTime) {
-      if (userRate.count >= 5) {
-        return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    // Supabase-based rate limiting (works across serverless instances)
+    const windowStart = new Date(Date.now() - 60000).toISOString(); // 1 minute ago
+    const { data: existingLimit } = await supabase
+      .from('rate_limits')
+      .select('count, window_start')
+      .eq('user_id', user.id)
+      .eq('action', 'send_email')
+      .single();
+
+    if (existingLimit && new Date(existingLimit.window_start) > new Date(windowStart)) {
+      if (existingLimit.count >= 5) {
+        return NextResponse.json({ error: 'Çok fazla istek. Lütfen 1 dakika bekleyin.' }, { status: 429 });
       }
-      userRate.count++;
+      await supabase.from('rate_limits').update({ count: existingLimit.count + 1 }).eq('user_id', user.id).eq('action', 'send_email');
     } else {
-      rateLimit.set(user.id, { count: 1, resetTime: now + 60000 });
+      await supabase.from('rate_limits').upsert({ user_id: user.id, action: 'send_email', count: 1, window_start: new Date().toISOString() }, { onConflict: 'user_id,action' });
     }
 
     // Role-based Authorization
@@ -75,7 +79,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Email API Error:', error);
+    console.error('Email API Error:', (error as Error).message);
     return NextResponse.json({ error: (error as Error).message || 'Failed to send email' }, { status: 500 });
   }
 }

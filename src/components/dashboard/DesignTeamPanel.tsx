@@ -64,7 +64,7 @@ export default function DesignTeamPanel() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
         
         {/* Card 1: Bekliyor */}
-        <div style={{ background: 'white', borderRadius: '12px', padding: '20px', border: '1px solid #f0f0f0', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '20px', border: '1px solid var(--border-color)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '-15px', right: '-15px', opacity: 0.05, color: '#da1c15' }}><Clock size={100} /></div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <div style={{ padding: '8px', background: '#fff0ef', borderRadius: '8px', color: '#da1c15' }}><Clock size={20} /></div>
@@ -80,7 +80,7 @@ export default function DesignTeamPanel() {
         </div>
 
         {/* Card 2: Hazırlanıyor */}
-        <div style={{ background: 'white', borderRadius: '12px', padding: '20px', border: '1px solid #f0f0f0', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '20px', border: '1px solid var(--border-color)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '-15px', right: '-15px', opacity: 0.05, color: '#F39C12' }}><Pencil size={100} /></div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <div style={{ padding: '8px', background: '#fef5e7', borderRadius: '8px', color: '#F39C12' }}><Pencil size={20} /></div>
@@ -95,7 +95,7 @@ export default function DesignTeamPanel() {
         </div>
 
         {/* Card 3: Tamamlandı */}
-        <div style={{ background: 'white', borderRadius: '12px', padding: '20px', border: '1px solid #f0f0f0', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '20px', border: '1px solid var(--border-color)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '-15px', right: '-15px', opacity: 0.05, color: '#27AE60' }}><CheckCircle2 size={100} /></div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <div style={{ padding: '8px', background: '#e9f7ef', borderRadius: '8px', color: '#27AE60' }}><CheckCircle2 size={20} /></div>
@@ -110,7 +110,7 @@ export default function DesignTeamPanel() {
         </div>
 
         {/* Card 4: Revizyon */}
-        <div style={{ background: 'white', borderRadius: '12px', padding: '20px', border: '1px solid #f0f0f0', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '20px', border: '1px solid var(--border-color)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '-15px', right: '-15px', opacity: 0.05, color: '#da1c15' }}><AlertTriangle size={100} /></div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <div style={{ padding: '8px', background: '#fff0ef', borderRadius: '8px', color: '#da1c15' }}><AlertTriangle size={20} /></div>
@@ -125,7 +125,7 @@ export default function DesignTeamPanel() {
         </div>
       </div>
 
-      <div style={{ background: 'white', borderRadius: '12px', padding: '20px', border: '1px solid #f0f0f0' }}>
+      <div style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '20px', border: '1px solid var(--border-color)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>En Acil Bekleyen Talepler</h3>
         </div>
@@ -137,7 +137,7 @@ export default function DesignTeamPanel() {
             {urgentBekleyenler.map(req => {
               const days = getDaysDifference(req.events?.event_date);
               return (
-                <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#fafafa', borderRadius: '8px', border: '1px solid #eaeaea' }}>
+                <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'var(--bg-nested)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#fff0ef', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#da1c15' }}>
                       <CalendarDays size={20} />

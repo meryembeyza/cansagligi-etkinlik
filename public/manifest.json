@@ -1,0 +1,25 @@
+{
+  "name": "Cansağlığı Vakfı Etkinlik Yönetim Sistemi",
+  "short_name": "CansagligiEtkinlik",
+  "description": "Üniversite kulüplerinin etkinlik süreçlerini dijitalleştiren yönetim paneli.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#da1c15",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "education"],
+  "lang": "tr"
+}

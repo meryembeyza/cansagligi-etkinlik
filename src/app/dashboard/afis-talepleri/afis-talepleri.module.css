@@ -17,7 +17,7 @@
 .title {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -26,7 +26,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  background: var(--bg-surface, #ffffff);
+  background: var(--bg-card);
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -43,13 +43,13 @@
 .filterLabel {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-secondary, #4b5563);
+  color: var(--text-muted);
 }
 
 .dateFilterButtons {
   display: flex;
   gap: 8px;
-  background: var(--bg-muted, #f3f4f6);
+  background: var(--bg-nested);
   padding: 4px;
   border-radius: 8px;
 }
@@ -61,30 +61,30 @@
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-secondary, #4b5563);
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .dateBtn:hover {
-  background: var(--bg-hover, #e5e7eb);
+  background: var(--bg-hover);
 }
 
 .dateBtnActive {
-  background: var(--bg-surface, #ffffff);
-  color: var(--text-primary, #111827);
+  background: var(--bg-card);
+  color: var(--text-main);
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .selectInput, .searchInput {
   padding: 10px 16px;
-  border: 1px solid var(--border-color, #d1d5db);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s;
-  background: var(--bg-surface, #ffffff);
-  color: var(--text-primary, #111827);
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
 .selectInput:focus, .searchInput:focus {
@@ -114,7 +114,7 @@
 .tabsContainer {
   display: flex;
   gap: 8px;
-  border-bottom: 2px solid var(--border-color, #e5e7eb);
+  border-bottom: 2px solid var(--border-color);
   overflow-x: auto;
   padding-bottom: 2px;
 }
@@ -128,7 +128,7 @@
   background: transparent;
   font-size: 15px;
   font-weight: 500;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-muted);
   cursor: pointer;
   position: relative;
   transition: color 0.2s;
@@ -136,11 +136,11 @@
 }
 
 .tab:hover {
-  color: var(--text-primary, #111827);
+  color: var(--text-main);
 }
 
 .tabActive {
-  color: var(--text-primary, #111827);
+  color: var(--text-main);
   font-weight: 600;
 }
 
@@ -156,8 +156,8 @@
 }
 
 .tabBadge {
-  background: var(--bg-muted, #f3f4f6);
-  color: var(--text-secondary, #4b5563);
+  background: var(--bg-nested);
+  color: var(--text-muted);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -186,7 +186,7 @@
 .sectionTitle {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-main);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -201,11 +201,11 @@
 
 /* --- Card Styles --- */
 .card {
-  background: var(--bg-surface, #ffffff);
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-  border: 1px solid var(--border-color, #f3f4f6);
+  border: 1px solid var(--border-color);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
@@ -228,8 +228,12 @@
   margin: 0 0 4px 0;
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-main);
   line-height: 1.4;
+  transition: color 0.2s;
+}
+.eventLink:hover {
+  color: var(--color-primary);
 }
 
 .university {
@@ -237,7 +241,7 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-muted);
 }
 
 .birimBadge {
@@ -263,11 +267,11 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--text-secondary, #4b5563);
+  color: var(--text-muted);
 }
 .detailRow strong {
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-main);
 }
 
 .urgentText {
@@ -284,7 +288,7 @@
   justify-content: space-between;
   font-size: 12px;
   margin-bottom: 4px;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-muted);
 }
 .progressBarBg {
   height: 6px;
@@ -325,7 +329,7 @@
   gap: 8px;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid var(--border-color, #f3f4f6);
+  border-top: 1px solid var(--border-color);
 }
 
 .btn {
@@ -407,35 +411,7 @@
   }
 }
 
-/* Dark mode overrides (assuming next-themes or body class) */
-:global(.dark) .title { color: #f9fafb; }
-:global(.dark) .filterPanel, :global(.dark) .card { 
-  background: #1f2937; 
-  border-color: #374151;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-}
-:global(.dark) .dateBtnActive { background: #374151; color: #f9fafb; }
-:global(.dark) .dateBtn { color: #9ca3af; }
-:global(.dark) .dateBtn:hover { background: #374151; }
-:global(.dark) .dateFilterButtons { background: #111827; }
-:global(.dark) .selectInput, :global(.dark) .searchInput {
-  background: #374151;
-  border-color: #4b5563;
-  color: #f9fafb;
-}
-:global(.dark) .tab { color: #9ca3af; }
-:global(.dark) .tab:hover { color: #f9fafb; }
-:global(.dark) .tabActive { color: #f9fafb; }
-:global(.dark) .tabBadge { background: #374151; color: #d1d5db; }
-:global(.dark) .eventInfo h3, :global(.dark) .detailRow strong { color: #f9fafb; }
-:global(.dark) .university, :global(.dark) .detailRow { color: #9ca3af; }
-:global(.dark) .btnSecondary { background: #374151; color: #d1d5db; }
-:global(.dark) .btnSecondary:hover { background: #4b5563; }
-:global(.dark) .btnOutline { border-color: #4b5563; color: #d1d5db; }
-:global(.dark) .btnOutline:hover { background: #374151; }
-:global(.dark) .cardActions { border-color: #374151; }
-:global(.dark) .tabsContainer { border-color: #374151; }
-:global(.dark) .progressBarBg { background: #374151; }
+/* Removed static dark mode overrides because we use CSS variables now */
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }

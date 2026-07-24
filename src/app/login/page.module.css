@@ -92,7 +92,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--bg-main);
   padding: 48px 56px;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -108,14 +108,14 @@
 .title {
   font-size: 2rem;
   font-weight: 700;
-  color: #111;
+  color: var(--text-main);
   margin-bottom: 0.5rem;
   letter-spacing: -0.025em;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #555;
+  color: var(--text-muted);
   margin-bottom: 2.5rem;
 }
 
@@ -128,7 +128,7 @@
 .label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-main);
   margin-bottom: 6px;
 }
 
@@ -171,23 +171,22 @@
 .input {
   width: 100%;
   padding: 14px 16px 14px 44px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--border-color);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #111827;
-  background-color: #ffffff;
+  color: var(--text-main);
+  background-color: var(--bg-card);
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   transition: border-color 150ms ease, box-shadow 150ms ease;
   outline: none;
 }
 
-/* Chrome/Safari Autofill Override */
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover, 
 .input:-webkit-autofill:focus, 
 .input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
-  -webkit-text-fill-color: #111827 !important;
+  -webkit-box-shadow: 0 0 0 30px var(--bg-card) inset !important;
+  -webkit-text-fill-color: var(--text-main) !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 

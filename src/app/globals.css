@@ -356,7 +356,7 @@ a:hover {
 }
 
 .sidebar-link-hover:hover {
-  background-color: #f3f4f6 !important;
+  background-color: var(--bg-nested) !important;
 }
 
 .sidebar-menu-label {
@@ -390,7 +390,7 @@ a:hover {
 }
 
 .hover-bg-gray:hover {
-  background-color: #f3f4f6;
+  background-color: var(--bg-nested);
 }
 
 @media (max-width: 768px) {
@@ -653,7 +653,7 @@ a:hover {
   transition: all 150ms ease;
 }
 .sidebar-link:hover {
-  background-color: #f3f4f6;
+  background-color: var(--bg-nested);
 }
 .sidebar-link.active {
   padding-left: calc(16px - 3px);

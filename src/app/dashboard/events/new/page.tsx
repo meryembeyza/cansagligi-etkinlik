@@ -27,7 +27,8 @@ const eventSchema = z.object({
 
 
 export default function NewEventPage() {
-  const { currentRole, isLoading } = useRole();
+  const { currentRole, isLoading, userData } = useRole();
+  const isMesleki = userData?.unit_name?.includes('Mesleki');
   const router = useRouter();
   
   const [currentStep, setCurrentStep] = useState<Step>(1);
@@ -39,7 +40,7 @@ export default function NewEventPage() {
   // Client-side yetkilendirme kontrolü
   useEffect(() => {
     if (!isLoading && currentRole) {
-      const allowedRoles = ['unit_head', 'admin', 'representative'];
+      const allowedRoles = ['unit_head', 'general_admin', 'representative', 'rep_head', 'rep_coordinator', 'rep_region_manager'];
       if (!allowedRoles.includes(currentRole)) {
         router.push('/dashboard');
       }
@@ -822,6 +823,7 @@ export default function NewEventPage() {
               </div>
 
               {/* Aromaterapi Yağ Talebi */}
+              {isMesleki && (
               <div style={{ border: `1px solid ${formData.logistics.hasAroma ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasAroma', !formData.logistics.hasAroma)} 
@@ -851,8 +853,10 @@ export default function NewEventPage() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* Temel Yaşam Desteği Malzeme Talebi */}
+              {isMesleki && (
               <div style={{ border: `1px solid ${formData.logistics.hasBasicLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasBasicLifeSupport', !formData.logistics.hasBasicLifeSupport)} 
@@ -869,8 +873,10 @@ export default function NewEventPage() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* İleri Yaşam Desteği Malzeme Talebi */}
+              {isMesleki && (
               <div style={{ border: `1px solid ${formData.logistics.hasAdvancedLifeSupport ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasAdvancedLifeSupport', !formData.logistics.hasAdvancedLifeSupport)} 
@@ -887,8 +893,10 @@ export default function NewEventPage() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* Sütur Eğitimi Malzeme Talebi */}
+              {isMesleki && (
               <div style={{ border: `1px solid ${formData.logistics.hasSutureTraining ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                 <div 
                   onClick={() => updateLogistics('hasSutureTraining', !formData.logistics.hasSutureTraining)} 
@@ -905,6 +913,7 @@ export default function NewEventPage() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* Özel Talep Ekleme */}
               <div style={{ border: `1px solid ${(formData.logistics.customRequests || []).length > 0 ? 'var(--color-primary)' : '#eaeaea'}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
@@ -925,7 +934,7 @@ export default function NewEventPage() {
                       <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <button type="button" onClick={() => removeCustomRequest(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                          <div><label className="label">Talep Adı / Başlığı</label><input type="text" className="input" placeholder="Örn: Özel Ses Sistemi" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
+                          <div><label className="label">Talep Adı / Başlığı</label><input type="text" className="input" placeholder="Talebinizin başlığını yazınız" value={req.name} onChange={e => updateCustomRequest(index, 'name', e.target.value)} /></div>
                           <div><label className="label">Talep Detayları ve Notlar</label><textarea className="input" rows={2} placeholder="Talebinizin detaylarını buraya yazınız..." value={req.note} onChange={e => updateCustomRequest(index, 'note', e.target.value)}></textarea></div>
                         </div>
                       </div>

@@ -125,7 +125,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"} 
                   required 
                   className={styles.input} 
-                  placeholder="ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢" 
+                  placeholder="••••••••" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

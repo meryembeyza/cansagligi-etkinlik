@@ -22,8 +22,8 @@ export default function ResetPasswordPage() {
       setError('Şifreler eşleşmiyor.');
       return;
     }
-    if (password.length < 6) {
-      setError('Şifre en az 6 karakter olmalıdır.');
+    if (password.length < 8) {
+      setError('Şifre en az 8 karakter olmalıdır.');
       return;
     }
 

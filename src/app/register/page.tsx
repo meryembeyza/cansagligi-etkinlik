@@ -106,7 +106,8 @@ export default function RegisterPage() {
     setErrors({});
 
     const finalErrors: Record<string, string> = {};
-    if (formData.password.length < 6) finalErrors.password = 'Şifreniz en az 6 karakter olmalıdır.';
+    if (formData.password.length < 8) finalErrors.password = 'Şifreniz en az 8 karakter olmalıdır.';
+    if (!/(?=.*[0-9])|(?=.*[A-Z])/.test(formData.password)) finalErrors.password = 'Şifreniz en az bir rakam veya büyük harf içermelidir.';
     if (formData.password !== formData.passwordConfirm) finalErrors.passwordConfirm = 'Şifreler eşleşmiyor.';
     if (!formData.kvkkApproved) finalErrors.kvkkApproved = 'Devam edebilmek için KVKK metnini onaylamalısınız.';
 
@@ -207,24 +208,12 @@ const tealPrimary = '#0e9b8f';
                 <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>2</div>
                 Genel Yetkili onayı
               </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>3</div>
-                WhatsApp bildirimi alırsınız
-              </li>
             </ul>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem', color: 'var(--text-main)', backgroundColor: 'var(--border-color)', padding: '0.75rem', borderRadius: '8px' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-            </svg>
-            <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>
-              Onay bildirimi şu numaraya gelecek: <span style={{ fontWeight: 700 }}>{formData.phone}</span>
-            </span>
-          </div>
 
           <div style={{ display: 'inline-block', backgroundColor: 'var(--border-color)', color: '#475569', fontSize: '0.75rem', fontWeight: 600, padding: '0.25rem 0.75rem', borderRadius: '9999px', marginBottom: '2.5rem' }}>
-            Genellikle 1ââ‚¬â€œ3 iş günü
+            Genellikle 1-3 iş günü
           </div>
 
           <Link href="/login" className="btn" style={{ display: 'block', width: '100%', backgroundColor: redPrimary, color: 'white', padding: '0.875rem', fontWeight: 600, borderRadius: '8px', textDecoration: 'none' }}>
@@ -236,6 +225,15 @@ const tealPrimary = '#0e9b8f';
       </div>
     );
   }
+
+  const getPasswordStrength = (pwd: string) => {
+    if (pwd.length === 0) return null;
+    const score = [pwd.length >= 8, /[A-Z]/.test(pwd), /[0-9]/.test(pwd), /[^a-zA-Z0-9]/.test(pwd)].filter(Boolean).length;
+    if (score <= 1) return { label: 'Zayıf', color: '#dc2626', width: '25%' };
+    if (score === 2) return { label: 'Orta', color: '#f59e0b', width: '50%' };
+    if (score === 3) return { label: 'İyi', color: '#16a34a', width: '75%' };
+    return { label: 'Güçlü', color: '#059669', width: '100%' };
+  };
 
   return (
     <div className="auth-layout">
@@ -432,12 +430,20 @@ const tealPrimary = '#0e9b8f';
                 <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
                   <div>
                     <label className="label">Şifre *</label>
-                    <input type="password" className="input" minLength={6} placeholder="ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
+                    <input type="password" className="input" minLength={8} placeholder="••••••••" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
+                    {formData.password && (() => { const s = getPasswordStrength(formData.password); return s ? (
+                      <div style={{ marginTop: '0.5rem' }}>
+                        <div style={{ height: '4px', background: '#e5e7eb', borderRadius: '2px', overflow: 'hidden' }}>
+                          <div style={{ width: s.width, background: s.color, height: '100%', transition: 'all 0.3s ease' }}></div>
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: s.color, marginTop: '0.25rem', textAlign: 'right', fontWeight: 500 }}>{s.label}</div>
+                      </div>
+                    ) : null; })()}
                     {errors.password && <div className="error-text">{errors.password}</div>}
                   </div>
                   <div>
                     <label className="label">Şifre Tekrar *</label>
-                    <input type="password" className="input" minLength={6} placeholder="ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢ââ‚¬Â¢" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
+                    <input type="password" className="input" minLength={8} placeholder="••••••••" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
                     {errors.passwordConfirm && <div className="error-text">{errors.passwordConfirm}</div>}
                   </div>
                 </div>
@@ -445,7 +451,7 @@ const tealPrimary = '#0e9b8f';
                   <label className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : 'var(--border-color)'}` }}>
                     <input type="checkbox" checked={formData.kvkkApproved} onChange={e => { setFormData({...formData, kvkkApproved: e.target.checked}); setErrors(prev => ({...prev, kvkkApproved: ''})); }} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
                     <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
-                      Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve WhatsApp bildirimleri için işlenmesine <strong>açık rıza gösteriyorum.</strong>
+                      Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve işlenmesine <strong>açık rıza gösteriyorum.</strong>
                     </span>
                   </label>
                   {errors.kvkkApproved && <div className="error-text" style={{ marginTop: '0.5rem', paddingLeft: '0.25rem' }}>{errors.kvkkApproved}</div>}

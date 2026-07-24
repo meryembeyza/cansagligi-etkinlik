@@ -54,7 +54,7 @@ export default function ProfilePage() {
       });
       setAvatarUrl(data.avatar_url);
     } catch (err) {
-      console.error('Profil yüklenirken hata:', (err as Error).message);
+      toast.error('Profil yüklenirken bir hata oluştu.');
     } finally {
       setIsLoading(false);
     }

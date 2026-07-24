@@ -93,12 +93,12 @@ export function RoleProvider({ children }: { children: ReactNode }) {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
         if (userError && userError.name !== 'AuthSessionMissingError' && !userError.message.includes('missing')) {
-          console.error("getUser error:", userError);
+          console.error("Oturum kontrolünde bir hata oluştu.");
         }
 
         await handleSession(user ? { user } : null);
       } catch (error) {
-        console.error("Auth/Network error in RoleContext:", error);
+        console.error("RoleContext yüklenirken ağ veya yetki hatası oluştu.");
         if (mounted) {
           setUser(null);
           setUserData(null);
@@ -119,7 +119,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
       try {
         await handleSession(session);
       } catch (err) {
-        console.error("onAuthStateChange error:", err);
+        console.error("Oturum durumu güncellenirken hata oluştu.");
       } finally {
         if (mounted) setIsLoading(false);
       }

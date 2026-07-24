@@ -87,8 +87,8 @@ export default function DashboardPage() {
               margin-bottom: 28px;
             }
             .stat-card {
-              background: white;
-              border: 1px solid #f0f0f0;
+              background: var(--bg-card);
+              border: 1px solid var(--border-color);
               border-radius: 14px;
               padding: 20px 24px;
               box-shadow: 0 1px 4px rgba(0,0,0,0.06);

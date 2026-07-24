@@ -20,6 +20,7 @@ import { createClient } from '@/utils/supabase/client';
 import { toast } from 'react-hot-toast';
 import jsPDF from 'jspdf';
 import { AfisDurumu, AfisTalebi } from '../../../types/afis-talepleri';
+import Link from 'next/link';
 
 // Utility for dates
 const formatDate = (dateStr: string) => {
@@ -479,7 +480,9 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
       {/* Common Header */}
       <div className={styles.cardHeader}>
         <div className={styles.eventInfo}>
-          <h3>{request.events?.event_name}</h3>
+          <Link href={`/dashboard/events/${request.event_id}`} style={{ textDecoration: 'none' }}>
+            <h3 className={styles.eventLink}>{request.events?.event_name}</h3>
+          </Link>
           <div className={styles.university}>
             <span>{request.events?.university}</span>
           </div>
@@ -489,18 +492,7 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
         </span>
       </div>
 
-      {request.status === 'Hazırlanıyor' && (
-        <div style={{ padding: '0', marginTop: '-8px', marginBottom: '8px' }}>
-          <div className={styles.progressContainer}>
-            <div className={styles.progressBarBg}>
-              <div className={styles.progressBarFill} style={{ width: `${request.progress || 10}%` }}></div>
-            </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-              %{request.progress || 10} tamamlandı
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Progress bar removed based on user request */}
 
       {/* Specific Details Based on Status */}
       <div className={styles.cardDetails}>
@@ -599,26 +591,7 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
                 onChange={(e) => { const file = e.target.files?.[0]; if (file) onAfisYukle?.(request.id, file); }}
               />
             </label>
-            {!isEditingProgress ? (
-              <button className={`${styles.btn} ${styles.btnOutline}`} style={{ fontSize: '12px', padding: '4px 8px' }} onClick={() => setIsEditingProgress(true)}>
-                İlerlemeyi Güncelle
-              </button>
-            ) : (
-              <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
-                <input 
-                  type="number" 
-                  min="0" max="100" 
-                  value={progressVal} 
-                  onChange={e => setProgressVal(Number(e.target.value))} 
-                  style={{ width: '60px', padding: '4px', fontSize: '12px', border: '1px solid #ccc', borderRadius: '4px' }} 
-                />
-                <button className={`${styles.btn} ${styles.btnPrimary}`} style={{ fontSize: '12px', padding: '4px 8px', flex: 'none' }} onClick={() => {
-                  onUpdateProgress?.(request.id, progressVal);
-                  setIsEditingProgress(false);
-                }}>Kaydet</button>
-                <button className={`${styles.btn} ${styles.btnOutline}`} style={{ fontSize: '12px', padding: '4px 8px', flex: 'none' }} onClick={() => setIsEditingProgress(false)}>İptal</button>
-              </div>
-            )}
+      {/* Update progress button removed based on user request */}
           </>
         )}
 

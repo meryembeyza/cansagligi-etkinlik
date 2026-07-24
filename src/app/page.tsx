@@ -37,8 +37,8 @@ export default function Home() {
           transform: translateY(-1px);
         }
         .stat-card {
-          background: white;
-          border: 1px solid var(--border-inner);
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           border-radius: 16px;
           padding: 28px 40px;
           box-shadow: 0 2px 12px rgba(0,0,0,0.06);
@@ -59,8 +59,8 @@ export default function Home() {
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        backgroundColor: '#ffffff', 
-        borderBottom: '1px solid #e5e7eb',
+        backgroundColor: 'var(--bg-main)', 
+        borderBottom: '1px solid var(--border-color)',
         position: 'sticky',
         top: 0,
         zIndex: 50
@@ -79,7 +79,7 @@ export default function Home() {
         alignItems: 'center', 
         padding: '6rem 2rem 4rem', 
         textAlign: 'center', 
-        background: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'0.02\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E"), radial-gradient(ellipse 600px 400px at 85% 20%, rgba(220,38,38,0.06) 0%, transparent 70%), linear-gradient(135deg, #ffffff 0%, #fafafa 50%, #fff5f5 100%)',
+        background: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'0.02\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E"), radial-gradient(ellipse 600px 400px at 85% 20%, rgba(220,38,38,0.06) 0%, transparent 70%), linear-gradient(135deg, var(--bg-main) 0%, var(--bg-nested) 50%, var(--bg-main) 100%)',
         position: 'relative',
         zIndex: 1
       }}>
@@ -87,7 +87,7 @@ export default function Home() {
           fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', 
           fontWeight: 800, 
           marginBottom: '1.5rem', 
-          color: '#111827', 
+          color: 'var(--text-main)', 
           maxWidth: '900px',
           lineHeight: 1.15,
           letterSpacing: '-0.02em'
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
       </div>
 
-      <section style={{ backgroundColor: '#ffffff', padding: '4rem 2rem', display: 'flex', justifyContent: 'center', zIndex: 1 }}>
+      <section style={{ backgroundColor: 'var(--bg-main)', padding: '4rem 2rem', display: 'flex', justifyContent: 'center', zIndex: 1 }}>
         <div style={{
           display: 'flex',
           gap: '2rem',
@@ -132,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem', backgroundColor: '#ffffff' }}>
+      <footer style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', backgroundColor: 'var(--bg-main)' }}>
         &copy; {new Date().getFullYear()} Cansağlığı Vakfı. Tüm hakları saklıdır.
       </footer>
     </main>
