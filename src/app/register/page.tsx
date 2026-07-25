@@ -35,10 +35,12 @@ export default function RegisterPage() {
   });
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    if (!val.startsWith('+90')) {
-      val = '+90' + val.replace(/^\+90/, '');
+    let val = e.target.value.replace(/[^\d+]/g, '');
+    if (val.length > 0 && !val.startsWith('+') && !val.startsWith('0')) {
+      val = '0' + val;
     }
+    if (val.startsWith('+90') && val.length > 13) val = val.slice(0, 13);
+    if (val.startsWith('0') && val.length > 11) val = val.slice(0, 11);
     setFormData({ ...formData, phone: val });
   };
 
@@ -74,7 +76,15 @@ export default function RegisterPage() {
       }
     } else if (currentStep === 3) {
       if (!formData.email.trim() || !formData.email.includes('@')) newErrors.email = 'Geçerli bir e-posta giriniz.';
-      if (formData.phone.length < 10) newErrors.phone = 'Geçerli bir telefon numarası giriniz.';
+      if (!formData.phone) {
+        newErrors.phone = 'Telefon numarası zorunludur.';
+      } else {
+        const rawPhone = formData.phone.replace(/[\s\-\(\)]/g, '');
+        const turkishPhoneRegex = /^(\+90|0090|90|0)?5[0-9]{9}$/;
+        if (!turkishPhoneRegex.test(rawPhone)) {
+          newErrors.phone = 'Geçerli bir Türk cep numarası girin. (Örn: 05XX XXX XX XX veya +90 5XX...)';
+        }
+      }
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -201,11 +211,11 @@ const tealPrimary = '#0e9b8f';
             </h3>
             <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>1</div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#da1c15', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>1</div>
                 Başvurunuz inceleniyor
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#475569' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border-color)', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>2</div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#da1c15', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>2</div>
                 Genel Yetkili onayı
               </li>
             </ul>
@@ -213,10 +223,10 @@ const tealPrimary = '#0e9b8f';
 
 
           <div style={{ display: 'inline-block', backgroundColor: 'var(--border-color)', color: '#475569', fontSize: '0.75rem', fontWeight: 600, padding: '0.25rem 0.75rem', borderRadius: '9999px', marginBottom: '2.5rem' }}>
-            Genellikle 1-3 iş günü
+            Genellikle 1–3 iş günü
           </div>
 
-          <Link href="/login" className="btn" style={{ display: 'block', width: '100%', backgroundColor: redPrimary, color: 'white', padding: '0.875rem', fontWeight: 600, borderRadius: '8px', textDecoration: 'none' }}>
+          <Link href="/login" className="btn" style={{ display: 'block', width: '100%', backgroundColor: '#da1c15', color: 'white', padding: '0.875rem', fontWeight: 600, borderRadius: '8px', textDecoration: 'none' }}>
             Giriş Ekranına Dön
           </Link>
         </div>
@@ -293,8 +303,8 @@ const tealPrimary = '#0e9b8f';
                 <h3 className="step-title">Görev Seçimi ve Kurumsal Bilgiler</h3>
                 <div className="form-grid-2">
                   <div>
-                    <label className="label">Görev / Rol *</label>
-                    <select className="input" value={formData.role} onChange={e => { handleRoleChange(e.target.value); setErrors(prev => ({...prev, role: ''})); }} style={{ borderColor: errors.role ? '#dc2626' : undefined }}>
+                    <label htmlFor="reg-role" className="label">Görev / Rol *</label>
+                    <select id="reg-role" aria-required="true" aria-describedby={errors.role ? "reg-role-error" : undefined} className="input" value={formData.role} onChange={e => { handleRoleChange(e.target.value); setErrors(prev => ({...prev, role: ''})); }} style={{ borderColor: errors.role ? '#dc2626' : undefined }}>
                       <option value="">Seçiniz...</option>
                       <option value="unit_head">Birim Başkanı (Birim Sorumlusu)</option>
                       <option value="region_manager">Bölge Sorumlusu</option>
@@ -307,16 +317,16 @@ const tealPrimary = '#0e9b8f';
                       <option value="representative">Okul Temsilcisi</option>
                       <option value="bursary_student">Bursiyer Öğrenci</option>
                     </select>
-                    {errors.role && <div className="error-text">{errors.role}</div>}
+                    {errors.role && <div id="reg-role-error" className="error-text">{errors.role}</div>}
                   </div>
                   <div>
-                    <label className="label">Bağlı Olduğu Birim *</label>
+                    <label htmlFor="reg-unit" className="label">Bağlı Olduğu Birim *</label>
                     {isRepRole ? (
                       <div className="input" style={{ backgroundColor: redLight, color: redHover, fontWeight: 600, cursor: 'not-allowed', display: 'flex', alignItems: 'center', gap: '0.5rem', borderColor: redPrimary }}>
-                        ğÅ¸Â¤Â Temsilcilikler Birimi
+                        🤝 Temsilcilikler Birimi
                       </div>
                     ) : (
-                      <select className="input" value={formData.unitName} onChange={e => { setFormData({...formData, unitName: e.target.value}); setErrors(prev => ({...prev, unitName: ''})); }} style={{ borderColor: errors.unitName ? '#dc2626' : undefined }}>
+                      <select id="reg-unit" aria-required="true" aria-describedby={errors.unitName ? "reg-unit-error" : undefined} className="input" value={formData.unitName} onChange={e => { setFormData({...formData, unitName: e.target.value}); setErrors(prev => ({...prev, unitName: ''})); }} style={{ borderColor: errors.unitName ? '#dc2626' : undefined }}>
                         <option value="">Seçiniz...</option>
                         <option value="Sosyal Çalışmalar Birimi">Sosyal Çalışmalar Birimi</option>
                         <option value="Mesleki ve Kariyer Çalışmaları Birimi">Mesleki ve Kariyer Çalışmaları Birimi</option>
@@ -325,16 +335,16 @@ const tealPrimary = '#0e9b8f';
                         <option value="Bursiyer">Bursiyer (Birim Yok)</option>
                       </select>
                     )}
-                    {errors.unitName && <div className="error-text">{errors.unitName}</div>}
+                    {errors.unitName && <div id="reg-unit-error" className="error-text">{errors.unitName}</div>}
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label className="label">Üniversite *</label>
-                    <input type="text" className="input" placeholder="Örn: Boğaziçi Üniversitesi" value={formData.university} onChange={e => { setFormData({...formData, university: e.target.value}); setErrors(prev => ({...prev, university: ''})); }} style={{ borderColor: errors.university ? '#dc2626' : undefined }} />
-                    {errors.university && <div className="error-text">{errors.university}</div>}
+                    <label htmlFor="reg-university" className="label">Üniversite *</label>
+                    <input id="reg-university" aria-required="true" aria-describedby={errors.university ? "reg-university-error" : undefined} type="text" className="input" placeholder="Örn: Boğaziçi Üniversitesi" value={formData.university} onChange={e => { setFormData({...formData, university: e.target.value}); setErrors(prev => ({...prev, university: ''})); }} style={{ borderColor: errors.university ? '#dc2626' : undefined }} />
+                    {errors.university && <div id="reg-university-error" className="error-text">{errors.university}</div>}
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label className="label">Bölge *</label>
-                    <select className="input" value={formData.region} onChange={e => { setFormData({...formData, region: e.target.value}); setErrors(prev => ({...prev, region: ''})); }} style={{ borderColor: errors.region ? '#dc2626' : undefined }}>
+                    <label htmlFor="reg-region" className="label">Bölge *</label>
+                    <select id="reg-region" aria-required="true" aria-describedby={errors.region ? "reg-region-error" : undefined} className="input" value={formData.region} onChange={e => { setFormData({...formData, region: e.target.value}); setErrors(prev => ({...prev, region: ''})); }} style={{ borderColor: errors.region ? '#dc2626' : undefined }}>
                       <option value="">Seçiniz...</option>
                       <option value="İstanbul Avrupa">İstanbul Avrupa</option>
                       <option value="İstanbul Anadolu">İstanbul Anadolu</option>
@@ -347,7 +357,7 @@ const tealPrimary = '#0e9b8f';
                       <option value="Akdeniz">Akdeniz</option>
                       <option value="Karadeniz">Karadeniz</option>
                     </select>
-                    {errors.region && <div className="error-text">{errors.region}</div>}
+                    {errors.region && <div id="reg-region-error" className="error-text">{errors.region}</div>}
                   </div>
                 </div>
               </div>
@@ -359,13 +369,13 @@ const tealPrimary = '#0e9b8f';
                 <h3 className="step-title">Kimlik Bilgileri</h3>
                 <div className="form-grid">
                   <div>
-                    <label className="label">Ad - Soyad *</label>
-                    <input type="text" className="input" placeholder="Örn: Ali Yılmaz" value={formData.fullName} onChange={e => { setFormData({...formData, fullName: e.target.value}); setErrors(prev => ({...prev, fullName: ''})); }} style={{ borderColor: errors.fullName ? '#dc2626' : (formData.fullName ? tealPrimary : undefined) }} />
-                    {errors.fullName && <div className="error-text">{errors.fullName}</div>}
+                    <label htmlFor="reg-fullname" className="label">Ad - Soyad *</label>
+                    <input id="reg-fullname" aria-required="true" aria-describedby={errors.fullName ? "reg-fullname-error" : undefined} autoComplete="name" type="text" className="input" placeholder="Örn: Ali Yılmaz" value={formData.fullName} onChange={e => { setFormData({...formData, fullName: e.target.value}); setErrors(prev => ({...prev, fullName: ''})); }} style={{ borderColor: errors.fullName ? '#dc2626' : (formData.fullName ? tealPrimary : undefined) }} />
+                    {errors.fullName && <div id="reg-fullname-error" className="error-text">{errors.fullName}</div>}
                   </div>
                   <div>
-                    <label className="label">Öğrenci Numarası</label>
-                    <input type="text" className="input" placeholder="Opsiyonel" value={formData.studentId} onChange={e => setFormData({...formData, studentId: e.target.value})} />
+                    <label htmlFor="reg-studentid" className="label">Öğrenci Numarası</label>
+                    <input id="reg-studentid" type="text" className="input" placeholder="Opsiyonel" value={formData.studentId} onChange={e => setFormData({...formData, studentId: e.target.value})} />
                   </div>
                 </div>
 
@@ -374,11 +384,11 @@ const tealPrimary = '#0e9b8f';
                     <h4 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '1rem', color: redHover }}>Öğrenci & Birim Ek Bilgileri *</h4>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div>
-                        <input type="text" className="input" placeholder="Bölüm" value={formData.department} onChange={e => { setFormData({...formData, department: e.target.value}); setErrors(prev => ({...prev, department: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.department ? '#dc2626' : undefined }} />
-                        {errors.department && <div className="error-text">{errors.department}</div>}
+                        <input id="reg-department" aria-required="true" aria-describedby={errors.department ? "reg-department-error" : undefined} type="text" className="input" placeholder="Bölüm" value={formData.department} onChange={e => { setFormData({...formData, department: e.target.value}); setErrors(prev => ({...prev, department: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.department ? '#dc2626' : undefined }} />
+                        {errors.department && <div id="reg-department-error" className="error-text">{errors.department}</div>}
                       </div>
                       <div>
-                        <select className="input" value={formData.grade} onChange={e => { setFormData({...formData, grade: e.target.value}); setErrors(prev => ({...prev, grade: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.grade ? '#dc2626' : undefined }}>
+                        <select id="reg-grade" aria-required="true" aria-describedby={errors.grade ? "reg-grade-error" : undefined} className="input" value={formData.grade} onChange={e => { setFormData({...formData, grade: e.target.value}); setErrors(prev => ({...prev, grade: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.grade ? '#dc2626' : undefined }}>
                           <option value="">Sınıf Seçiniz</option>
                           <option value="Hazırlık">Hazırlık</option>
                           <option value="1. Sınıf">1. Sınıf</option>
@@ -388,15 +398,15 @@ const tealPrimary = '#0e9b8f';
                           <option value="Yüksek Lisans">Yüksek Lisans</option>
                           <option value="Doktora">Doktora</option>
                         </select>
-                        {errors.grade && <div className="error-text">{errors.grade}</div>}
+                        {errors.grade && <div id="reg-grade-error" className="error-text">{errors.grade}</div>}
                       </div>
                       <div>
-                        <input type="text" className="input" placeholder="Kulüpteki Görevi" value={formData.clubDuty} onChange={e => { setFormData({...formData, clubDuty: e.target.value}); setErrors(prev => ({...prev, clubDuty: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.clubDuty ? '#dc2626' : undefined }} />
-                        {errors.clubDuty && <div className="error-text">{errors.clubDuty}</div>}
+                        <input id="reg-clubduty" aria-required="true" aria-describedby={errors.clubDuty ? "reg-clubduty-error" : undefined} type="text" className="input" placeholder="Kulüpteki Görevi" value={formData.clubDuty} onChange={e => { setFormData({...formData, clubDuty: e.target.value}); setErrors(prev => ({...prev, clubDuty: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.clubDuty ? '#dc2626' : undefined }} />
+                        {errors.clubDuty && <div id="reg-clubduty-error" className="error-text">{errors.clubDuty}</div>}
                       </div>
                       <div>
-                        <input type="url" className="input" placeholder="NSosyal Linki" value={formData.nsosyalAccount} onChange={e => { setFormData({...formData, nsosyalAccount: e.target.value}); setErrors(prev => ({...prev, nsosyalAccount: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.nsosyalAccount ? '#dc2626' : undefined }} />
-                        {errors.nsosyalAccount && <div className="error-text">{errors.nsosyalAccount}</div>}
+                        <input id="reg-nsosyal" aria-required="true" aria-describedby={errors.nsosyalAccount ? "reg-nsosyal-error" : undefined} type="url" className="input" placeholder="NSosyal Linki" value={formData.nsosyalAccount} onChange={e => { setFormData({...formData, nsosyalAccount: e.target.value}); setErrors(prev => ({...prev, nsosyalAccount: ''})); }} style={{ fontSize: '0.875rem', borderColor: errors.nsosyalAccount ? '#dc2626' : undefined }} />
+                        {errors.nsosyalAccount && <div id="reg-nsosyal-error" className="error-text">{errors.nsosyalAccount}</div>}
                       </div>
                     </div>
                   </div>
@@ -410,14 +420,32 @@ const tealPrimary = '#0e9b8f';
                 <h3 className="step-title">İletişim Bilgileri</h3>
                 <div className="form-grid">
                   <div>
-                    <label className="label">E-posta Adresi *</label>
-                    <input type="email" className="input" placeholder="ornek@edu.tr" value={formData.email} onChange={e => { setFormData({...formData, email: e.target.value}); setErrors(prev => ({...prev, email: ''})); }} style={{ borderColor: errors.email ? '#dc2626' : undefined }} />
-                    {errors.email && <div className="error-text">{errors.email}</div>}
+                    <label htmlFor="reg-email" className="label">E-posta Adresi *</label>
+                    <input id="reg-email" aria-required="true" aria-describedby={errors.email ? "reg-email-error" : undefined} autoComplete="email" type="email" className="input" placeholder="ornek@edu.tr" value={formData.email} onChange={e => { setFormData({...formData, email: e.target.value}); setErrors(prev => ({...prev, email: ''})); }} style={{ borderColor: errors.email ? '#dc2626' : undefined }} />
+                    {errors.email && <div id="reg-email-error" className="error-text">{errors.email}</div>}
                   </div>
                   <div>
-                    <label className="label">Telefon Numarası *</label>
-                    <input type="text" className="input" value={formData.phone} onChange={e => { handlePhoneChange(e); setErrors(prev => ({...prev, phone: ''})); }} placeholder="+90 5XX XXX XX XX" style={{ borderColor: errors.phone ? '#dc2626' : undefined }} />
-                    {errors.phone && <div className="error-text">{errors.phone}</div>}
+                    <label htmlFor="reg-phone" className="label">Telefon Numarası *</label>
+                    <input
+                      id="reg-phone"
+                      aria-required="true"
+                      aria-describedby={errors.phone ? 'reg-phone-error' : undefined}
+                      autoComplete="tel"
+                      type="tel"
+                      inputMode="numeric"
+                      className="input"
+                      value={formData.phone}
+                      onChange={e => { handlePhoneChange(e); setErrors(prev => ({...prev, phone: ''})); }}
+                      placeholder="+90 5XX XXX XX XX"
+                      maxLength={15}
+                      style={{ borderColor: errors.phone ? '#dc2626' : undefined }}
+                    />
+                    {errors.phone && <div id="reg-phone-error" className="error-text">{errors.phone}</div>}
+                    {formData.phone && formData.phone.length > 3 && !errors.phone && (
+                      <div style={{ fontSize: '0.8rem', color: '#16a34a', marginTop: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        ✓ Format geçerli görünüyor
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -429,8 +457,8 @@ const tealPrimary = '#0e9b8f';
                 <h3 className="step-title">Güvenlik ve Onay</h3>
                 <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
                   <div>
-                    <label className="label">Şifre *</label>
-                    <input type="password" className="input" minLength={8} placeholder="••••••••" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
+                    <label htmlFor="reg-password" className="label">Şifre *</label>
+                    <input id="reg-password" aria-required="true" aria-describedby={errors.password ? "reg-password-error" : undefined} autoComplete="new-password" type="password" className="input" minLength={8} placeholder="Şifrenizi oluşturun" value={formData.password} onChange={e => { setFormData({...formData, password: e.target.value}); setErrors(prev => ({...prev, password: ''})); }} style={{ borderColor: errors.password ? '#dc2626' : undefined }} />
                     {formData.password && (() => { const s = getPasswordStrength(formData.password); return s ? (
                       <div style={{ marginTop: '0.5rem' }}>
                         <div style={{ height: '4px', background: '#e5e7eb', borderRadius: '2px', overflow: 'hidden' }}>
@@ -439,22 +467,22 @@ const tealPrimary = '#0e9b8f';
                         <div style={{ fontSize: '0.75rem', color: s.color, marginTop: '0.25rem', textAlign: 'right', fontWeight: 500 }}>{s.label}</div>
                       </div>
                     ) : null; })()}
-                    {errors.password && <div className="error-text">{errors.password}</div>}
+                    {errors.password && <div id="reg-password-error" className="error-text">{errors.password}</div>}
                   </div>
                   <div>
-                    <label className="label">Şifre Tekrar *</label>
-                    <input type="password" className="input" minLength={8} placeholder="••••••••" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
-                    {errors.passwordConfirm && <div className="error-text">{errors.passwordConfirm}</div>}
+                    <label htmlFor="reg-passwordconfirm" className="label">Şifre Tekrar *</label>
+                    <input id="reg-passwordconfirm" aria-required="true" aria-describedby={errors.passwordConfirm ? "reg-passwordconfirm-error" : undefined} autoComplete="new-password" type="password" className="input" minLength={8} placeholder="Şifrenizi tekrar girin" value={formData.passwordConfirm} onChange={e => { setFormData({...formData, passwordConfirm: e.target.value}); setErrors(prev => ({...prev, passwordConfirm: ''})); }} style={{ borderColor: errors.passwordConfirm ? '#dc2626' : undefined }} />
+                    {errors.passwordConfirm && <div id="reg-passwordconfirm-error" className="error-text">{errors.passwordConfirm}</div>}
                   </div>
                 </div>
                 <div>
-                  <label className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : 'var(--border-color)'}` }}>
-                    <input type="checkbox" checked={formData.kvkkApproved} onChange={e => { setFormData({...formData, kvkkApproved: e.target.checked}); setErrors(prev => ({...prev, kvkkApproved: ''})); }} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
+                  <label htmlFor="reg-kvkk" className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : 'var(--border-color)'}` }}>
+                    <input id="reg-kvkk" aria-required="true" aria-describedby={errors.kvkkApproved ? "reg-kvkk-error" : undefined} type="checkbox" checked={formData.kvkkApproved} onChange={e => { setFormData({...formData, kvkkApproved: e.target.checked}); setErrors(prev => ({...prev, kvkkApproved: ''})); }} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
                     <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
                       Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve işlenmesine <strong>açık rıza gösteriyorum.</strong>
                     </span>
                   </label>
-                  {errors.kvkkApproved && <div className="error-text" style={{ marginTop: '0.5rem', paddingLeft: '0.25rem' }}>{errors.kvkkApproved}</div>}
+                  {errors.kvkkApproved && <div id="reg-kvkk-error" className="error-text" style={{ marginTop: '0.5rem', paddingLeft: '0.25rem' }}>{errors.kvkkApproved}</div>}
                 </div>
               </div>
             )}

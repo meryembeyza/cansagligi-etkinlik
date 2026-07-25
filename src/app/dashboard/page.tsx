@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [altDate, setAltDate] = useState('');
   const [unitHeadStats, setUnitHeadStats] = useState({ total: 0, pending: 0, completed: 0, revision: 0 });
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     async function fetchStats() {
@@ -41,6 +42,15 @@ export default function DashboardPage() {
             completed: data.filter(e => e.status === 'Gerçekleşti').length,
             revision: data.filter(e => e.status === 'Yeniden Onay Bekliyor' || e.status === 'Revizyon İstendi').length
           });
+          // Show onboarding for new users with no events
+          const accountAge = userData?.created_at
+            ? Date.now() - new Date(userData.created_at).getTime()
+            : Infinity;
+          const isNewUser = accountAge < 7 * 24 * 60 * 60 * 1000;
+          const dismissed = localStorage.getItem('onboarding_dismissed_' + user?.id);
+          if (isNewUser && data.length === 0 && !dismissed) {
+            setShowOnboarding(true);
+          }
         }
       }
     }
@@ -152,6 +162,63 @@ export default function DashboardPage() {
         <CalendarView userRole={currentRole || ''} userRegion={userData?.region || ''} userId={user?.id} />
       ) : (
         <>
+          {/* First-login onboarding card */}
+          {showOnboarding && (currentRole === 'unit_head' || currentRole === 'representative') && (
+            <div style={{
+              position: 'relative',
+              background: 'linear-gradient(135deg, #fff5f5 0%, #fff 100%)',
+              border: '1.5px solid #fca5a5',
+              borderRadius: '16px',
+              padding: '2rem',
+              marginBottom: '0.5rem',
+              boxShadow: '0 4px 20px rgba(220,38,38,0.08)'
+            }}>
+              <button
+                onClick={() => { localStorage.setItem('onboarding_dismissed_' + user?.id, 'true'); setShowOnboarding(false); }}
+                style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.5rem', lineHeight: 1, padding: '0 0.25rem' }}
+                aria-label="Kapat"
+              >×</button>
+
+              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#da1c15', marginBottom: '0.35rem' }}>
+                👋 Sisteme hoş geldiniz, {userData?.full_name?.split(' ')[0]}!
+              </div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                Başlamak için aşağıdaki adımları takip edin.
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {[
+                  { icon: '👤', text: 'Profilini tamamla (bölüm ve iletişim bilgileri)', href: '/dashboard/profile', done: !!userData?.department },
+                  { icon: '📅', text: 'İlk etkinliğini oluştur ve bölge sorumlusuna gönder', href: '/dashboard/events/new', done: unitHeadStats.total > 0 },
+                  { icon: '🔔', text: 'Bildirimleri takip et — onay sürecini buradan izle', href: '/dashboard', done: false },
+                ].map((step, i) => (
+                  <Link
+                    key={i}
+                    href={step.href}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.875rem',
+                      padding: '0.875rem 1.25rem',
+                      background: step.done ? '#f0fdf4' : 'var(--bg-card)',
+                      border: `1px solid ${step.done ? '#86efac' : 'var(--border-color)'}`,
+                      borderRadius: '10px',
+                      textDecoration: 'none',
+                      color: 'var(--text-main)',
+                      fontSize: '0.9rem',
+                      fontWeight: 500,
+                      transition: 'box-shadow 0.15s',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)')}
+                    onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+                  >
+                    <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{step.done ? '✅' : step.icon}</span>
+                    <span style={{ flex: 1 }}>{step.text}</span>
+                    {!step.done && <span style={{ color: '#da1c15', fontWeight: 700 }}>→</span>}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Role Specific Content */}
           {currentRole === 'unit_head' && (
             <UnitHeadPanel />

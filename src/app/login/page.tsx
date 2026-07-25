@@ -103,12 +103,15 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>E-posta Adresi</label>
+              <label htmlFor="login-email" className={styles.label}>E-posta Adresi</label>
               <div className={styles.inputWrapper}>
                 <Mail className={styles.inputIcon} size={16} />
                 <input 
+                  id="login-email"
                   type="email" 
                   required 
+                  aria-required="true"
+                  autoComplete="email"
                   className={styles.input} 
                   placeholder="ad.soyad@cansagligi.org" 
                   value={email}
@@ -118,14 +121,18 @@ export default function LoginPage() {
             </div>
             
             <div className={styles.formGroup}>
-              <label className={styles.label}>Şifre</label>
+              <label htmlFor="login-password" className={styles.label}>Şifre</label>
               <div className={styles.inputWrapper}>
                 <Lock className={styles.inputIcon} size={16} />
                 <input 
+                  id="login-password"
                   type={showPassword ? "text" : "password"} 
                   required 
+                  aria-required="true"
+                  autoComplete="current-password"
                   className={styles.input} 
-                  placeholder="••••••••" 
+                  minLength={8}
+                  placeholder="Şifrenizi girin" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

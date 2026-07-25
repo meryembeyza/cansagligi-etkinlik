@@ -8,6 +8,19 @@ import { useRole } from '@/context/RoleContext';
 import { Camera, Save, User } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
 
+const ROLE_LABELS: Record<string, string> = {
+  unit_head: 'Birim Sorumlusu',
+  region_manager: 'Bölge Sorumlusu',
+  general_admin: 'Genel Yetkili',
+  design_team: 'Tasarım Ekibi',
+  resource_manager: 'Kaynak Yöneticisi',
+  rep_head: 'Temsilcilik Başkanı',
+  rep_region_manager: 'Temsilcilik Bölge Sorumlusu',
+  rep_coordinator: 'Temsilcilik Koordinatörü',
+  representative: 'Temsilci',
+  bursary_student: 'Burslu Öğrenci',
+};
+
 export default function ProfilePage() {
   const { user } = useRole();
   const [isLoading, setIsLoading] = useState(true);
@@ -124,6 +137,30 @@ export default function ProfilePage() {
           <div>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Profil Fotoğrafı</h3>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Kare formatta bir fotoğraf yüklemeniz önerilir.</p>
+          </div>
+        </div>
+
+        {/* System Info Card */}
+        <div style={{ backgroundColor: 'var(--bg-nested)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1.5rem', marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ width: '8px', height: '8px', backgroundColor: '#0e9b8f', borderRadius: '50%' }}></span>
+            Sistem Bilgileri — Değiştirilemez
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            {[
+              { label: 'Rolünüz', value: ROLE_LABELS[profile?.role || ''] || profile?.role || '—' },
+              { label: 'Bölge', value: profile?.region || '—' },
+              { label: 'Birim', value: profile?.unit_name || '—' },
+              { label: 'Üyelik Tarihi', value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) : '—' },
+            ].map((item, idx) => (
+              <div key={idx} style={{ backgroundColor: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{item.label}</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>{item.value}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+            * Bu bilgileri değiştirmek için Genel Yetkili ile iletişime geçin.
           </div>
         </div>
 

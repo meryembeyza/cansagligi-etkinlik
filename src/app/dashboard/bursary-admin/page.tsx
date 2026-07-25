@@ -303,7 +303,7 @@ export default function BursaryAdminPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Rapor: {selectedEvent.title}</h2>
-                <p style={{ color: 'var(--text-muted)' }}>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} ââ‚¬Â¢ {selectedEvent.location}</p>
+                <p style={{ color: 'var(--text-muted)' }}>{new Date(selectedEvent.event_date).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} • {selectedEvent.location}</p>
               </div>
               <button onClick={() => setSelectedEvent(null)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>X</button>
             </div>

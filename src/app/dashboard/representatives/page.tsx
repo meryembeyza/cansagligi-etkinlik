@@ -166,7 +166,7 @@ export default function RepresentativesPage() {
     }
   };
 
-  // Reject (soft ââ‚¬â€ do NOT delete, just keep unapproved, mark as rejected)
+  // Reject (soft — do NOT delete, just keep unapproved, mark as rejected)
   const handleReject = async (repId: string, repName: string) => {
     if (!confirm(`${repName} adlı temsilciyi reddetmek istiyor musunuz? Hesap silinmeyecek, onay bekleyenler listesinde kalıp "Reddedildi" olarak işaretlenecektir.`)) return;
     try {

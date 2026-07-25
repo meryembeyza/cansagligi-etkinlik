@@ -327,7 +327,16 @@ export default function GeneralAdminPanel() {
                 {events.map((event) => (
                   <tr key={event.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background-color 0.2s' }}>
                     <td style={{ padding: '1rem' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{event.event_name}</div>
+                      <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>
+                        <Link 
+                          href={`/dashboard/events/${event.id}`} 
+                          style={{ color: 'var(--text-main)', textDecoration: 'none' }}
+                          onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
+                          onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
+                        >
+                          {event.event_name}
+                        </Link>
+                      </div>
                       <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{event.event_type}</div>
                     </td>
                     <td style={{ padding: '1rem' }}>
@@ -346,7 +355,6 @@ export default function GeneralAdminPanel() {
                       </span>
                     </td>
                     <td style={{ padding: '1rem' }}>
-                      {/* TODO: Create event detail page and replace href */}
                       <Link href={`/dashboard/events/${event.id}`} style={{ color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>
                         Detaylar
                       </Link>

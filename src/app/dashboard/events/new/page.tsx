@@ -34,6 +34,7 @@ export default function NewEventPage() {
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [isSaving, setIsSaving] = useState(false);
   const [speakers, setSpeakers] = useState<any[]>([]);
+  const [noSpeakers, setNoSpeakers] = useState(false);
   const [isDraftLoaded, setIsDraftLoaded] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -128,7 +129,10 @@ export default function NewEventPage() {
     }
   }, [currentRole, formData.eventType]);
 
-  const handleNext = () => setCurrentStep((prev) => (prev < 4 ? (prev + 1) as Step : prev));
+  const handleNext = () => {
+    if (currentStep === 3 && noSpeakers) { setCurrentStep(4); return; }
+    setCurrentStep((prev) => (prev < 4 ? (prev + 1) as Step : prev));
+  };
   const handlePrev = () => setCurrentStep((prev) => (prev > 1 ? (prev - 1) as Step : prev));
 
   const saveEventData = async (status: string) => {
@@ -192,7 +196,7 @@ export default function NewEventPage() {
 
       // Save speakers if any
       const validSpeakers = speakers.filter(s => s.name);
-      if (validSpeakers.length > 0) {
+      if (!noSpeakers && validSpeakers.length > 0) {
         const speakerTask = (async () => {
           const speakerInserts = validSpeakers.map(s => ({
             full_name: s.name,
@@ -713,12 +717,40 @@ export default function NewEventPage() {
         {/* STEP 3: Konuşmacılar */}
         {currentStep === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Konuşmacı Yönetimi</h2>
-              <button onClick={addSpeaker} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
-                <Plus size={14} /> Yeni Konuşmacı Ekle
-              </button>
+            <div 
+              onClick={() => { setNoSpeakers(!noSpeakers); if (!noSpeakers) setSpeakers([]); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.875rem',
+                padding: '1rem 1.25rem', marginBottom: '1.5rem', cursor: 'pointer',
+                background: noSpeakers ? '#fff5f5' : 'var(--bg-nested)',
+                borderRadius: '10px',
+                border: `1.5px solid ${noSpeakers ? '#da1c15' : 'var(--border-color)'}`,
+                transition: 'all 0.2s',
+              }}
+            >
+              <div style={{ width: '24px', height: '24px', borderRadius: '4px', border: `2px solid ${noSpeakers ? '#da1c15' : '#ccc'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: noSpeakers ? '#da1c15' : 'transparent' }}>
+                {noSpeakers && <span style={{ color: 'white', fontSize: '14px' }}>✓</span>}
+              </div>
+              <div>
+                <div style={{ fontWeight: 600, color: noSpeakers ? '#da1c15' : 'inherit' }}>Bu etkinlikte konuşmacı bulunmuyor</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Atölye, sosyal etkinlik veya saha çalışmaları için seçin</div>
+              </div>
             </div>
+
+            {noSpeakers ? (
+              <div style={{ textAlign: 'center', padding: '3rem', backgroundColor: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✅</div>
+                <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Konuşmacısız etkinlik olarak işaretlendi</h3>
+                <p style={{ color: 'var(--text-muted)' }}>Bir sonraki adıma geçmek için İleri butonuna basın</p>
+              </div>
+            ) : (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Konuşmacı Yönetimi</h2>
+                  <button onClick={addSpeaker} className="btn btn-outline" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
+                    <Plus size={14} /> Yeni Konuşmacı Ekle
+                  </button>
+                </div>
 
             {speakers.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-md)', border: '1px dashed #d1d5db' }}>
@@ -781,6 +813,8 @@ export default function NewEventPage() {
                   </div>
                 ))}
               </div>
+            )}
+              </>
             )}
           </div>
         )}
