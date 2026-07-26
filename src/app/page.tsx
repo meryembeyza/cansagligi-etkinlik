@@ -180,7 +180,18 @@ export default function Home() {
       </section>
 
       <footer style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', backgroundColor: 'var(--bg-main)' }}>
-        &copy; {new Date().getFullYear()} Cansağlığı Vakfı. Tüm hakları saklıdır.
+        <div>&copy; {new Date().getFullYear()} Canan Bayraktar Toplum Sağlığı Vakfı. Tüm hakları saklıdır.</div>
+        <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '1.5rem' }}>
+          {([['KVKK', '/kvkk'], ['Gizlilik Politikası', '/gizlilik-politikasi']] as [string, string][]).map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.15s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#da1c15')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+            >{label}</Link>
+          ))}
+        </div>
       </footer>
     </main>
   );

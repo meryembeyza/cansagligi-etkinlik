@@ -182,7 +182,7 @@ export default function RegisterPage() {
   const redPrimary = '#da1c15';
 const redHover = '#b91610';
 const redLight = 'var(--bg-danger-light)';
-const tealPrimary = '#0e9b8f';
+const tealPrimary = '#da1c15';
 
   if (success) {
     return (
@@ -478,9 +478,9 @@ const tealPrimary = '#0e9b8f';
                 <div>
                   <label htmlFor="reg-kvkk" className="checkbox-label" style={{ border: `1px solid ${errors.kvkkApproved ? '#fca5a5' : 'var(--border-color)'}` }}>
                     <input id="reg-kvkk" aria-required="true" aria-describedby={errors.kvkkApproved ? "reg-kvkk-error" : undefined} type="checkbox" checked={formData.kvkkApproved} onChange={e => { setFormData({...formData, kvkkApproved: e.target.checked}); setErrors(prev => ({...prev, kvkkApproved: ''})); }} style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: tealPrimary }} />
-                    <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
-                      Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, telefon numaram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından saklanmasına ve işlenmesine <strong>açık rıza gösteriyorum.</strong>
-                    </span>
+                     <span style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#475569' }}>
+                       <a href="/kvkk" target="_blank" rel="noopener noreferrer" style={{ color: '#da1c15', textDecoration: 'underline' }}>KVKK Aydınlatma Metni</a>'ni okudum ve anladım. Telefon numeram ve kimlik bilgilerimin Cansağlığı Vakfı Etkinlik Yönetim Sistemi tarafından etkinlik yönetimi amacıyla saklanmasına ve işlenmesine <strong>açık rıza gösteriyorum.</strong>
+                     </span>
                   </label>
                   {errors.kvkkApproved && <div id="reg-kvkk-error" className="error-text" style={{ marginTop: '0.5rem', paddingLeft: '0.25rem' }}>{errors.kvkkApproved}</div>}
                 </div>

@@ -18,7 +18,6 @@ import {
 import styles from './afis-talepleri.module.css';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'react-hot-toast';
-import jsPDF from 'jspdf';
 import { AfisDurumu, AfisTalebi } from '../../../types/afis-talepleri';
 import Link from 'next/link';
 
@@ -36,6 +35,16 @@ const getDaysDifference = (targetDate?: string) => {
 };
 
 type DateFilter = 'BuHafta' | 'BuAy' | 'Tumu';
+
+// Lazy jsPDF loader — only downloaded when user clicks PDF İndir
+let _jsPDF: typeof import('jspdf').default | null = null;
+const getJsPDF = async () => {
+  if (!_jsPDF) {
+    const mod = await import('jspdf');
+    _jsPDF = mod.default;
+  }
+  return _jsPDF;
+};
 
 export default function AfisTalepleriPage() {
   const supabase = createClient();
@@ -432,6 +441,7 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
         reader.readAsDataURL(blob);
       });
 
+      const jsPDF = await getJsPDF();
       const doc = new jsPDF();
       doc.addFileToVFS('NotoSans-Regular.ttf', base64String as string);
       doc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');

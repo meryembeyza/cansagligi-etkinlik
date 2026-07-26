@@ -67,7 +67,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: { isOpen?: boolea
       { name: 'Ramazan Takibi', icon: Calendar, path: '/dashboard/ramadan' },
       { name: 'Envanter Yönetimi', icon: Briefcase, path: '/dashboard/inventory' },
       { name: 'Bursiyer Takip (Admin)', icon: Users, path: '/dashboard/bursary-admin' },
-      { name: 'Raporlar & Analizler', icon: LayoutTemplate, path: '/dashboard/rep-reports' },
+      { name: 'Raporlar & Analizler', icon: LayoutTemplate, path: '/dashboard/reports' },
     ],
     rep_coordinator: [
       { name: 'Ana Panel', icon: Home, path: '/dashboard' },

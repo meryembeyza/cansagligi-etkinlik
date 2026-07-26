@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: 'Cansağlığı Vakfı Etkinlik Yönetim Sistemi',
   description: 'Üniversite kulüplerinin etkinlik süreçlerini dijitalleştiren yönetim paneli.',
   manifest: '/manifest.json',
-  themeColor: '#C0392B',
+  themeColor: '#da1c15',
 };
 
 import { RoleProvider } from '@/context/RoleContext';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-
+import CookieBanner from '@/components/ui/CookieBanner';
 import { Toaster } from 'react-hot-toast';
 
 export default function RootLayout({
@@ -27,6 +27,7 @@ export default function RootLayout({
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
           <RoleProvider>
             {children}
+            <CookieBanner />
             <Toaster position="bottom-right" toastOptions={{ duration: 4000, style: { background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-color)' } }} />
           </RoleProvider>
         </ThemeProvider>
