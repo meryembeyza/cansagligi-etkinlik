@@ -7,7 +7,6 @@ export default function KVKKPage() {
     ['3. İşleme Amacı ve Hukuki Dayanak', 'Verileriniz; sistem üyeliği oluşturma, etkinlik bildirimleri gönderme ve onay süreçlerini yürütme amacıyla KVKK Madde 5/2(c) — sözleşmenin ifası hukuki dayanağıyla işlenmektedir.'],
     ['4. Veri Saklama Süresi', 'Kişisel verileriniz üyeliğinizin aktif olduğu süre boyunca ve üyelik sonrası yasal zorunluluklar kapsamında 2 yıl saklanmaktadır.'],
     ['5. Veri Güvenliği ve Aktarım', 'Verileriniz Supabase (supabase.com) altyapısında şifreli biçimde saklanmaktadır. Üçüncü taraflarla ticari amaçla paylaşılmamaktadır.'],
-    ['6. Haklarınız (KVKK Madde 11)', 'Verilerinize erişim, düzeltme, silme, işlemenin kısıtlanması ve işlemeye itiraz haklarına sahipsiniz. Talepler için: kvkk@cansagligivakfi.org'],
   ];
 
   return (

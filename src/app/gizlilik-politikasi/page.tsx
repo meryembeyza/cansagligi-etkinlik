@@ -6,8 +6,6 @@ export default function GizlilikPolitikasiPage() {
     ['Çerezler', 'Sistem yalnızca oturum yönetimi için zorunlu çerezler kullanmaktadır (Supabase sb-access-token, sb-refresh-token). Bu çerezler analitik veya reklam amacıyla kullanılmaz.'],
     ['Veri Paylaşımı', 'Kişisel verileriniz üçüncü taraflarla ticari amaçla paylaşılmaz. Sistem altyapısı Supabase (supabase.com) üzerinde çalışmaktadır.'],
     ['Veri Güvenliği', 'Verileriniz şifreli bağlantılar (HTTPS) ve güvenli veritabanı altyapısı üzerinden aktarılmakta ve saklanmaktadır.'],
-    ['Veri Silme', 'Üyeliğinizin silinmesini talep etmek için kvkk@cansagligivakfi.org adresine e-posta gönderebilirsiniz. Talepler 30 gün içinde işleme alınır.'],
-    ['İletişim', 'Gizlilik konusundaki sorularınız için: kvkk@cansagligivakfi.org'],
   ];
 
   return (
