@@ -196,7 +196,7 @@ export default function ReportsExportPage() {
           if (logisticsObj.hasSutureTraining) usedItems.push('Sütür Eğitimi: ' + (logisticsObj.sutureTrainingDetails || ''));
           
           if (logisticsObj.customRequests && Array.isArray(logisticsObj.customRequests)) {
-            logisticsObj.customRequests.forEach((req: string) => {
+            logisticsObj.customRequests.forEach((req: any) => {
                usedItems.push(req.name + ' (' + req.count + ')');
             });
           }
@@ -405,7 +405,7 @@ export default function ReportsExportPage() {
       const chartsContainer = document.getElementById('charts-container');
       if (chartsContainer) {
         const clonedCharts = chartsContainer.cloneNode(true);
-        clonedCharts.style.display = 'block';
+        (clonedCharts as HTMLElement).style.display = 'block';
         element.appendChild(clonedCharts);
       }
 
@@ -445,7 +445,7 @@ export default function ReportsExportPage() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      await html2pdf().set(opt).from(element).save();
+      await html2pdf().set(opt as any).from(element).save();
 
     } catch (err) {
       console.error(err);

@@ -38,9 +38,9 @@ export default function DashboardPage() {
         if (data && !error) {
           setUnitHeadStats({
             total: data.length,
-            pending: data.filter(e => e.status?.includes('Onay Bekliyor')).length,
-            completed: data.filter(e => e.status === 'Gerçekleşti').length,
-            revision: data.filter(e => e.status === 'Yeniden Onay Bekliyor' || e.status === 'Revizyon İstendi').length
+            pending: data.filter((e: any) => e.status?.includes('Onay Bekliyor')).length,
+            completed: data.filter((e: any) => e.status === 'Gerçekleşti').length,
+            revision: data.filter((e: any) => e.status === 'Yeniden Onay Bekliyor' || e.status === 'Revizyon İstendi').length
           });
           // Show onboarding for new users with no events
           const accountAge = userData?.created_at

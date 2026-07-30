@@ -246,7 +246,7 @@ export default function BursaryEventDetailPage() {
                 <div style={{ marginTop: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '1rem' }}>Konuşmacılar</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {event.speakers.map((speaker: EventSpeaker, idx: number) => (
+                    {event.speakers.map((speaker: { name: string; title?: string; bio?: string }, idx: number) => (
                       <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-inner)' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#da1c15', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 'bold', flexShrink: 0 }}>
                           {speaker.name.charAt(0).toUpperCase()}

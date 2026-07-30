@@ -14,7 +14,7 @@ export function StockMovementTab() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    supabase.from('inventory_items').select('*').order('name').then(({data}) => {
+    supabase.from('inventory_items').select('*').order('name').then(({data}: {data: any}) => {
       if(data) setItems(data);
     });
   }, []);

@@ -285,7 +285,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   const canApprove = currentRole === 'general_admin' || currentRole === 'region_manager' || currentRole === 'rep_region_manager';
   const isCreator = user?.id === event.created_by;
 
-  let logistics: Record<string, unknown> | null = null;
+  let logistics: any = null;
   if (event.budget_request) {
     try { logistics = JSON.parse(event.budget_request); } catch(e) {}
   }
@@ -555,7 +555,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                 <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>🌿 Aromaterapi Yağ Talebi</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
-                    {(logistics.aroma || []).map((a: string, i: number) => (
+                    {(logistics.aroma || []).map((a: any, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
                         <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{i + 1}. Formülasyon</div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.5rem' }}>
@@ -669,7 +669,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                 <div style={{ backgroundColor: 'var(--bg-nested, var(--bg-nested))', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-main)' }}>â­ Özel Talepler</h4>
                   <div style={{ display: 'grid', gap: '1rem' }}>
-                    {(logistics.customRequests || []).map((req: string, i: number) => (
+                    {(logistics.customRequests || []).map((req: any, i: number) => (
                       <div key={i} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}>
                         <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{req.name || 'İsimsiz Talep'}</div>
                         <div style={{ color: 'var(--text-muted)' }}>{req.note || '-'}</div>

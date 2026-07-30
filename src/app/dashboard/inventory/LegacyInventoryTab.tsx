@@ -108,7 +108,7 @@ export function LegacyInventoryTab() {
       if (error) throw error;
 
       // Safe mapping to prevent nested reading locks
-      const mapped = (data || []).map((req: string) => ({
+      const mapped = (data || []).map((req: any) => ({
         ...req,
         requester_user: req.requester_user ? {
           full_name: req.requester_user.full_name,
@@ -124,9 +124,9 @@ export function LegacyInventoryTab() {
       // Apply Region Sorumlusu visual isolation (RLS also covers this)
       let finalData = mapped;
       if (isRegionManager && userRegion) {
-        finalData = mapped.filter((r: Record<string, unknown>) => r.requester_user?.region?.toLowerCase() === userRegion.toLowerCase());
+        finalData = mapped.filter((r: any) => r.requester_user?.region?.toLowerCase() === userRegion.toLowerCase());
       } else if (isRepresentative) {
-        finalData = mapped.filter((r: Record<string, unknown>) => r.representative_id === user?.id);
+        finalData = mapped.filter((r: any) => r.representative_id === user?.id);
       }
 
       setRequests(finalData);

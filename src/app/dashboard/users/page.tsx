@@ -34,8 +34,8 @@ export default function UsersAdminPage() {
 
       if (error) throw error;
       
-      const pUsers = data?.filter(u => !u.is_approved) || [];
-      const aUsers = data?.filter(u => u.is_approved) || [];
+      const pUsers = data?.filter((u: any) => !u.is_approved) || [];
+      const aUsers = data?.filter((u: any) => u.is_approved) || [];
       
       setPendingUsers(pUsers);
       setActiveUsers(aUsers);
@@ -82,7 +82,7 @@ export default function UsersAdminPage() {
 
   // Aktif kullanıcıları ağaç yapısına (Hiyerarşiye) dönüştür
   // Yapı: Region -> { manager: User[], universities: { UnivName: UnitHead[] } }
-  const treeData: Record<string, { managers: unknown[], universities: Record<string, unknown[]> }> = {};
+  const treeData: Record<string, { managers: any[], universities: Record<string, any[]> }> = {};
 
   activeUsers.forEach(user => {
     const region = user.region || 'Belirtilmeyen Bölge';

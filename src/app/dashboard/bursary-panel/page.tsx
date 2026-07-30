@@ -68,9 +68,9 @@ export default function BursaryPanelPage() {
       if (attError) throw attError;
 
       const attMap = new Map();
-      (attData || []).forEach(a => attMap.set(a.event_id, a));
+      (attData || []).forEach((a: any) => attMap.set(a.event_id, a));
 
-      const merged = (eventsData || []).map(ev => ({
+      const merged = (eventsData || []).map((ev: any) => ({
         ...ev,
         my_attendance: attMap.get(ev.id) || null
       }));

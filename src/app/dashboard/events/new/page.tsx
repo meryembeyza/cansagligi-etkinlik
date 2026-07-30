@@ -154,7 +154,7 @@ export default function NewEventPage() {
           });
         } catch (e) {
           if (e instanceof z.ZodError) {
-            throw new Error(e.errors[0].message);
+            throw new Error((e as z.ZodError).issues[0].message);
           }
           throw e;
         }
@@ -218,7 +218,7 @@ export default function NewEventPage() {
             .select();
 
           if (insertedSpeakers && !speakerErr) {
-            const eventSpeakerInserts = insertedSpeakers.map((s, idx) => ({
+            const eventSpeakerInserts = insertedSpeakers.map((s: any, idx: number) => ({
               event_id: eventData.id,
               speaker_id: s.id,
               select_reason: validSpeakers[idx].reason || ''
@@ -270,7 +270,7 @@ export default function NewEventPage() {
       localStorage.removeItem('event_draft');
       setIsSubmitted(true);
     } catch (err) {
-      const errorMessage = err?.message || JSON.stringify(err) || 'Bilinmeyen bir hata oluştu.';
+      const errorMessage = (err as any)?.message || JSON.stringify(err) || 'Bilinmeyen bir hata oluştu.';
       toast.error('Kayıt sırasında bir hata oluştu:\n' + errorMessage);
     } finally {
       setIsSaving(false);
@@ -964,7 +964,7 @@ export default function NewEventPage() {
                 
                 {(formData.logistics.customRequests || []).length > 0 && (
                   <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--bg-card)' }}>
-                    {(formData.logistics.customRequests || []).map((req: string, index: number) => (
+                    {(formData.logistics.customRequests || []).map((req: any, index: number) => (
                       <div key={index} style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
                         <button type="button" onClick={() => removeCustomRequest(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--status-danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>

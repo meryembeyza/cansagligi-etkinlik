@@ -511,24 +511,7 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
           <User size={14} />
           <span style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             İletişim ({"Bilinmiyor"}):
-            <strong>
-              {null ? (
-                <>
-                  <a href={`tel:${request.creator.phone}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    {request.creator.phone}
-                  </a>
-                  <a 
-                    href={`https://wa.me/90${request.creator.phone.replace(/\D/g, '')}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    style={{ color: '#25D366', marginLeft: '6px', display: 'inline-flex', alignItems: 'center' }}
-                    title="WhatsApp'tan yaz"
-                  >
-                    <MessageSquare size={14} />
-                  </a>
-                </>
-              ) : 'Belirtilmedi'}
-            </strong>
+            <strong>Belirtilmedi</strong>
           </span>
         </div>
         <div className={styles.detailRow}>
@@ -626,7 +609,7 @@ function RequestCard({ request, onIslemeAl, onAfisYukle, onRevizyonBitti, onRevi
               <input multiple type="file" 
                 accept="image/*,application/pdf" 
                 style={{ display: 'none' }} 
-                onChange={(e) => onRevizyonBitti?.((request.id), e)}
+                onChange={(e) => { const file = e.target.files?.[0]; if (file) onRevizyonBitti?.(request.id, file); }}
               />
             </label>
             <button className={`${styles.btn} ${styles.btnOutline}`} onClick={() => setIsRejectModalOpen(true)}>

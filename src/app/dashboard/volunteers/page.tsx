@@ -57,7 +57,7 @@ export default function VolunteersPage() {
       if (error) throw error;
 
       // Mock attendance counts for showcase or calculate dynamic sums if available
-      const mapped: VolunteerItem[] = (data || []).map((v, index) => ({
+      const mapped: VolunteerItem[] = (data || []).map((v: any, index: number) => ({
         id: v.id,
         full_name: v.full_name || 'İsimsiz Gönüllü',
         phone_number: v.phone_number || '-',

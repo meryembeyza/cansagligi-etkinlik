@@ -63,7 +63,7 @@ export function LegacyLogisticsTab() {
 
       const parsedData: Record<string, unknown>[] = [];
 
-      data?.forEach(event => {
+      data?.forEach((event: any) => {
         try {
           const logData = JSON.parse(event.budget_request);
           if (!logData) return;
@@ -86,7 +86,7 @@ export function LegacyLogisticsTab() {
 
           // Aromaterapi Talebi
           if (logData.hasAroma && logData.aroma && logData.aroma.length > 0) {
-            logData.aroma.forEach((a: string, idx: number) => {
+            logData.aroma.forEach((a: any, idx: number) => {
               parsedData.push({
                 eventId: event.id,
                 eventName: event.event_name,
@@ -148,7 +148,7 @@ export function LegacyLogisticsTab() {
 
           // Özel Talepler
           if (logData.customRequests && logData.customRequests.length > 0) {
-            logData.customRequests.forEach((cr: string) => {
+            logData.customRequests.forEach((cr: any) => {
               parsedData.push({
                 eventId: event.id,
                 eventName: event.event_name,

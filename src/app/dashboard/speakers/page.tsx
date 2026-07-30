@@ -42,7 +42,7 @@ export default function SpeakersArchivePage() {
       if (error) throw error;
 
       // Map to flat structure for UI
-      const formattedSpeakers = data?.map((item: Record<string, unknown>) => ({
+      const formattedSpeakers = data?.map((item: any) => ({
         id: item.speakers.id,
         name: item.speakers.full_name,
         title: item.speakers.title,
@@ -59,13 +59,13 @@ export default function SpeakersArchivePage() {
       })) || [];
 
       // Sort by event date descending
-      formattedSpeakers.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
+      formattedSpeakers.sort((a: any, b: any) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
       
       setSpeakersList(formattedSpeakers);
 
       // Extract unique cities from the fetched speakers
       const cities = new Set<string>();
-      formattedSpeakers.forEach(s => {
+      formattedSpeakers.forEach((s: any) => {
         if (s.city && s.city !== 'Belirtilmedi') {
           cities.add(s.city);
         }

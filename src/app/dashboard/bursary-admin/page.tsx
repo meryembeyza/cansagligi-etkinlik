@@ -100,7 +100,7 @@ export default function BursaryAdminPage() {
           .eq('role', 'bursary_student');
 
         if (bursaryUsers && bursaryUsers.length > 0) {
-          const emails = bursaryUsers.map(u => u.email).filter(Boolean);
+          const emails = bursaryUsers.map((u: { email: string }) => u.email).filter(Boolean);
           
           if (emails.length > 0) {
             const { data: { session } } = await supabase.auth.getSession();
@@ -163,9 +163,9 @@ export default function BursaryAdminPage() {
         .eq('role', 'bursary_student');
 
       const attendanceMap = new Map();
-      (data || []).forEach(a => attendanceMap.set(a.user_id, a));
+      (data || []).forEach((a: any) => attendanceMap.set(a.user_id, a));
 
-      const finalAttendances: Attendance[] = (allBursary || []).map(u => {
+      const finalAttendances: Attendance[] = (allBursary || []).map((u: any) => {
         const existing = attendanceMap.get(u.id);
         if (existing) {
           return {
@@ -178,6 +178,8 @@ export default function BursaryAdminPage() {
           };
         } else {
           return {
+            // NOTE: This id is used only as a React key for list rendering.
+            // It is never written to Supabase. Real DB operations use user_id field.
             id: 'temp-' + u.id,
             user_id: u.id,
             rsvp_status: 'pending',

@@ -35,7 +35,7 @@ export default function BursiyerEventsPage() {
       setEvents(data || []);
       
       // Extract unique cities
-      const cities = Array.from(new Set(data?.map(e => e.city))).filter(Boolean) as string[];
+      const cities = Array.from(new Set(data?.map((e: any) => e.city))).filter(Boolean) as string[];
       setAvailableCities(cities.sort());
       
     } catch (error) {

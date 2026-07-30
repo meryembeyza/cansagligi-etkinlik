@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Cansağlığı Vakfı Etkinlik Yönetim Sistemi',
   description: 'Üniversite kulüplerinin etkinlik süreçlerini dijitalleştiren yönetim paneli.',
   manifest: '/manifest.json',
+};
+
+export const viewport = {
   themeColor: '#da1c15',
 };
 
